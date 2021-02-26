@@ -4,8 +4,51 @@
   "description": "secure-cloud-storage",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "webpack-dev-server --open --config ./build/webpack.dev.conf.js",
+    "build": "webpack --config ./build/webpack.build.conf.js",
+    "server-build": "node server.js",
+    "server-dev": "nodemon server.js"
   },
-  "author": "",
-  "license": "ISC"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/neveleneves/secure-cloud-storage.git"
+  },
+  "author": "Max Nikonov",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/neveleneves/secure-cloud-storage/issues"
+  },
+  "homepage": "https://github.com/neveleneves/secure-cloud-storage#readme",
+  "devDependencies": {
+    "@babel/core": "^7.11.6",
+    "@babel/plugin-proposal-class-properties": "^7.12.1",
+    "@babel/plugin-transform-runtime": "^7.12.1",
+    "@babel/preset-env": "^7.11.5",
+    "@babel/preset-react": "^7.12.13",
+    "@babel/runtime": "^7.12.5",
+    "autoprefixer": "^10.0.1",
+    "babel-loader": "^8.1.0",
+    "copy-webpack-plugin": "^6.2.1",
+    "css-loader": "^4.3.0",
+    "css-mqpacker": "^7.0.0",
+    "cssnano": "^4.1.10",
+    "file-loader": "^6.1.1",
+    "html-webpack-plugin": "^4.5.0",
+    "mini-css-extract-plugin": "^1.0.0",
+    "nodemon": "^2.0.6",
+    "path": "^0.12.7",
+    "postcss": "^8.1.1",
+    "postcss-loader": "^4.0.4",
+    "style-loader": "^2.0.0",
+    "webpack": "^5.0.0",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.11.0",
+    "webpack-merge": "^5.2.0"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^5.11.4",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1"
+  }
 }
