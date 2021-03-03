@@ -4,6 +4,9 @@ const mongoose = require('mongoose')
 
 const app = express()
 
+//Route registration
+app.use('/api/auth', require('./routes/auth'))
+
 //Set the server port value
 const PORT = config.get('port') || 5000
 

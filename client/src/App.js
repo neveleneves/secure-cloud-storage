@@ -1,10 +1,16 @@
 import React from 'react'
+import {BrowserRouter} from 'react-router-dom'
+import { useRoutes } from './routes';
 
 function App() {
+  const routes = useRoutes(false)
+
   return (
-    <div className="App">
-        <h1> Hello </h1>
-    </div>
+    <BrowserRouter>
+      <div className="App">
+          {routes}
+      </div>
+    </BrowserRouter>
   );
 }
 
