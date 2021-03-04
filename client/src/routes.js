@@ -5,8 +5,8 @@ import AuthPage from './pages/AuthPage'
 import StoragePage from './pages/StoragePage'
 import ProfilePage from './pages/ProfilePage'
 
-export const useRoutes = (userAuthenticated) => {
-    if(userAuthenticated) {
+export const useRoutes = (isAuth) => {
+    if(isAuth) {
         return (
             <Switch>
                 <Route path="/storage"> 
