@@ -9,7 +9,9 @@ function App() {
   return (
     <BrowserRouter>
       <Navbar />
-      <div className="App">{routes}</div>
+      <main className="main">
+        <div className="App">{routes}</div>
+      </main>
     </BrowserRouter>
   );
 }

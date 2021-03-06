@@ -4,8 +4,8 @@ import { NavLink } from "react-router-dom";
 export const Navbar = () => {
   return (
     <header className="header">
-      <nav className="navbar">
-        <div className="navbar__wrapper container">
+      <nav className="navbar header__navbar">
+        <div className="navbar__wrapper">
           <div className="navbar-logo">
             <a href="/" className="navbar-logo__link">
               Caption

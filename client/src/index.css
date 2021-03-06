@@ -4,12 +4,7 @@
 /* Common Styles Start*/
 body {
   font-family: Roboto;
-  background-color: gray;
-  background: url(./img/intro-background.jpg) no-repeat center center fixed;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
+  background-color: #eeeff1;
 }
 a {
   text-decoration: none;
@@ -21,6 +16,11 @@ a {
 .navbar {
   width: 100%;
   height: 100px;
+}
+.header__navbar {
+  position: fixed;
+  left: 0;
+  top: 0;
 }
 .navbar:hover {
   background-color: rgba(0, 0, 0, 0.4);
@@ -70,12 +70,20 @@ a {
 /* Navbar styling end*/
 
 /* Intro-page styling start*/
-.intro__wrapper {
+.intro {
+  background: url(./img/intro-background.jpg) no-repeat center;
+  background-size: cover;
+  min-height: 100vh;
+}
+.container {
   max-width: 1230px;
+}
+.intro__wrapper {
   margin: 0px auto;
+  padding-top: 280px;
 }
 .intro__title {
-  margin: 190px 0px 35px 0px;
+  margin-bottom: 35px;
   text-align: left;
 }
 .intro__title-text {
@@ -114,7 +122,7 @@ a {
   right: 0;
   bottom: 0;
   left: 0;
-  background-image: linear-gradient(to right top, #0070da, #00eeff);
+  background-image: linear-gradient(to right top, #392fc2, #00eeff);
   z-index: -1;
   transition: opacity 0.2s linear;
   opacity: 0;
@@ -133,3 +141,137 @@ a {
   padding: 15px 0px;
 }
 /* Intro-page styling end*/
+
+/* Auth-page styling start*/
+.auth {
+  background: url(./img/auth-background.jpg) no-repeat top;
+  min-height: 100vh;
+}
+.auth__wrapper {
+  margin: 0px auto;
+  padding-top: 150px;
+}
+.auth__content {
+  width: 100%;
+  height: calc(100vh - 150px);
+  background-color: white;
+  border-radius: 5px 5px 0px 0px;
+}
+.auth__wrapper-content {
+  margin: 0px auto;
+}
+.content-container {
+  max-width: 980px;
+}
+.content-header__title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  height: 80px;
+}
+.content-header__title-line {
+  width: 380px;
+  border: 1px solid #e7e7e7;
+}
+.content-header__title-text {
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  text-align: center;
+  color: #000000;
+  padding: 0px 20px;
+}
+.auth__tabs {
+  display: flex;
+  position: relative;
+  height: 40px;
+  margin-bottom: 20px;
+}
+.auth__tab {
+  position: absolute;
+  width: 50%;
+  text-align: center;
+  padding: 8px 0px;
+  bottom: 0;
+  transition: all 0.3s linear;
+  border-radius: 8px 8px 0px 0px;
+  color: #acacac;
+  cursor: pointer;
+  background-color: #f0f0f0;
+}
+.auth__tab:first-child{
+  left: 0;
+}
+.auth__tab:last-child{
+  right: 0;
+}
+.auth__tab:hover, .auth__tab:active, .auth__tab:focus {
+  background: #ebebeb;
+  color: #8a8a8a;
+}
+.auth__tab_active {
+  background: linear-gradient(90deg, #0f82ec 0%, #00e1ff 100%);
+  color: white;
+  padding: 12px 0px;
+}
+.auth__step {
+  width: 100%;
+  background-color: #F4F4F4;
+  border-radius: 5px;
+  margin-bottom: 30px;
+}
+.auth__step-wrapper {
+  max-width: 920px;
+  margin: 0px auto;
+  padding: 18px 0px; 
+}
+.auth__step-title {
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  color: #A5A5A5;
+}
+
+/* Component step active start*/
+.auth__step-title_active {
+  color: #000;
+  margin-bottom: 25px;
+}
+.auth__step-subtitle {
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+.auth__form-row{
+  display: flex;
+  margin-bottom: 15px;
+}
+
+.auth__form-input {
+
+}
+.auth__form-input:last-child {
+  margin-left: 15px;
+}
+/* Component step active end*/
+.auth__step-line {
+  display: block;
+  border: 1px solid #E7E7E7;
+  width: calc(980px - 25px);
+  margin: 0px auto 30px;
+}
+.auth__step-massage {
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  color: #A5A5A5;
+  text-align: center;
+  margin-bottom: 30px;
+}
+/* Auth-page styling end*/
