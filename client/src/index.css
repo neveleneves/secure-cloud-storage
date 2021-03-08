@@ -195,7 +195,7 @@ a {
   text-align: center;
   padding: 8px 0px;
   bottom: 0;
-  transition: all 0.3s linear;
+  transition: all 0.2s linear;
   border-radius: 8px 8px 0px 0px;
   color: #acacac;
   cursor: pointer;
@@ -208,7 +208,7 @@ a {
   right: 0;
 }
 .auth__tab:hover, .auth__tab:active, .auth__tab:focus {
-  background: #ebebeb;
+  background-color: #ebebeb;
   color: #8a8a8a;
 }
 .auth__tab_active {
@@ -221,6 +221,9 @@ a {
   background-color: #F4F4F4;
   border-radius: 5px;
   margin-bottom: 30px;
+}
+.auth__step_active {
+  height: 200px;
 }
 .auth__step-wrapper {
   max-width: 920px;
@@ -247,16 +250,65 @@ a {
   font-size: 14px;
   margin-bottom: 15px;
 }
+.auth__step-form {
+  display: flex;
+  justify-content: space-between;
+}
 .auth__form-row{
   display: flex;
+}
+.auth__form-row:first-child {
   margin-bottom: 15px;
 }
-
 .auth__form-input {
-
+  padding: 0px 20px;
+  width: 215px;
+  height: 40px;
+  border: 0;
+  font-family: Roboto; 
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+}
+.auth__form-input::-webkit-input-placeholder {
+  color: #A5A5A5;
 }
 .auth__form-input:last-child {
   margin-left: 15px;
+}
+.auth__form-nav {
+  position: relative;
+  width: 285px;
+}
+.auth__form-nav input {
+  position: absolute;
+  bottom: 0;
+  width: 135px;
+  height: 35px;
+  border-radius: 50px;
+  font-family: Roboto;
+  font-style:normal;
+  font-weight:700;
+  font-size: 15px;
+  text-align: center;
+  transition: all 0.2s ease;
+  border: 1px solid #0F82EC;
+}
+.auth__input-back {
+  left:0;
+  color: #0F82EC;
+}
+.auth__input-back:hover, .auth__input-back:active, .auth__input-back:focus {
+  background-color: #0f81ec25;
+}
+.auth__input-submit{
+  right: 0;
+  color: white;
+  background-color: #0F82EC;
+}
+.auth__input-submit:hover, .auth__input-submit:active, .auth__input-submit:focus{
+  background-color: #1671c7;
+  border: 1px solid #1671c7;
 }
 /* Component step active end*/
 .auth__step-line {
@@ -273,5 +325,27 @@ a {
   color: #A5A5A5;
   text-align: center;
   margin-bottom: 30px;
+}
+.auth__nav {
+  display: flex;
+  justify-content: flex-end;
+  width: 920px;
+  margin: 0 auto;
+}
+.auth__nav button {
+  width: 135px;
+  height: 35px;
+  border-radius: 50px;
+  font-family: Roboto;
+  font-style:normal;
+  font-weight:700;
+  font-size: 15px;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+.auth__button-submit{
+  background-color: white;
+  border: 1px solid #bdbdbd;
+  color: #bdbdbd;
 }
 /* Auth-page styling end*/
