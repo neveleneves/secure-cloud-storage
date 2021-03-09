@@ -277,10 +277,11 @@ a {
   margin-left: 15px;
 }
 .auth__form-nav {
+  width: 100%;
+  margin-left: 30px;
   position: relative;
-  width: 285px;
 }
-.auth__form-nav input {
+.auth__form-nav button {
   position: absolute;
   bottom: 0;
   width: 135px;
@@ -294,19 +295,19 @@ a {
   transition: all 0.2s ease;
   border: 1px solid #0F82EC;
 }
-.auth__input-back {
-  left:0;
+.auth__button-back {
+  left: 30px;
   color: #0F82EC;
 }
-.auth__input-back:hover, .auth__input-back:active, .auth__input-back:focus {
+.auth__button-back:hover, .auth__button-back:active, .auth__button-back:focus {
   background-color: #0f81ec25;
 }
-.auth__input-submit{
-  right: 0;
+.auth__button-post{
+  right: 30px;
   color: white;
   background-color: #0F82EC;
 }
-.auth__input-submit:hover, .auth__input-submit:active, .auth__input-submit:focus{
+.auth__button-post:hover, .auth__button-post:active, .auth__button-post:focus{
   background-color: #1671c7;
   border: 1px solid #1671c7;
 }
@@ -329,7 +330,7 @@ a {
 .auth__nav {
   display: flex;
   justify-content: flex-end;
-  width: 920px;
+  width: 860px;
   margin: 0 auto;
 }
 .auth__nav button {
@@ -349,3 +350,24 @@ a {
   color: #bdbdbd;
 }
 /* Auth-page styling end*/
+
+/* Message-popup styling start*/
+.message {
+  width: 100%;
+  height: 40px;
+  background-color: rgb(255, 221, 221);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+}
+.message__wrapper{
+  padding: 0px 10px;
+}
+.message__text {
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px
+}
+/* Message-popup styling end*/

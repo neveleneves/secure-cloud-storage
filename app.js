@@ -4,6 +4,8 @@ const mongoose = require('mongoose')
 
 const app = express()
 
+app.use(express.json({extended: true}))
+
 //Route registration
 app.use('/api/auth', require('./routes/auth'))
 

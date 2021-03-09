@@ -2,7 +2,7 @@ const {Router} = require('express')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const config = require('config')
-const {check, validationResult} = require('express-validator')
+const {check, validationResult, body} = require('express-validator')
 const User = require('../models/User')
 const router = Router()
 
@@ -12,20 +12,28 @@ const router = Router()
 router.post(
     '/registration',
     [
-        check('email', 'Wrong email for registration').isEmail(),
-        check('password', 'Wrong password for registration: Minimum password length is 8 symbols')
-        .isLength({min:8})
-    ]
-    , 
+        check('email', 'Неправильный e-mail адрес').isEmail(),
+        check('password', 'Пароль должен содержать не менее 8 символов')
+        .isLength({min:8}),
+        check('login', 'Логин должен содержать не менее 5 символов')
+        .isLength({min:5}),
+        body('passwordRepeat').custom((value, { req }) => {
+            if (value !== req.body.password) {
+              throw new Error('Пароли не совпадают');
+            }
+            return true;
+        }),
+    ], 
     async (req, res) => {
     try {
+        console.log(req.body)
         //Data validation check
         const validationErrors = validationResult(req)
         
         if(!validationErrors.isEmpty()) {
             return res.status(400).json({
-                error: error.array(),
-                message: 'Wrong registration data'
+                errors: validationErrors.errors,
+                message: `${validationErrors.errors[0].msg || `Неверные данные для регистрации`}`
             })
         }
 
@@ -35,17 +43,17 @@ router.post(
         const user = await User.findOne({email})
         
         if(user) {
-            return res.status(400).json({message: 'This user is already registered'})
+            return res.status(400).json({message: 'Этот пользователь уже зарегистрирован'})
         } else {
             const hashPassword = await bcrypt.hash(password, 12);
             const userNew = new User ({email, password: hashPassword, login})
 
             await userNew.save()
-            res.status.apply(201).json({message:'New user has been created'})
+            res.status(201).json({message:'Пользователь зарегистрирован'})
         }
     } catch (e) {
-        res.status(500).json({message: 'Something wrong with /registration request'})
-        console.warn("Something wrong with /registration post-request: ", e.message);
+        res.status(500).json({message: 'Ошибка при регистрации'})
+        console.warn("Ошибка при регистрации: ", e.message);
     }
 })
 
@@ -54,7 +62,15 @@ router.post(
     '/login', 
     [
         check('email', 'Wrong email for login').isEmail(),
-        check('password', 'Wrong password for login').exists()
+        check('password', 'Wrong password for login').exists(),
+        check('login', 'Wrong login-name for login: Minimum login length is 5 symbols')
+        .isLength({min:5}),
+        body('passwordRepeat').custom((value, { req }) => {
+            if (value !== req.body.password) {
+              throw new Error('Password mismatch');
+            }
+            return true;
+        }),
     ],
     async (req, res) => {
     try {
@@ -63,7 +79,7 @@ router.post(
         
         if(!validationErrors.isEmpty()) {
             return res.status(400).json({
-                error: error.array(),
+                errors: validationErrors.errors,
                 message: 'Wrong login data'
             })
         }
@@ -94,7 +110,7 @@ router.post(
             )
             res.json({jsonToken, userID: user.id})
         }
-    } catch (error) {
+    } catch (e) {
         res.status(500).json({message: 'Something wrong with /login request'})
         console.warn("Something wrong with /login post-request: ", e.message);
     }
