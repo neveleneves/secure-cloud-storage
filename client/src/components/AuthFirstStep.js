@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { useMessageError } from "../hooks/messageError.hook";
+import React, {useState } from "react";
 import { useRequst } from "../hooks/request.hook";
-import { MessagePopup } from "./MessagePopup";
+import { MessageError } from "./MessageError";
 
 export const AuthFirstStep = () => {
   const {loadingProcess, ajaxRequest, error} = useRequst()
@@ -11,19 +10,15 @@ export const AuthFirstStep = () => {
     password: '',
     passwordRepeat: ''
   });
-  const messageError = useMessageError()
-
-  useEffect(() => {
-    if(error){
-      messageError(error)
-    }
-  }, [error, messageError])
+  const [isError, setError] = useState(false)
 
   const authHandler = async () => {
     try {
-      const data = await ajaxRequest('/api/auth/registration', 'POST', {...authForm})
-      console.log(data)
-    } catch (e) {}
+      const data = await ajaxRequest('/api/auth/registration', 'POST', {...authForm});
+      setError(false);
+    } catch (e) {
+      setError(true);
+    }
   }
 
   const changeFormHandler = event => {
@@ -80,12 +75,11 @@ export const AuthFirstStep = () => {
               </div>
             </div>
             <div className="auth__form-nav">
-              {error ? <MessagePopup error={error}/> : null}
-              {/* <MessagePopup/> */}
+              {(error && isError) ? <MessageError message={error.message}/> : null}
               <button
                 className="auth__button-back"
                 disabled={loadingProcess}
-              >Отмена</button>
+              >Очистить</button>
               <button
                 className="auth__button-post"
                 onClick={authHandler}

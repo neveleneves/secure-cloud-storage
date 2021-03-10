@@ -1,12 +1,13 @@
 import React from "react";
 
-export const MessagePopup = (props) => {
-  alert(props)
+export const MessageError = (props) => {
+  const message = props.message;
+
   return (
     <div className="message">
       <div className="message__wrapper">
         <h2 className="message__text">
-          Неправильный пароль, введите снова
+          {message}
         </h2>
       </div>
     </div>

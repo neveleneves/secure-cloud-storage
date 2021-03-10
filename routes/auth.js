@@ -40,9 +40,12 @@ router.post(
         //Logic for user registration
         const {email, password, login} = req.body 
 
-        const user = await User.findOne({email})
+        const uniqueUser = {
+            email: await User.findOne({email}),
+            login: await User.findOne({login})
+        } 
         
-        if(user) {
+        if (uniqueUser.email || uniqueUser.login) {
             return res.status(400).json({message: 'Этот пользователь уже зарегистрирован'})
         } else {
             const hashPassword = await bcrypt.hash(password, 12);
