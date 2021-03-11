@@ -1,0 +1,113 @@
+.auth {
+  background: url(../../img/auth-background.jpg) no-repeat top;
+  min-height: 100vh;
+}
+.wrapper {
+  margin: 0px auto;
+  padding-top: 150px;
+}
+.container {
+  max-width: 1230px;
+}
+.content {
+  width: 100%;
+  height: calc(100vh - 150px);
+  background-color: white;
+  border-radius: 5px 5px 0px 0px;
+}
+.wrapperContent {
+  margin: 0px auto;
+}
+.containerContent {
+  max-width: 980px;
+}
+.title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  height: 80px;
+}
+.titleLine {
+  width: 380px;
+  border: 1px solid #e7e7e7;
+}
+.titleText {
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  text-align: center;
+  color: #000000;
+  padding: 0px 20px;
+}
+.tabs {
+  display: flex;
+  position: relative;
+  height: 40px;
+  margin-bottom: 20px;
+}
+.tab {
+  position: absolute;
+  width: 50%;
+  text-align: center;
+  padding: 8px 0px;
+  bottom: 0;
+  transition: all 0.2s linear;
+  border-radius: 8px 8px 0px 0px;
+  color: #acacac;
+  cursor: pointer;
+  background-color: #f0f0f0;
+}
+.tab:first-child{
+  left: 0;
+}
+.tab:last-child{
+  right: 0;
+}
+.tab:hover, .auth__tab:active, .auth__tab:focus {
+  background-color: #ebebeb;
+  color: #8a8a8a;
+}
+.tabActive {
+  background: linear-gradient(90deg, #0f82ec 0%, #00e1ff 100%);
+  color: white;
+  padding: 12px 0px;
+}
+.authStepLine{
+  display: block;
+  border: 1px solid #E7E7E7;
+  width: calc(980px - 25px);
+  margin: 0px auto 30px;
+}
+.authStepMessage {
+font-family: Roboto;
+font-style: normal;
+font-weight: normal;
+font-size: 14px;
+color: #A5A5A5;
+text-align: center;
+margin-bottom: 30px;
+}
+.authNav {
+  display: flex;
+  justify-content: flex-end;
+  width: 860px;
+  margin: 0 auto;
+}
+.authNav button {
+  width: 135px;
+  height: 35px;
+  border-radius: 50px;
+  font-family: Roboto;
+  font-style:normal;
+  font-weight:700;
+  font-size: 15px;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+.buttonSubmit{
+  background-color: white;
+  border: 1px solid #bdbdbd;
+  color: #bdbdbd;
+}

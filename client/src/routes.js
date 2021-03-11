@@ -1,9 +1,9 @@
 import React from 'react'
 import {Route, Redirect, Switch} from 'react-router-dom'
-import IntroPage from './pages/IntroPage'
-import AuthPage from './pages/AuthPage'
-import StoragePage from './pages/StoragePage'
-import ProfilePage from './pages/ProfilePage'
+import IntroPage from './pages/IntroPage/IntroPage'
+import AuthPage from './pages/AuthPage/AuthPage'
+import StoragePage from './pages/StoragePage/StoragePage'
+import ProfilePage from './pages/ProfilePage/ProfilePage'
 
 export const useRoutes = (isAuth) => {
     if(isAuth) {
