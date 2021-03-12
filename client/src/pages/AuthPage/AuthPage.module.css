@@ -65,14 +65,15 @@
 .tab:last-child{
   right: 0;
 }
-.tab:hover, .auth__tab:active, .auth__tab:focus {
-  background-color: #ebebeb;
-  color: #8a8a8a;
-}
 .tabActive {
   background: linear-gradient(90deg, #0f82ec 0%, #00e1ff 100%);
-  color: white;
+  color: white; 
   padding: 12px 0px;
+  pointer-events: none;
+}
+.tabNotActive:hover, .tabNotActive:active, .tabNotActive:focus {
+  background-color: #ebebeb;
+  color: #8a8a8a;
 }
 .authStepLine{
   display: block;

@@ -3,8 +3,12 @@ import { useRequst } from "../../hooks/request.hook";
 import { MessageError } from "../MessageError/MessageError";
 import s from './AuthFirstStep.module.css'
 
-export const AuthFirstStep = () => {
-  const {loadingProcess, ajaxRequest, error} = useRequst()
+export const AuthFirstStep = (props) => {
+  const authType = props.type;
+  const {...authForm} = props.authData;
+
+  const {loadingProcess, ajaxRequest, error} = useRequst();
+
   const [authForm, setAuthForm] = useState({
     email: '',
     login: '',
@@ -15,11 +19,23 @@ export const AuthFirstStep = () => {
 
   const authHandler = async () => {
     try {
-      const data = await ajaxRequest('/api/auth/registration', 'POST', {...authForm});
+      const data = await ajaxRequest(`/api/auth/${authType}`, 'POST', {...authForm});
+
       setError(false);
     } catch (e) {
       setError(true);
     }
+  }
+
+  const cleanHandler = () => {
+    setAuthForm({...authForm, 
+      email: '',
+      login: '',
+      password: '',
+      passwordRepeat: ''
+    });
+
+    setError(false);
   }
 
   const changeFormHandler = event => {
@@ -30,16 +46,21 @@ export const AuthFirstStep = () => {
     <div className={`${s.step} ${s.stepActive}`}>
       <div className={s.stepWrapper}>
         <h2 className={`${s.title} ${s.titleActive}`}>
-          Шаг 1: Регистрация аккаунта
+          {authType === 'registration' ? 
+          `Шаг 1: Регистрация аккаунта` : 
+          `Шаг 1: Вход в аккаунт`}
         </h2>
         <h3 className={s.subtitle}>
-          Заполните форму для регистрации:
+        {authType === 'registration' ? 
+          `Заполните форму для регистрации:` : 
+          `Заполните форму для авторизации:`}
         </h3>
-        <div className={s.form}>
+        <form className={s.form}>
           <div className={s.formInputs}>
             <div className={s.formRow}>
               <input
                 className={s.formInput}
+                value={authForm.email}
                 placeholder="E-mail"
                 id="email"
                 type="text"
@@ -48,6 +69,7 @@ export const AuthFirstStep = () => {
               />
               <input
                 className={s.formInput}
+                value={authForm.login}
                 placeholder="Логин"
                 id="login"
                 type="text"
@@ -58,6 +80,7 @@ export const AuthFirstStep = () => {
             <div className={s.formRow}>
               <input
                 className={s.formInput}
+                value={authForm.password}
                 placeholder="Пароль"
                 id="password"
                 type="password"
@@ -66,6 +89,7 @@ export const AuthFirstStep = () => {
               />
               <input
                 className={s.formInput}
+                value={authForm.passwordRepeat}
                 placeholder="Повторите пароль"
                 id="passwordRepeat"
                 type="password"
@@ -78,6 +102,7 @@ export const AuthFirstStep = () => {
             {(error && isError) ? <MessageError message={error.message}/> : null}
             <button
               className={s.buttonBack}
+              onClick={cleanHandler}
               disabled={loadingProcess}
             >Очистить</button>
             <button
@@ -86,7 +111,7 @@ export const AuthFirstStep = () => {
               disabled={loadingProcess}
             >Отправить</button>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );

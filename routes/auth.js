@@ -13,10 +13,8 @@ router.post(
     '/registration',
     [
         check('email', 'Неправильный e-mail адрес').isEmail(),
-        check('password', 'Пароль должен содержать не менее 8 символов')
-        .isLength({min:8}),
-        check('login', 'Логин должен содержать не менее 5 символов')
-        .isLength({min:5}),
+        check('password', 'Пароль должен содержать не менее 8 символов').isLength({min:8}),
+        check('login', 'Логин должен содержать не менее 5 символов').isLength({min:5}),
         body('passwordRepeat').custom((value, { req }) => {
             if (value !== req.body.password) {
               throw new Error('Пароли не совпадают');
@@ -26,14 +24,13 @@ router.post(
     ], 
     async (req, res) => {
     try {
-        console.log(req.body)
         //Data validation check
         const validationErrors = validationResult(req)
         
         if(!validationErrors.isEmpty()) {
             return res.status(400).json({
                 errors: validationErrors.errors,
-                message: `${validationErrors.errors[0].msg || `Неверные данные для регистрации`}`
+                message: `${validationErrors.errors[0].msg || `Неизвестная ошибка регистрации`}`
             })
         }
 
@@ -64,58 +61,59 @@ router.post(
 router.post(
     '/login', 
     [
-        check('email', 'Wrong email for login').isEmail(),
-        check('password', 'Wrong password for login').exists(),
-        check('login', 'Wrong login-name for login: Minimum login length is 5 symbols')
-        .isLength({min:5}),
+        check('email', 'Неверные данные для входа').isEmail(),
+        check('password', 'Неверные данные для входа').isLength({min:8}),
+        check('login', 'Неверные данные для входа').isLength({min:5}),
         body('passwordRepeat').custom((value, { req }) => {
             if (value !== req.body.password) {
-              throw new Error('Password mismatch');
+              throw new Error('Пароли не совпадают');
             }
             return true;
         }),
     ],
     async (req, res) => {
     try {
+        console.log(req.body)
         //Data validation check
         const validationErrors = validationResult(req)
         
         if(!validationErrors.isEmpty()) {
             return res.status(400).json({
                 errors: validationErrors.errors,
-                message: 'Wrong login data'
+                message: `${validationErrors.errors[0].msg || `Неизвестная ошибка авторизации`}`
             })
         }
 
         //Logic for user login 
         const {email, password, login} = req.body 
 
-        const user = await User.findOne({email})
+        const uniqueUser = await User.findOne({email});
 
-        if(!user) {
-            return res.status(400).json({message: 'User not found'})
+        if(!uniqueUser) {
+            return res.status(400).json({message: 'Пользователь не найден'})
         } else {
-            const comparePassword = await bcrypt.compare(password, user.password)
+            const comparePassword = await bcrypt.compare(password, uniqueUser.password)
             
             if(!comparePassword) {
-                return res.status(400).json({message: 'Wrong login data'})
+                return res.status(400).json({message: 'Данные пользователя - не совпадают'})
             }
 
             const jsonToken = jwt.sign(
                 {
-                    userID: user.id,
-                    userEmail: user.email,
-                    userLogin: user.login,
-                    userPassword: user.password
+                    userID: uniqueUser.id,
+                    userEmail: uniqueUser.email,
+                    userLogin: uniqueUser.login,
+                    userPassword: uniqueUser.password
                 },
                 config.get('JWTsecret'),
                 {expiresIn: '1h'}
             )
-            res.json({jsonToken, userID: user.id})
+
+            res.json({jsonToken, userID: uniqueUser.id})
         }
     } catch (e) {
-        res.status(500).json({message: 'Something wrong with /login request'})
-        console.warn("Something wrong with /login post-request: ", e.message);
+        res.status(500).json({message: 'Ошибка при авторизации'})
+        console.warn("Ошибка при авторизации: ", e.message);
     }
 })
 
