@@ -2,7 +2,8 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import s from './Navbar.module.css'
 
-export const Navbar = () => {
+export const Navbar = (props) => {
+
   return (
     <header className={s.header}> 
       <nav className={s.navbar}>

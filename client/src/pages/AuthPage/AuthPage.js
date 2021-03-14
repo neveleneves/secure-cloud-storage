@@ -9,24 +9,58 @@ export default function AuthPage() {
   const [regTabClasses, setRegTab] = useState(`${s.tab} ${s.tabActive}`);
   const [loginTabClasses, setLoginTab] = useState(`${s.tab} ${s.tabNotActive}`);
   const [authType, setAuthType] = useState('registration');
+  const [authForm, setAuthForm] = useState({
+    email: '',
+    login: '',
+    password: '',
+    passwordRepeat: ''
+  });
+  const [isError, setError] = useState(false);
 
-  const activeRegHandler = event => {
-    if(event.target !== `${s.tab} ${s.tabActive}`) {
+  const changeFirstStepInputs = (event) => {
+    setAuthForm({...authForm, [event.target.name]: event.target.value});
+  }
+
+  const cleanFirstStepInputs = () => {
+    setAuthForm({...authForm, 
+      email: '',
+      login: '',
+      password: '',
+      passwordRepeat: ''
+    });
+  }
+
+  const changeFirstStepErrors = (error) => {
+    error ? setError(true) : setError(false)
+  }
+
+  const activeTabHandler = event => {
+    if (event.target.name === 'registration') {
       setRegTab(`${s.tab} ${s.tabActive}`);
       setLoginTab(`${s.tab} ${s.tabNotActive}`);
-
-      setAuthType('registration');
-    } 
-  }
-
-  const activeLoginHandler = event => {
-    if(event.target !== `${s.tab} ${s.tabActive}`) {
+    }
+    else {
       setLoginTab(`${s.tab} ${s.tabActive}`);
       setRegTab(`${s.tab} ${s.tabNotActive}`);
+    }
 
-      setAuthType('login');
-    } 
+    setAuthType(`${event.target.name}`);
+
+    cleanFirstStepInputs();
+    changeFirstStepErrors(false);
   }
+
+  // const activeLoginHandler = event => {
+  //   if(event.target !== `${s.tab} ${s.tabActive}`) {
+  //     setLoginTab(`${s.tab} ${s.tabActive}`);
+  //     setRegTab(`${s.tab} ${s.tabNotActive}`);
+
+  //     setAuthType('login');
+
+  //     cleanFirstStepInputs();
+  //     changeFirstStepErrors(false);
+  //   } 
+  // }
 
   return (
     <section className={s.auth}>
@@ -44,20 +78,27 @@ export default function AuthPage() {
             </div>
             <div className={s.contentBody}>
               <div className={s.tabs}>
-                <a 
+                <button 
                 className={regTabClasses}
-                onClick={activeRegHandler}
+                onClick={activeTabHandler}
+                name="registration"
                 >
-                Регистрация</a>
-                <a 
+                Регистрация</button>
+                <button 
                 className={loginTabClasses}
-                onClick={activeLoginHandler}
+                onClick={activeTabHandler}
+                name="login"
                 >
-                Авторизация</a>
+                Авторизация</button>
               </div>
               <div className={s.authSteps}>
                 <AuthFirstStep 
                 type={authType}
+                authData={authForm}
+                changeForm={changeFirstStepInputs}
+                cleanForm={cleanFirstStepInputs}
+                errors={isError}
+                changeErrors={changeFirstStepErrors}
                 />
                 <span className={s.authStepLine}></span>
                 <AuthSecondStep

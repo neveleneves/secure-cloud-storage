@@ -5,41 +5,32 @@ import s from './AuthFirstStep.module.css'
 
 export const AuthFirstStep = (props) => {
   const authType = props.type;
-  const {...authForm} = props.authData;
+  const {...inputsData} = props.authData;
+  const isError = props.errors;
 
   const {loadingProcess, ajaxRequest, error} = useRequst();
-
-  const [authForm, setAuthForm] = useState({
-    email: '',
-    login: '',
-    password: '',
-    passwordRepeat: ''
-  });
-  const [isError, setError] = useState(false)
+  // const [isError, setError] = useState(false);
 
   const authHandler = async () => {
     try {
-      const data = await ajaxRequest(`/api/auth/${authType}`, 'POST', {...authForm});
-
-      setError(false);
+      props.changeErrors(false);
+      const data = await ajaxRequest(`/api/auth/${authType}`, 'POST', {...inputsData});
     } catch (e) {
-      setError(true);
+      props.changeErrors(true);
     }
   }
 
   const cleanHandler = () => {
-    setAuthForm({...authForm, 
-      email: '',
-      login: '',
-      password: '',
-      passwordRepeat: ''
-    });
-
-    setError(false);
+    props.cleanForm(); 
+    props.changeErrors(false);
   }
 
-  const changeFormHandler = event => {
-    setAuthForm({...authForm, [event.target.name]: event.target.value});
+  const changeFormHandler = (event) => {
+    props.changeForm(event);
+  }
+
+  const submitHandler = (event) => {
+    event.preventDefault();
   }
 
   return (
@@ -55,12 +46,12 @@ export const AuthFirstStep = (props) => {
           `Заполните форму для регистрации:` : 
           `Заполните форму для авторизации:`}
         </h3>
-        <form className={s.form}>
+        <form className={s.form} onSubmit={submitHandler}>
           <div className={s.formInputs}>
             <div className={s.formRow}>
               <input
                 className={s.formInput}
-                value={authForm.email}
+                value={inputsData.email}
                 placeholder="E-mail"
                 id="email"
                 type="text"
@@ -69,7 +60,7 @@ export const AuthFirstStep = (props) => {
               />
               <input
                 className={s.formInput}
-                value={authForm.login}
+                value={inputsData.login}
                 placeholder="Логин"
                 id="login"
                 type="text"
@@ -80,20 +71,22 @@ export const AuthFirstStep = (props) => {
             <div className={s.formRow}>
               <input
                 className={s.formInput}
-                value={authForm.password}
+                value={inputsData.password}
                 placeholder="Пароль"
                 id="password"
                 type="password"
                 name="password"
+                autoComplete="On"
                 onChange={changeFormHandler}
               />
               <input
                 className={s.formInput}
-                value={authForm.passwordRepeat}
+                value={inputsData.passwordRepeat}
                 placeholder="Повторите пароль"
                 id="passwordRepeat"
                 type="password"
                 name="passwordRepeat"
+                autoComplete="On"
                 onChange={changeFormHandler}
               />
             </div>
