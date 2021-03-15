@@ -1,32 +1,27 @@
-import React, {useState } from "react";
+import React from "react";
 import { useRequst } from "../../hooks/request.hook";
 import { MessageError } from "../MessageError/MessageError";
 import s from './AuthFirstStep.module.css'
 
 export const AuthFirstStep = (props) => {
   const authType = props.type;
-  const {...inputsData} = props.authData;
-  const isError = props.errors;
+  const {...formData} = props.authForm;
+  const {...errorsData} = props.authErrors;
 
   const {loadingProcess, ajaxRequest, error} = useRequst();
-  // const [isError, setError] = useState(false);
 
   const authHandler = async () => {
     try {
-      props.changeErrors(false);
-      const data = await ajaxRequest(`/api/auth/${authType}`, 'POST', {...inputsData});
+      errorsData.changeErrors(false);
+      const data = await ajaxRequest(`/api/auth/${authType}`, 'POST', {...formData.authInputs});
     } catch (e) {
-      props.changeErrors(true);
+      errorsData.changeErrors(true);
     }
   }
 
-  const cleanHandler = () => {
-    props.cleanForm(); 
-    props.changeErrors(false);
-  }
-
-  const changeFormHandler = (event) => {
-    props.changeForm(event);
+  const clearHandler = () => {
+    formData.clearInputs();
+    errorsData.changeErrors(false)
   }
 
   const submitHandler = (event) => {
@@ -51,51 +46,51 @@ export const AuthFirstStep = (props) => {
             <div className={s.formRow}>
               <input
                 className={s.formInput}
-                value={inputsData.email}
                 placeholder="E-mail"
                 id="email"
                 type="text"
                 name="email"
-                onChange={changeFormHandler}
+                value={formData.authInputs.email}
+                onChange={formData.onChangeInputs}
               />
               <input
                 className={s.formInput}
-                value={inputsData.login}
                 placeholder="Логин"
                 id="login"
                 type="text"
                 name="login"
-                onChange={changeFormHandler}
+                value={formData.authInputs.login}
+                onChange={formData.onChangeInputs}
               />
             </div>
             <div className={s.formRow}>
               <input
                 className={s.formInput}
-                value={inputsData.password}
                 placeholder="Пароль"
                 id="password"
                 type="password"
                 name="password"
                 autoComplete="On"
-                onChange={changeFormHandler}
+                value={formData.authInputs.password}
+                onChange={formData.onChangeInputs}
               />
               <input
                 className={s.formInput}
-                value={inputsData.passwordRepeat}
                 placeholder="Повторите пароль"
                 id="passwordRepeat"
                 type="password"
                 name="passwordRepeat"
                 autoComplete="On"
-                onChange={changeFormHandler}
+                value={formData.authInputs.passwordRepeat}
+                onChange={formData.onChangeInputs}
               />
             </div>
           </div>
           <div className={s.formNav}>
-            {(error && isError) ? <MessageError message={error.message}/> : null}
+            {(error && errorsData.isError) ? <MessageError message={error.message}/> : null}
             <button
               className={s.buttonBack}
-              onClick={cleanHandler}
+              onClick={clearHandler}
               disabled={loadingProcess}
             >Очистить</button>
             <button
