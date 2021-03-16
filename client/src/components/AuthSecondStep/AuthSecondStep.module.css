@@ -3,16 +3,75 @@
   background-color: #F4F4F4;
   border-radius: 5px;
   margin-bottom: 30px;
+  height: 200px;
 }
 .stepWrapper {
   max-width: 920px;
   margin: 0px auto;
   padding: 18px 0px; 
 }
-.title{
+.stepDone {
+  display: none;
+}
+.title{ 
   font-family: Roboto;
   font-style: normal;
   font-weight: normal;
   font-size: 14px;
   color: #A5A5A5;
+}
+.titleActive {
+  color: #000;
+  margin-bottom: 25px;
+}
+.textWrapper {
+  max-width: 560px;
+}
+.subtitle {
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: normal;
+  font-weight: 300;
+  font-size: 14px;
+  line-height: 200%;
+  height: 50px;
+  margin-bottom: 35px;
+}
+.navRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.message {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content:space-between;
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 14px;
+}
+.keyMessage{
+  margin-left: 15px;
+  font-size: 16px;
+}
+.buttonGenerate {
+  width: 135px;
+  height: 35px;
+  color: white;
+  background-color: #0F82EC;
+  border-radius: 50px;
+  font-family: Roboto;
+  font-style:normal;
+  font-weight:700;
+  font-size: 15px;
+  text-align: center;
+  transition: all 0.2s ease;
+  border: 1px solid #0F82EC;
+  margin-right: 30px;
+}
+.buttonGenerate:hover, .buttonGenerate:active, .buttonGenerate:focus{
+  background-color: #1671c7;
+  border: 1px solid #1671c7;
 }
