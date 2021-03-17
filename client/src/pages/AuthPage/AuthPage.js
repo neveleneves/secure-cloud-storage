@@ -7,6 +7,7 @@ import { AuthDoneStep } from "../../components/AuthDoneStep/AuthDoneStep";
 import { useHandlerForm } from "../../hooks/handlerForm.hook";
 import { useHandlerErrors } from "../../hooks/handlerErrors.hook";
 import { useToggleTab } from "../../hooks/authToggle.hook";
+import { useSwitchStep } from "../../hooks/switchAuthSteps.hook";
 
 import s from './AuthPage.module.css'
 
@@ -14,6 +15,7 @@ export default function AuthPage() {
   const authFormHandler = useHandlerForm();
   const authErrorsHandler = useHandlerErrors();
   const authTabHandler = useToggleTab();
+  const authStateStep = useSwitchStep();
 
   const tabClickHandler = (event) => {
     authTabHandler.activeTabHandler(event);
@@ -55,15 +57,17 @@ export default function AuthPage() {
                 type={authTabHandler.authType}
                 authForm={authFormHandler}
                 authErrors={authErrorsHandler}
+                authStateStep={authStateStep}
                 />
                 <span className={s.authStepLine}></span>
                 <AuthSecondStep
                  type={authTabHandler.authType}
+                 authStateStep={authStateStep}
                  />
                 <span className={s.authStepLine}></span>
                 <AuthThirdStep 
                 type={authTabHandler.authType} 
-
+                authStateStep={authStateStep}
                 />
                 <span className={s.authStepLine}></span>
                 <AuthDoneStep />

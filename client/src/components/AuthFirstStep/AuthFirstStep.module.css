@@ -12,7 +12,7 @@
   margin: 0px auto;
   padding: 18px 0px; 
 }
-.step::before {
+.stepSuccessMask::before {
   content: "";
   width: 100%;
   padding-top: 0px;
@@ -25,14 +25,11 @@
   left: 0;
   right: 0;
 }
-.stepSuccessMask::before{
+.stepSuccessMaskActive::before{
   padding-top: 150px;
 }
 .stepSuccess{
   height: 50px;
-}
-.stepSuccess::before{
-  padding-top: 0px;
 }
 .title{
   font-family: Roboto;
@@ -44,6 +41,9 @@
 .titleActive {
   color: #000;
   margin-bottom: 25px;
+}
+.stepBodyStyle {
+  display: block;
 }
 .hideBodyStyle {
   display: none;

@@ -9,6 +9,7 @@ export const AuthFirstStep = (props) => {
   const authType = props.type;
   const {...formData} = props.authForm;
   const {...errorsData} = props.authErrors;
+  const stepState = props.authStateStep;
 
   const {loadingProcess, ajaxRequest, error} = useRequst();
   const [stepSuccess, setStepSuccess] = useState(false);
@@ -21,6 +22,7 @@ export const AuthFirstStep = (props) => {
       
       if (data) {
         setStepSuccess(true);
+        stepState.switchActiveStep('doneAuthFirstStep');
         disableStep(s);
       }
     } catch (e) {

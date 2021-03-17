@@ -1,12 +1,12 @@
 import {useState} from 'react'
 
 export const useDoneStep = (s) => {
-    const [stepStyles, setStepStyles] = useState(`${s.step}`);
+    const [stepStyles, setStepStyles] = useState(`${s.step} ${s.stepSuccessMask}`);
     const [stepTitleStyle, setTitleStyle] = useState(`${s.title} ${s.titleActive}`);
     const [stepBodyStyle, setBodyStyle] = useState(`${s.stepBodyStyle}`)
 
     const stepMask = (s) => {
-        setStepStyles(`${s.step} ${s.stepSuccessMask}`);
+        setStepStyles(`${s.step} ${s.stepSuccessMask} ${s.stepSuccessMaskActive}`);
     }
 
     const hideStep = (s) => {
@@ -19,9 +19,9 @@ export const useDoneStep = (s) => {
     }
 
     const disableStep = (s) => {
-        setTimeout(stepMask, 1500, s);
-        setTimeout(hideStep, 2000, s);
-        setTimeout(disableActiveTitle, 3000, s)
+        setTimeout(stepMask, 1000, s);
+        setTimeout(hideStep, 1500, s);
+        setTimeout(disableActiveTitle, 2500, s)
     }
 
     return {
