@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import {useState, useCallback} from 'react'
 
 export const useActiveStep = (s) => {
     const [stepStyles, setStepStyles] = useState(`${s.step}`);
@@ -22,12 +22,12 @@ export const useActiveStep = (s) => {
         setTitleStyle(`${s.title} ${s.titleActive}`);
     }
 
-    const activeStep = (s) => {
-        setTimeout(activeTitle, 1000, s);
-        setTimeout(showStep, 1000, s);
-        setTimeout(activeStepMask, 2000, s);
-        setTimeout(hideStepMask, 2500, s);
-    }
+    const activeStep = useCallback(s => {
+        setTimeout(activeTitle, 1300, s);
+        setTimeout(showStep, 1300, s);
+        setTimeout(activeStepMask, 1600, s);
+        setTimeout(hideStepMask, 1700, s);
+    },[])
 
     return {
         stepStyles,

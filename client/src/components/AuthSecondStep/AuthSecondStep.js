@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect} from "react";
 import { useActiveStep } from "../../hooks/activeStep.hook";
 
 import s from './AuthSecondStep.module.css'
@@ -6,13 +6,18 @@ import s from './AuthSecondStep.module.css'
 export const AuthSecondStep = (props) => {
   const authType = props.type;
   const stepState = props.authStateStep;
+  const secretCode = props.authSecretCode;
 
   const {stepStyles, stepTitleStyle, stepBodyStyle, activeStep} = useActiveStep(s);
   useEffect(() => {
     if(stepState.stepState.active === 'authSecondStep') {
-      activeStep(s);
+      activeStep(s)
     }
-  }, [stepState.stepState.active])
+  }, [stepState.stepState.active, activeStep])
+
+  const generateCodeHandler = () => {
+    secretCode.createSecretCode();
+  }
 
   return (
     <div className={stepStyles}>
@@ -36,10 +41,14 @@ export const AuthSecondStep = (props) => {
               <h1 className={s.messageText}>Ваш секретный ключ:</h1>
               <label 
               className={s.keyMessage}>
-                756723342152315 
+                {secretCode.secretCodeValue}
               </label>
             </div>
-            <button className={s.buttonGenerate}>Сгенерировать</button>
+            <button 
+            className={s.buttonGenerate}
+            onClick={generateCodeHandler}
+            disabled={secretCode.loadingProcess}
+            >Сгенерировать</button>
           </div>
         </div>
       </div>

@@ -4,12 +4,13 @@ import { AuthSecondStep } from "../../components/AuthSecondStep/AuthSecondStep";
 import { AuthThirdStep } from "../../components/AuthThirdStep/AuthThirdStep";
 import { AuthDoneStep } from "../../components/AuthDoneStep/AuthDoneStep";
 
+import s from './AuthPage.module.css'
+
 import { useHandlerForm } from "../../hooks/handlerForm.hook";
 import { useHandlerErrors } from "../../hooks/handlerErrors.hook";
 import { useToggleTab } from "../../hooks/authToggle.hook";
 import { useSwitchStep } from "../../hooks/switchAuthSteps.hook";
-
-import s from './AuthPage.module.css'
+import { useSecretCode } from "../../hooks/generateCode.hook"
 
 export default function AuthPage() {
   const authFormHandler = useHandlerForm();
@@ -17,10 +18,14 @@ export default function AuthPage() {
   const authTabHandler = useToggleTab();
   const authStateStep = useSwitchStep();
 
+  const authSecretCode = useSecretCode();
+
   const tabClickHandler = (event) => {
     authTabHandler.activeTabHandler(event);
     authFormHandler.clearInputs();
     authErrorsHandler.changeErrors(false);
+
+    authSecretCode.clearSecretCode();
   }
 
   return (
@@ -62,12 +67,12 @@ export default function AuthPage() {
                 <span className={s.authStepLine}></span>
                 <AuthSecondStep
                  type={authTabHandler.authType}
+                 authSecretCode={authSecretCode}
                  authStateStep={authStateStep}
                  />
                 <span className={s.authStepLine}></span>
                 <AuthThirdStep 
                 type={authTabHandler.authType} 
-                authStateStep={authStateStep}
                 />
                 <span className={s.authStepLine}></span>
                 <AuthDoneStep />

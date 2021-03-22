@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect} from "react";
 import { useRequst } from "../../hooks/request.hook";
 import { useDoneStep } from "../../hooks/doneStep.hook";
 import { MessageError } from "../MessageError/MessageError";
@@ -14,7 +14,12 @@ export const AuthFirstStep = (props) => {
   const {loadingProcess, ajaxRequest, error} = useRequst();
   const [stepSuccess, setStepSuccess] = useState(false);
   const {stepStyles, stepTitleStyle, disableStep, stepBodyStyle} = useDoneStep(s);
-
+  useEffect(() => {
+    if(stepState.stepState.active !== 'authFirstStep') {
+      disableStep(s)
+    }
+  }, [stepState.stepState.active, disableStep])
+  
   const authHandler = async () => {
     try {
       errorsData.changeErrors(false);
@@ -22,10 +27,9 @@ export const AuthFirstStep = (props) => {
       
       if (data) {
         setStepSuccess(true);
-        stepState.switchActiveStep('doneAuthFirstStep');
-        disableStep(s);
       }
     } catch (e) {
+      stepState.switchActiveStep('doneAuthFirstStep');
       errorsData.changeErrors(true);
     }
   }
@@ -102,7 +106,7 @@ export const AuthFirstStep = (props) => {
               {(error && errorsData.isError) ? <MessageError message={error.message}/> : null}
               {stepSuccess ? <MessageSuccess type={authType}/> : null}
               <button
-                className={s.buttonBack}
+                className={s.buttonClear}
                 onClick={clearHandler}
                 disabled={loadingProcess}
               >Очистить</button>

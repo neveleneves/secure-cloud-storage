@@ -34,7 +34,5 @@ export const useRequst = () => {
       }
     }, [])
 
-    // const clearError = () => setError(null)
-
     return {loadingProcess, ajaxRequest, error}
 };

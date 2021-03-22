@@ -20,7 +20,7 @@
   border-radius: 5px;
   background-color: #F4F4F4;
   z-index: 999;
-  transition: all 0.5s ease;
+  transition: all 0.4s ease;
   bottom: 0;
   left: 0;
   right: 0;
@@ -100,11 +100,11 @@
   transition: all 0.2s ease;
   border: 1px solid #0F82EC;
 }
-.buttonBack {
+.buttonClear {
   left: 30px;
   color: #0F82EC;
 }
-.buttonBack:hover, .buttonBack:active, buttonBack:focus {
+.buttonClear:hover, .buttonClear:active, .buttonClear:focus {
   background-color: #0f81ec25;
 }
 .buttonPost{

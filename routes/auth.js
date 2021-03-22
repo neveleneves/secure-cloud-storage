@@ -3,6 +3,8 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const config = require('config')
 const {check, validationResult, body} = require('express-validator')
+const randomize = require('randomatic');
+
 const User = require('../models/User')
 const router = Router()
 
@@ -114,6 +116,19 @@ router.post(
     } catch (e) {
         res.status(500).json({message: 'Ошибка при авторизации'})
         console.warn("Ошибка при авторизации: ", e.message);
+    }
+})
+
+// Route for request a secret code for auth into Telegram-bot /api/auth/secret_code_reqest
+router.get('/secret_code_reqest', 
+    async (req, res) => {
+    try {
+        const secretCode = randomize('0', 12)
+
+        res.status(200).json(secretCode)
+    } catch (e) {
+        res.status(500).json({message: 'Неудалось сгенирировать секретный ключ'})
+        console.warn("Неудалось сгенирировать секретный ключ: ", e.message);
     }
 })
 
