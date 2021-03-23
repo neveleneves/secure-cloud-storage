@@ -68,8 +68,12 @@
 .hideBodyStyle {
   display: none;
 }
+.bodyContainer{
+  display: flex;
+  align-items: flex-end;
+}
 .textWrapper {
-  max-width: 560px;
+  max-width: 525px;
 }
 .subtitle {
   font-family: Roboto;
@@ -81,30 +85,30 @@
   height: 50px;
   margin-bottom: 35px;
 }
-.navRow {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.message {
+.keyMessage {
   height: 40px;
   display: flex;
   align-items: center;
-  justify-content:space-between;
   font-family: Roboto;
   font-style: normal;
   font-weight: 300;
   font-size: 14px;
 }
-.keyMessage{
+.key{
   margin-left: 15px;
   font-size: 15px;
 }
-.buttonGenerate {
+.navKeyGenerate {
+  margin-left: 30px;
+  width: 365px;
+  height: 95px;
+  position: relative;
+}
+.navKeyGenerate button {
+  position: absolute;
+  bottom: 0;
   width: 135px;
   height: 35px;
-  color: white;
-  background-color: #0F82EC;
   border-radius: 50px;
   font-family: Roboto;
   font-style:normal;
@@ -112,10 +116,27 @@
   font-size: 15px;
   text-align: center;
   transition: all 0.2s ease;
+}
+.buttonGenerate {
+  left: 30px;
+  color: #0F82EC;
   border: 1px solid #0F82EC;
-  margin-right: 30px;
 }
 .buttonGenerate:hover, .buttonGenerate:active, .buttonGenerate:focus{
+  background-color: #0f81ec25;
+}
+.buttonVerify{
+  right: 30px;
+  color: #bdbdbd;
+  border: 1px solid #bdbdbd;
+}
+.buttonVerifyActive{
+  right: 30px;
+  color: white;
+  background-color: #0F82EC;
+  border: 1px solid #0F82EC;
+}
+.buttonVerifyActive:hover, .buttonVerifyActive:active{
   background-color: #1671c7;
   border: 1px solid #1671c7;
 }

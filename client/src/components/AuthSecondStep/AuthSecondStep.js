@@ -1,5 +1,6 @@
-import React, { useEffect} from "react";
+import React, { useEffect, useState} from "react";
 import { useActiveStep } from "../../hooks/activeStep.hook";
+import {MessageError} from "../MessageError/MessageError"
 
 import s from './AuthSecondStep.module.css'
 
@@ -14,8 +15,18 @@ export const AuthSecondStep = (props) => {
       activeStep(s)
     }
   }, [stepState.stepState.active, activeStep])
+  const [buttonStyle, setButtonStyle] = useState(`${s.buttonVerify}`);
+  const [stateButton, setActiveButton] = useState(true);
+
+  const changeStateButton = () => {
+    setActiveButton(false);
+    setButtonStyle(`${s.buttonVerifyActive}`);
+  }
 
   const generateCodeHandler = () => {
+    if(stateButton) {
+      changeStateButton();
+    }
     secretCode.createSecretCode();
   }
 
@@ -28,27 +39,36 @@ export const AuthSecondStep = (props) => {
           `Шаг 2: Авторизация с помощью Telegram-бота`}
         </h2>
         <div className={stepBodyStyle}>
-          <div className={s.textWrapper}>
-            <h3 className={s.subtitle}>
-            {authType === 'registration' ? 
-              `Для продолжения необходимо зарегистрировать аккаунт с помощью Telegram-бота. Сгененируйте секретный ключ и   используйте его в Telegram.` : 
-              `Для продолжения необходимо авторизироваться с помощью Telegram-бота.
-              Сгененируйте секретный ключ и используйте его  в Telegram.`}
-            </h3>
-          </div>
-          <div className={s.navRow}>
-            <div className={s.message}>
-              <h1 className={s.messageText}>Ваш секретный ключ:</h1>
-              <label 
-              className={s.keyMessage}>
-                {secretCode.secretCodeValue}
-              </label>
+          <div className={s.bodyContainer}>
+            <div className={s.infoWrapper}>
+              <div className={s.textWrapper}>
+                <h3 className={s.subtitle}>
+                {authType === 'registration' ? 
+                  `Для продолжения зарегистрируйте аккаунт с помощью Telegram-бота. Сгененируйте секретный ключ и используйте его в Telegram.` : 
+                  `Для продолжения авторизируйте аккаунт с помощью Telegram-бота.
+                  Сгененируйте секретный ключ и используйте его  в Telegram.`}
+                </h3>
+              </div>
+              <div className={s.keyMessage}>
+                <h1 className={s.messageText}>Ваш секретный ключ:</h1>
+                <label 
+                className={s.key}>
+                  {secretCode.secretCodeValue}
+                </label>
+              </div>
             </div>
-            <button 
-            className={s.buttonGenerate}
-            onClick={generateCodeHandler}
-            disabled={secretCode.loadingProcess}
-            >Сгенерировать</button>
+            <div className={s.navKeyGenerate}>
+              {(secretCode.error &&secretCode.isError) ? <MessageError message={secretCode.error.message}/> : null}
+              <button 
+              className={s.buttonGenerate}
+              onClick={generateCodeHandler}
+              disabled={secretCode.loadingProcess}
+              >Сгенерировать</button>
+              <button 
+              className={buttonStyle}
+              disabled={stateButton}
+              >Подтвердить</button>
+            </div>
           </div>
         </div>
       </div>
