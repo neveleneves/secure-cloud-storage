@@ -22,7 +22,7 @@ export const useRequst = () => {
         const data = await response.json();
 
         if (!response.ok) {
-          throw new Error(data.message || "Запрос не выполнен");
+          throw new Error(data.message || "Запрос был выполнен неверно");
         }
 
         setLoading(false);

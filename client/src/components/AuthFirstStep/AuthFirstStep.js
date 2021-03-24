@@ -9,16 +9,16 @@ export const AuthFirstStep = (props) => {
   const authType = props.type;
   const {...formData} = props.authForm;
   const {...errorsData} = props.authErrors;
-  const stepState = props.authStateStep;
+  const step = props.authStateStep;
 
   const {loadingProcess, ajaxRequest, error} = useRequst();
   const [stepSuccess, setStepSuccess] = useState(false);
-  const {stepStyles, stepTitleStyle, disableStep, stepBodyStyle} = useDoneStep(s);
+  const {stepActiveStyles, stepActiveTitle, stepActiveBody, disableStep} = useDoneStep(s);
   useEffect(() => {
-    if(stepState.stepState.active !== 'authFirstStep') {
+    if(step.stepState.active === 'authSecondStep') {
       disableStep(s)
     }
-  }, [stepState.stepState.active, disableStep])
+  }, [step.stepState.active, disableStep])
   
   const authHandler = async () => {
     try {
@@ -29,7 +29,7 @@ export const AuthFirstStep = (props) => {
         setStepSuccess(true);
       }
     } catch (e) {
-      stepState.switchActiveStep('doneAuthFirstStep');
+      step.switchActiveStep('doneAuthFirstStep');
       errorsData.changeErrors(true);
     }
   }
@@ -44,14 +44,14 @@ export const AuthFirstStep = (props) => {
   }
 
   return (
-    <div className={stepStyles}>
+    <div className={stepActiveStyles}>
       <div className={s.stepWrapper}>
-        <h2 className={stepTitleStyle}>
+        <h2 className={stepActiveTitle}>
           {authType === 'registration' ? 
           `Шаг 1: Регистрация аккаунта` : 
           `Шаг 1: Вход в аккаунт`}
         </h2>
-        <div className={stepBodyStyle}>
+        <div className={stepActiveBody}>
           <h3 className={s.subtitle}>
           {authType === 'registration' ? 
             `Заполните форму для регистрации:` : 

@@ -1,9 +1,9 @@
 import {useState, useCallback} from 'react'
 
 export const useDoneStep = (s) => {
-    const [stepStyles, setStepStyles] = useState(`${s.step} ${s.stepSuccessMask}`);
-    const [stepTitleStyle, setTitleStyle] = useState(`${s.title} ${s.titleActive}`);
-    const [stepBodyStyle, setBodyStyle] = useState(`${s.stepBodyStyle}`)
+    const [stepActiveStyles, setStepStyles] = useState(`${s.step} ${s.stepSuccessMask}`);
+    const [stepActiveTitle, setTitleStyle] = useState(`${s.title} ${s.titleActive}`);
+    const [stepActiveBody, setBodyStyle] = useState(`${s.stepBodyStyle}`)
 
     const stepMask = (s) => {
         setStepStyles(`${s.step} ${s.stepSuccessMask} ${s.stepSuccessMaskActive}`);
@@ -25,9 +25,9 @@ export const useDoneStep = (s) => {
     },[])
 
     return {
-        stepStyles,
-        stepTitleStyle,
-        stepBodyStyle,
+        stepActiveStyles,
+        stepActiveTitle,
+        stepActiveBody,
         disableStep
     }
 };

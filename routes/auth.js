@@ -92,7 +92,7 @@ router.post(
         const uniqueUser = await User.findOne({email});
 
         if(!uniqueUser) {
-            return res.status(400).json({message: 'Пользователь не найден'})
+            return res.status(400).json({message: 'Пользователь - не найден'})
         } else {
             const comparePassword = await bcrypt.compare(password, uniqueUser.password)
             
@@ -110,7 +110,6 @@ router.post(
                 config.get('JWTsecret'),
                 {expiresIn: '1h'}
             )
-
             res.json({jsonToken, userID: uniqueUser.id})
         }
     } catch (e) {
@@ -119,16 +118,38 @@ router.post(
     }
 })
 
-// Route for request a secret code for auth into Telegram-bot /api/auth/secret_code_reqest
-router.get('/secret_code_reqest', 
+//Route for request a secret code for Telegram-bot /api/auth/secret_code_request
+router.get('/secret_code_request', 
     async (req, res) => {
     try {
         const secretCode = randomize('0', 12)
 
         res.status(200).json(secretCode)
     } catch (e) {
-        res.status(500).json({message: 'Неудалось сгенирировать секретный ключ'})
-        console.warn("Неудалось сгенирировать секретный ключ: ", e.message);
+        res.status(500).json({message: 'Не удалось сгенирировать секретный ключ'})
+        console.warn("Не удалось сгенерировать секретный ключ: ", e.message);
+    }
+})
+//Route for verify a secret code for Telegram-bot /api/auth/secret_code_request
+//In process?????????????????????????????????
+router.post('/secret_code_request', 
+    async (req, res) => {
+    try {
+        if(!req.body) {
+            return res.status(400).json({message: 'Секретный ключ не был отправлен'})
+        }
+        const secretCode = req.body
+        
+        const uniqueUser = await User.findOne({secretCode})
+        if(!uniqueUser) {
+            return res.status(400).json({message: 'Пользователь с таким ключом - не найден'})
+        } else {
+            uniqueUser.telegramVerify = true;
+            res.json({tgVerify: uniqueUser.telegramVerify, userID: uniqueUser.id})
+        }
+    } catch (e) {
+        res.status(500).json({message: 'Не удалось подтвердить секретный ключ'})
+        console.warn("Не удалось подтвердить секретный ключ: ", e.message);
     }
 })
 

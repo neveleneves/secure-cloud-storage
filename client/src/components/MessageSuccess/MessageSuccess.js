@@ -9,8 +9,8 @@ export const MessageSuccess = (props) => {
       <div className={s.wrapper}>
         <h2 className={s.text}>
           {authType === 'registration' ? 
-          `Регистрация пользователя выполнена` 
-          : `Авторизация пользователя выполнена` }
+          `Шаг регистрации пользователя выполнена` 
+          : `Шаг авторизации пользователя выполнена` }
         </h2>
       </div>
     </div>

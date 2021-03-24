@@ -10,7 +10,7 @@ import { useHandlerForm } from "../../hooks/handlerForm.hook";
 import { useHandlerErrors } from "../../hooks/handlerErrors.hook";
 import { useToggleTab } from "../../hooks/authToggle.hook";
 import { useSwitchStep } from "../../hooks/switchAuthSteps.hook";
-import { useSecretCode } from "../../hooks/generateCode.hook"
+import { useSecretCode } from "../../hooks/secretCode.hook"
 
 export default function AuthPage() {
   const authFormHandler = useHandlerForm();
@@ -69,6 +69,7 @@ export default function AuthPage() {
                  type={authTabHandler.authType}
                  authSecretCode={authSecretCode}
                  authStateStep={authStateStep}
+                 authErrors={authErrorsHandler}
                  />
                 <span className={s.authStepLine}></span>
                 <AuthThirdStep 

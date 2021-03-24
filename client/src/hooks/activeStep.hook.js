@@ -1,9 +1,9 @@
 import {useState, useCallback} from 'react'
 
 export const useActiveStep = (s) => {
-    const [stepStyles, setStepStyles] = useState(`${s.step}`);
-    const [stepTitleStyle, setTitleStyle] = useState(`${s.title}`);
-    const [stepBodyStyle, setBodyStyle] = useState(`${s.hideBodyStyle}`)
+    const [stepInactiveStyles, setStepStyles] = useState(`${s.step}`);
+    const [stepInactiveTitle, setTitleStyle] = useState(`${s.title}`);
+    const [stepInactiveBody, setBodyStyle] = useState(`${s.hideBodyStyle}`)
     
     const activeStepMask = (s) => {
         setStepStyles(`${s.step} ${s.stepStart} ${s.stepStartMask}`);
@@ -30,9 +30,9 @@ export const useActiveStep = (s) => {
     },[])
 
     return {
-        stepStyles,
-        stepTitleStyle,
-        stepBodyStyle,
+        stepInactiveStyles,
+        stepInactiveTitle,
+        stepInactiveBody,
         activeStep
     }
 };
