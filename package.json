@@ -6,9 +6,9 @@
   "scripts": {
     "start": "node app.js",
     "server": "nodemon app.js",
-    "bot": "nodemon ./telegram-bot/telegramBot.js --prefix bot",
+    "bot": "nodemon ./telegram-bot/bot.js --prefix bot",
     "client": "npm run start --prefix client",
-    "dev": "concurrently \"npm run server\" \"npm run client\" \"npm run bot\"" 
+    "dev": "concurrently \"npm run server\" \"npm run client\" \"npm run bot\""
   },
   "repository": {
     "type": "git",
@@ -36,9 +36,11 @@
     "bcryptjs": "^2.4.3",
     "config": "^3.3.4",
     "express": "^4.17.1",
+    "express-session": "^1.17.1",
     "express-validator": "^6.10.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.11.15",
+    "node-telegram-bot-api": "^0.51.0",
     "randomatic": "^3.1.1",
     "telegraf": "^4.3.0"
   }

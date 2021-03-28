@@ -1,10 +1,23 @@
 const express = require('express')
 const config = require('config')
 const mongoose = require('mongoose')
+var session = require('express-session');
 
 const app = express()
-
 app.use(express.json({extended: true}))
+
+app.use(session({
+    name: 'sid',
+    secret: config.get('sessionKey'),
+    resave: false,
+    saveUninitialized: false,
+    cookie: { 
+        // secure: true,   for prod
+        secure: false,
+        sameSite: true,
+        maxAge: 10000 * 60 * 15
+      }
+}))
 
 //Route registration
 app.use('/api/auth', require('./routes/auth'))
@@ -22,7 +35,7 @@ async function databaseConnect() {
 }
 
 //Function to start the app
-async function init() {
+async function initServer() {
     try {
         await databaseConnect();
         app.listen(PORT, () => console.log(`App launched on port ${PORT}...`))
@@ -30,4 +43,4 @@ async function init() {
         console.warn("Something wrong with server: ", e.message)
     }
 }
-init()
+initServer()

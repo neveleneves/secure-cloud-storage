@@ -27,9 +27,9 @@ export const AuthFirstStep = (props) => {
       
       if (data) {
         setStepSuccess(true);
+        step.switchActiveStep('doneAuthFirstStep');
       }
     } catch (e) {
-      step.switchActiveStep('doneAuthFirstStep');
       errorsData.changeErrors(true);
     }
   }

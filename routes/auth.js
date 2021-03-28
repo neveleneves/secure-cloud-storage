@@ -5,7 +5,7 @@ const config = require('config')
 const {check, validationResult, body} = require('express-validator')
 const randomize = require('randomatic');
 
-const User = require('../models/User')
+const User = require('../models/WebUser')
 const router = Router()
 
 //Current prefix /api/auth
@@ -48,9 +48,11 @@ router.post(
             return res.status(400).json({message: 'Этот пользователь уже зарегистрирован'})
         } else {
             const hashPassword = await bcrypt.hash(password, 12);
-            const userNew = new User ({email, password: hashPassword, login})
+            const userNew = new User ({email, login, password: hashPassword, secret_code: 'default'})
 
             await userNew.save()
+        
+            req.session.userID = userNew.id
             res.status(201).json({message:'Пользователь зарегистрирован'})
         }
     } catch (e) {
@@ -110,6 +112,7 @@ router.post(
                 config.get('JWTsecret'),
                 {expiresIn: '1h'}
             )
+            req.session.userID = userNew.id
             res.json({jsonToken, userID: uniqueUser.id})
         }
     } catch (e) {
@@ -123,6 +126,14 @@ router.get('/secret_code_request',
     async (req, res) => {
     try {
         const secretCode = randomize('0', 12)
+
+        const _id = req.session.userID
+        if(!_id) {
+            res.status(504).json({message: 'Время сессии истекло'})
+        }
+
+        const activeUser = await User.findOneAndUpdate({_id}, {secret_code: secretCode});
+        
 
         res.status(200).json(secretCode)
     } catch (e) {
@@ -152,5 +163,7 @@ router.post('/secret_code_request',
         console.warn("Не удалось подтвердить секретный ключ: ", e.message);
     }
 })
+
+// Logout + cookie clear
 
 module.exports = router;
