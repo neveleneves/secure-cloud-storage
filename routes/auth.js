@@ -125,17 +125,20 @@ router.post(
 router.get('/secret_code_request', 
     async (req, res) => {
     try {
-        const secretCode = randomize('0', 12)
+        const secret_code = randomize('0', 12)
+        const hashSecretCode = await bcrypt.hash(secret_code, 10);
 
         const _id = req.session.userID
         if(!_id) {
             res.status(504).json({message: 'Время сессии истекло'})
         }
 
-        const activeUser = await User.findOneAndUpdate({_id}, {secret_code: secretCode});
-        
+        const updatedUser = await User.updateOne({_id}, {secret_code: hashSecretCode});
+        if(!updatedUser) {
+            return res.status(400).json({message: 'Пользователь - не найден'})
+        }
 
-        res.status(200).json(secretCode)
+        res.status(200).json(secret_code)
     } catch (e) {
         res.status(500).json({message: 'Не удалось сгенирировать секретный ключ'})
         console.warn("Не удалось сгенерировать секретный ключ: ", e.message);

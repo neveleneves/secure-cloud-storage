@@ -2,7 +2,12 @@ process.env.NTBA_FIX_319 = 1;
 const TelegramBot = require('node-telegram-bot-api');
 const config = require('config')
 
-const bot = new TelegramBot(config.get('TelegramBotToken'), { polling: true })
+const BotActionDB = require('./bot-db-action')
+const ActionDB = new BotActionDB()
+
+const bot = new TelegramBot(config.get('TelegramBotToken'), { polling: false })
+
+bot.setWebHook(`${config.get('botServerURL')}/bot${config.get('TelegramBotToken')}`)
 
 bot.onText(/\/start/, (msg) => {
     const {chat: {id}} = msg;
@@ -10,7 +15,7 @@ bot.onText(/\/start/, (msg) => {
     const initMessage = `Здравствуйте, ${msg.from.first_name}!` +
     `\nЯ - Caption Storage Bot, организующий двухфакторную `+
     `аутентификацию в проекте Caption.` +
-    `\n\nВведите команду /help, чтобы получить список всеmodeх возможностей`
+    `\n\nВведите команду /help, чтобы получить список всeх возможностей`
 
     bot.sendMessage(id, initMessage)
 }) 
@@ -52,17 +57,67 @@ bot.onText(/\/login/, (msg) => {
 })
 bot.on("polling_error", console.log);
 
-bot.on('callback_query', (msg) => {
+bot.on('callback_query', async (msg) => {
     const {message: {chat: {id}}} = msg;
+    
+    const isRegistered = await ActionDB.checkUserExist(id)
 
     if (msg.data === 'register') {
-        // Засетапить регистрацию
+        if(isRegistered) {
+            bot.sendMessage(id, 'Я Вас помню, Вы уже регистрировались!')
+            bot.sendMessage(id, `${await ActionDB.checkAuthState(id)}`)
+        } else {
+            await ActionDB.saveChatID(id)
+            bot.sendMessage(id, `Введите Ваш логин для начала регистрации`)
+        }
     } else if (msg.data === 'login') {
-        // Засетапить авторизацию
+        if(!isRegistered) {
+            bot.sendMessage(id, `Вы не регистрировались, введите команду`+ 
+            ` /register.`)
+        } else {
+            bot.sendMessage(id, `${await ActionDB.checkAuthState(id)}`)
+        }
     }
     bot.deleteMessage(id, msg.message.message_id);
-});
+})
+bot.on('message', async (msg) => {
+    const {chat: {id}} = msg;
+    
+    if(msg.text[0] !== '/') {
+        const isExist = await ActionDB.checkUserExist(id)
+        if(!isExist) {
+            bot.sendMessage(id, `Вы не регистрировались, введите команду`+ 
+            ` /register.`)
+        } else {
+            const authState = await ActionDB.getAuthState(id)
 
+            if(authState === '0') {
+                const isLoginExist = await ActionDB.checkLogin(msg.text, id)
+
+                if(isLoginExist) {
+                    bot.sendMessage(id, 'Шаг выполнен!\n\nТеперь введите пароль!')
+                    await ActionDB.setAuthState(id,1)
+                } else {
+                    bot.sendMessage(id, 'Введён неверный логин, попробуйте снова')
+                }
+            } else if(authState === '1') {
+                const isPasswordExist = await ActionDB.checkPassword(msg.text, id)
+
+                if(isPasswordExist) {
+                    bot.sendMessage(id, 'Шаг выполнен!')
+                    await ActionDB.setAuthState(id,1)
+                } else {
+                    bot.sendMessage(id, 'Введён неверный пароль, попробуйте снова')
+                }
+            } else if(authState === '2') {
+                
+            } else if(authState === '3') {
+                
+            }
+        }
+    } 
+    return
+})
 bot.onText(/\/about/, (msg) => {
     const {chat: {id}} = msg;
 

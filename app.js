@@ -19,7 +19,7 @@ app.use(session({
       }
 }))
 
-//Route registration
+//Route authentication
 app.use('/api/auth', require('./routes/auth'))
 
 //Set the server port value

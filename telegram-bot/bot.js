@@ -1,10 +1,12 @@
 const config = require('config')
 const mongoose = require('mongoose')
-const express = require('express')
-require('./bot-action') 
+const express = require('express') 
 
 const app = express()
 app.use(express.json({extended: true}))
+
+// Route for telegram-auth
+app.use('/', require('../routes/bot-auth'))
 
 //Set the bot port value
 const PORT =  config.get('botPort') || 5555
