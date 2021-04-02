@@ -15,4 +15,8 @@ router.post(`/bot${config.get('TelegramBotToken')}`,  (req, res)  => {
     res.sendStatus(200);
 })
 
+router.post(`/test`,  (req, res)  => {
+    console.log("123123123123")
+})
+
 module.exports = router 

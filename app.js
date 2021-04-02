@@ -21,6 +21,7 @@ app.use(session({
 
 //Route authentication
 app.use('/api/auth', require('./routes/auth'))
+// app.use('/bot', require('./routes/bot-auth')) 
 
 //Set the server port value
 const PORT = config.get('port') || 5000

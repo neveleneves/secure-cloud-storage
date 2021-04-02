@@ -52,7 +52,7 @@ export const AuthSecondStep = (props) => {
   const verifyCodeHandler = async () => {
     try {
       errorsData.changeErrors(false);
-      const verifyCheck = await ajaxRequest(`/api/auth/secret_code_request`, 'POST', secretCode); 
+      const verifyCheck = await ajaxRequest(`/api/auth/verify_secret_code`, 'GET'); 
 
       if (verifyCheck) {
         setStepSuccess(true);
@@ -93,7 +93,7 @@ export const AuthSecondStep = (props) => {
                   :
                     <h3 className={s.subtitle}>
                     Введите ключ в аккаунте Telegram-бота, по ссылке:
-                    <a className={s.link} href="https://t.me/caption_storage_bot"> @caption_storage_bot</a>
+                    <a className={s.link} href="https://t.me/caption_storage_bot" target="_blank"> @caption_storage_bot</a>
                     <br/>После прохождения  {authType === 'registration' ? 
                     `регистрации` : `авторизации`}, вернитесь и подтвердите верификацию.
                     </h3>

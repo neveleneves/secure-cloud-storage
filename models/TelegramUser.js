@@ -6,7 +6,7 @@ const TelegramUsersSchema = new Schema ({
     password: {type: String, required: false},
     auth_state: {type: String, required: false},
     web_secret_code: {type: String, required: false},
-    tg_chat_id: {type: String, required: false},
+    tg_chat_id: {type: String, required: false, unique: true},
     tg_secret_code: {type: String, required: false},
 })
 

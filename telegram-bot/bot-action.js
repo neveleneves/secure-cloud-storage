@@ -95,28 +95,43 @@ bot.on('message', async (msg) => {
                 const isLoginExist = await ActionDB.checkLogin(msg.text, id)
 
                 if(isLoginExist) {
-                    bot.sendMessage(id, 'Шаг выполнен!\n\nТеперь введите пароль!')
+                    bot.sendMessage(id, `Шаг выполнен✅\n\n`
+                     + `Теперь введите пароль!`)
                     await ActionDB.setAuthState(id,1)
                 } else {
-                    bot.sendMessage(id, 'Введён неверный логин, попробуйте снова')
+                    bot.sendMessage(id, `Шаг не выполнен❌\n\n` 
+                    + `Введён неверный логин, попробуйте снова`+
+                    `\nИспользуйте логин с которым вы регистрировались на сайте.`)
                 }
             } else if(authState === '1') {
                 const isPasswordExist = await ActionDB.checkPassword(msg.text, id)
 
                 if(isPasswordExist) {
-                    bot.sendMessage(id, 'Шаг выполнен!')
-                    await ActionDB.setAuthState(id,1)
+                    bot.sendMessage(id, `Шаг выполнен✅\n\n`
+                    +`Теперь введите секретный ключ с сайта!`)
+                    await ActionDB.setAuthState(id,2)
                 } else {
-                    bot.sendMessage(id, 'Введён неверный пароль, попробуйте снова')
+                    bot.sendMessage(id, `Шаг не выполнен❌\n\n` 
+                    + `Введён неверный пароль, попробуйте снова` +
+                    `\nИспользуйте пароль с которым вы регистрировались на сайте.`)
                 }
             } else if(authState === '2') {
-                
-            } else if(authState === '3') {
-                
+                const isSecretCode =  await ActionDB.checkSecretCode(msg.text, id)
+
+                if (isSecretCode) {
+                    bot.sendMessage(id, `Шаг выполнен✅\n\n`
+                    + `Вернитесь на сайт и подтвердите верификацию ключа!`)
+                    await ActionDB.setAuthState(id,3)
+                } else {
+                    bot.sendMessage(id, `Шаг не выполнен❌\n\n` 
+                    + `Введён неверный секретный ключ, попробуйте снова` +
+                    `\nИспользуйте секретный ключ сгенерированный на сайте.`)
+                }
+            } else if (authState === '3') {
+                bot.sendMessage(id, `Вернитесь на сайт и подтвердите верификацию ключа!`)
             }
         }
     } 
-    return
 })
 bot.onText(/\/about/, (msg) => {
     const {chat: {id}} = msg;

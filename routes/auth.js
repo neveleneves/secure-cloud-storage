@@ -4,8 +4,10 @@ const bcrypt = require('bcryptjs')
 const config = require('config')
 const {check, validationResult, body} = require('express-validator')
 const randomize = require('randomatic');
+const request = require('request');
 
 const User = require('../models/WebUser')
+const TelegramUser = require('../models/TelegramUser')
 const router = Router()
 
 //Current prefix /api/auth
@@ -112,7 +114,7 @@ router.post(
                 config.get('JWTsecret'),
                 {expiresIn: '1h'}
             )
-            req.session.userID = userNew.id
+            req.session.userID = uniqueUser.id
             res.json({jsonToken, userID: uniqueUser.id})
         }
     } catch (e) {
@@ -146,27 +148,30 @@ router.get('/secret_code_request',
 })
 //Route for verify a secret code for Telegram-bot /api/auth/secret_code_request
 //In process?????????????????????????????????
-router.post('/secret_code_request', 
+router.get('/verify_secret_code', 
     async (req, res) => {
     try {
-        if(!req.body) {
-            return res.status(400).json({message: 'Секретный ключ не был отправлен'})
+        const _id = req.session.userID
+        if(!_id) {
+            res.status(504).json({message: 'Время сессии истекло'})
         }
-        const secretCode = req.body
-        
-        const uniqueUser = await User.findOne({secretCode})
-        if(!uniqueUser) {
-            return res.status(400).json({message: 'Пользователь с таким ключом - не найден'})
+
+        const webUser = await User.findOne({_id});
+        const tgUser = await TelegramUser.findOne({login: webUser.login})
+        if(!tgUser) {
+            res.status(400).json({message: 'Telegram-аккаунт - не зарегистрирован'})
+        }
+
+        if (tgUser.auth_state !== '3') {
+            res.status(400).json({message: 'Верификация секретного ключа - не завершена'})
         } else {
-            uniqueUser.telegramVerify = true;
-            res.json({tgVerify: uniqueUser.telegramVerify, userID: uniqueUser.id})
+            res.status(200).json(true)
         }
     } catch (e) {
         res.status(500).json({message: 'Не удалось подтвердить секретный ключ'})
         console.warn("Не удалось подтвердить секретный ключ: ", e.message);
     }
 })
-
 // Logout + cookie clear
 
 module.exports = router;

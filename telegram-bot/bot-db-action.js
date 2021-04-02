@@ -45,10 +45,6 @@ class BotActionDB {
                 message = `Вам нужно ввести секретный`+ 
                 ` ключ с сайта.`
                 break;   
-            case '3':
-                message = `Вам нужно ввести этот`+ 
-                ` секретный ключ на сайте.`
-                break;
             default:
                 message = `Введите Ваш логин для`+
                  ` продолжения аутентификации.`
@@ -82,13 +78,30 @@ class BotActionDB {
     checkPassword = async (password, tg_chat_id) => {
         const tgUserExist = await TelegramUser.findOne({tg_chat_id})
         const login = tgUserExist.login
-        console.log(tgUserExist)
 
         const webUser = await User.findOne({login})
         const hashPassword = webUser.password
-        console.log(webUser)
 
         if (await bcrypt.compare(password, hashPassword)) {
+            const tghashPassword = await bcrypt.hash(password, 12);
+            await TelegramUser.updateOne({tg_chat_id},{password: tghashPassword})
+
+            return 1
+        }
+        return 0 
+    }
+
+    checkSecretCode = async (secretCode, tg_chat_id) => {
+        const tgUserExist = await TelegramUser.findOne({tg_chat_id})
+        const login = tgUserExist.login
+
+        const webUser = await User.findOne({login})
+        const hashSecretCode = webUser.secret_code
+
+        if (await bcrypt.compare(secretCode, hashSecretCode)) {
+            const tghashSecretCode = await bcrypt.hash(secretCode, 10);
+            await TelegramUser.updateOne({tg_chat_id},{web_secret_code: tghashSecretCode})
+
             return 1
         }
         return 0 
