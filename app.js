@@ -1,10 +1,12 @@
 const express = require('express')
 const config = require('config')
 const mongoose = require('mongoose')
-var session = require('express-session');
+const session = require('express-session');
 
 const app = express()
+const cookieParser = require("cookie-parser")
 app.use(express.json({extended: true}))
+app.use(cookieParser())
 
 app.use(session({
     name: 'sid',
@@ -15,13 +17,12 @@ app.use(session({
         // secure: true,   for prod
         secure: false,
         sameSite: true,
-        maxAge: 10000 * 60 * 15
+        maxAge: 1000 * 60 * 15
       }
 }))
 
 //Route authentication
 app.use('/api/auth', require('./routes/auth'))
-// app.use('/bot', require('./routes/bot-auth')) 
 
 //Set the server port value
 const PORT = config.get('port') || 5000

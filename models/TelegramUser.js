@@ -4,9 +4,9 @@ const Schema = mongoose.Schema
 const TelegramUsersSchema = new Schema ({ 
     login: {type: String, required: false, unique: true}, 
     password: {type: String, required: false},
-    auth_state: {type: String, required: false},
+    auth_state: {type: Number, required: true},
     web_secret_code: {type: String, required: false},
-    tg_chat_id: {type: String, required: false, unique: true},
+    tg_chat_id: {type: String, required: true, unique: true},
     tg_secret_code: {type: String, required: false},
 })
 

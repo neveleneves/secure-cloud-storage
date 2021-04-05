@@ -93,7 +93,7 @@ export const AuthSecondStep = (props) => {
                   :
                     <h3 className={s.subtitle}>
                     Введите ключ в аккаунте Telegram-бота, по ссылке:
-                    <a className={s.link} href="https://t.me/caption_storage_bot" target="_blank"> @caption_storage_bot</a>
+                    <a className={s.link} href="https://t.me/caption_storage_bot" target="_blank" rel="noreferrer"> @caption_storage_bot</a>
                     <br/>После прохождения  {authType === 'registration' ? 
                     `регистрации` : `авторизации`}, вернитесь и подтвердите верификацию.
                     </h3>

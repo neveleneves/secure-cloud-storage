@@ -6,7 +6,7 @@ const app = express()
 app.use(express.json({extended: true}))
 
 // Route for telegram-auth
-app.use('/', require('../routes/bot-auth'))
+app.use(`/bot${config.get('TelegramBotToken')}`, require('../routes/bot-auth'))
 
 //Set the bot port value
 const PORT =  config.get('botPort') || 5555
