@@ -1,5 +1,4 @@
 const {Router} = require('express')
-const config = require('config')
 
 const TelegramUser = require('../models/TelegramUser')
 const bot = require('../telegram-bot/bot-action')
@@ -14,24 +13,39 @@ router.post(`/`,  (req, res)  => {
     const body = req.body
 
     bot.processUpdate(body)
-    res.sendStatus(200);
+    res.sendStatus(200);   
 })
 
-router.post(`/auth/web_secret_code/success`,  async (req, res)  => {
+router.get(`/reg/secret_code/verify`,  async (req, res)  => {
     try {
-        const {login} = req.body
-        if(!login) {
-            res.status(504).json({message: 'Время сессии истекло'})
+        const {login, secret_code, password} = req.body
+
+        if(!login || !secret_code || !password) {
+            return res.status(504).json({message: 'Время сессии истекло'})  
         }
     
         const userSuccess = await TelegramUser.findOne({login})
-        bot.sendMessage(userSuccess.tg_chat_id, `Верификация секретного ключа - пройдена✅`)
-        ActionDB.setAuthState(userSuccess.tg_chat_id,4)
+        if(!userSuccess) {
+            return res.status(400).json({message: 'Telegram-аккаунт - не зарегистрирован'})
+        }
+        if(userSuccess.web_secret_code !== secret_code) {
+            bot.sendMessage(userSuccess.tg_chat_id, `Значение секретного ключа - не совпадает❌`)
+            return res.status(400).json({message: 'Значение секретного ключа - не совпадает'})
+        }
+        if(userSuccess.password !== password) {
+            bot.sendMessage(userSuccess.tg_chat_id, `Значение пароля - не совпадает❌`)
+            return res.status(400).json({message: 'Значение пароля - не совпадает'})
+        }
 
-        res.sendStatus(200).json({message: 'Верификация секретного ключа - пройдена'})
+        ActionDB.setNewUser(login, userSuccess.tg_chat_id, password)
+        ActionDB.setAuthState(userSuccess.tg_chat_id, 4)
+
+        bot.sendMessage(userSuccess.tg_chat_id, `Верификация секретного ключа - пройдена✅`)
+    
+        return res.status(200).json({message: 'Верификация секретного ключа - пройдена'})
     } catch (e) {
-        res.status(500).json({message: 'Не удалось верифицировать секретный ключ'})
         console.warn("Не удалось верифицировать секретный ключ: ", e.message);
+        return res.status(500).json({message: 'Не удалось верифицировать секретный ключ'})
     }
 })
 module.exports = router 

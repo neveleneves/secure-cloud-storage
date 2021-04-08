@@ -7,7 +7,6 @@ const randomize = require('randomatic');
 const crypto = require('crypto')
 
 const User = require('../models/WebUser')
-const TelegramUser = require('../models/TelegramUser')
 const AssetRequest = require('./redirect-requst')
 const Request = new AssetRequest()
 
@@ -52,8 +51,7 @@ router.post(
         if (uniqueUser.email || uniqueUser.login) {
             return res.status(400).json({message: 'Этот пользователь уже зарегистрирован'})
         } else {
-            const hashPassword = await bcrypt.hash(password, 12);
-            
+            const hashPassword = crypto.createHmac('sha256', `${login}`).update(password).digest('hex');
             // Сохранение в cookie-сессии
 
             // const userNew = new User ({email, login, password: hashPassword, secret_code: 'default'})
@@ -138,9 +136,8 @@ router.get('/secret_code_request',
 
         if(!req.session.user) {
             res.status(504).json({message: 'Время сессии истекло'})
-        } else {
-            req.session.user = {...req.session.user, secret_code: hashSecretCode}
         }
+        req.session.user = {...req.session.user, secret_code: hashSecretCode}
 
         // const updatedUser = await User.updateOne({_id}, {secret_code: hashSecretCode});
         // if(!updatedUser) {
@@ -154,39 +151,22 @@ router.get('/secret_code_request',
         console.warn("Не удалось сгенерировать секретный ключ: ", e.message);
     }
 })
+
 //Route for verify a secret code for Telegram-bot /api/auth/secret_code_request
 router.get('/verify_secret_code', 
     async (req, res) => {
     try {
-        if(req.session.user) {
+        if(!req.session.user) {
             res.status(504).json({message: 'Время сессии истекло'})
         }
 
-        //Запрос на сервер TG для поиска зарегистрированного пользователя
-
-        // const webUser = await User.findOne({_id});
-        const activeUser = req.session.user
-
-        const tgUser = await TelegramUser.findOne({
-            login: activeUser.login, 
-            web_secret_code: activeUser.secret_code
-        })
-        if(!tgUser) {
-            res.status(400).json({message: 'Telegram-аккаунт - не зарегистрирован'})
+        const verifyUser = {
+            login: req.session.user.login,
+            secret_code: req.session.user.secret_code,
+            password: req.session.user.password
         }
 
-        // if (tgUser.auth_state !== '3') {
-        //     res.status(400).json({message: 'Верификация секретного ключа - не завершена'})
-        // } else {
-        //     const userSuccess = {
-        //         login: webUser.login,
-        //         auth_status: true
-        //     }
-
-        //     // Request.botRequest('/auth/web_secret_code/success', 'POST', userSuccess)
-        // }
-
-        res.status(200).json(true)
+        Request.botRequest(res, '/reg/secret_code/verify', 'GET', verifyUser)
     } catch (e) {
         res.status(500).json({message: 'Не удалось подтвердить секретный ключ'})
         console.warn("Не удалось подтвердить секретный ключ: ", e.message);

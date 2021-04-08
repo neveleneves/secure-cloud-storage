@@ -1,28 +1,29 @@
-const bcrypt = require('bcryptjs')
+const crypto = require('crypto')
 const TelegramUser = require('../models/TelegramUser')
 const User = require('../models/WebUser')
 
 class BotActionDB {
     checkUserExist = async (tg_chat_id) => {
-        const telegramUser = await TelegramUser.findOne({tg_chat_id})
+        try {
+            const userExist = await User.findOne({tg_chat_id})
 
-        if(!telegramUser) { 
-            return 0
+            if(!userExist) { 
+                return 0
+            }
+            return 1
+            
+        } catch (e) {
+            console.warn('Error: ', e.message)
         }
-        return 1
     }
 
     saveChatID = async (tg_chat_id) => {
-        const userExist = await this.checkUserExist(tg_chat_id)
+        const userExist = await TelegramUser.findOne({tg_chat_id})
 
         if(!userExist) {
             const userNew = new TelegramUser ({
-                login: 'default',
-                password: 'default',
-                auth_state: 0,
-                web_secret_code: 'default',
+                auth_state: '0',
                 tg_chat_id,
-                tg_secret_code: 'default'
             })
             await userNew.save()
         }
@@ -55,56 +56,49 @@ class BotActionDB {
 
     getAuthState = async (tg_chat_id) => {
         const telegramUser = await TelegramUser.findOne({tg_chat_id})
-        return telegramUser.auth_state || '0'
+        return telegramUser.auth_state || 0
     }
 
     setAuthState = async (tg_chat_id, stateValue) => {
         await TelegramUser.updateOne({tg_chat_id},{auth_state: stateValue})
     }
 
-    checkLogin = async (login, tg_chat_id) => {
-        const webUserExist =  await User.findOne({login})
-        const tgUserExist = await TelegramUser.findOne({login})
+    setLogin = async (login, tg_chat_id) => {
+        const tgUserExist = await TelegramUser.findOne({tg_chat_id})
 
-        if (!webUserExist) {
-            return 0
-        }
-        if (!tgUserExist) {
+        if (tgUserExist) {
             await TelegramUser.updateOne({tg_chat_id},{login})
+            return 1
         } 
-        return 1
+        return 0
     }
 
-    checkPassword = async (password, tg_chat_id) => {
+    setPassword = async (password, tg_chat_id) => {
         const tgUserExist = await TelegramUser.findOne({tg_chat_id})
-        const login = tgUserExist.login
+        const hashPassword = crypto.createHmac('sha256', `${tgUserExist.login}`)
+        .update(password).digest('hex');
 
-        const webUser = await User.findOne({login})
-        const hashPassword = webUser.password
-
-        if (await bcrypt.compare(password, hashPassword)) {
-            const tghashPassword = await bcrypt.hash(password, 12);
-            await TelegramUser.updateOne({tg_chat_id},{password: tghashPassword})
-
+        if (tgUserExist) {
+            await TelegramUser.updateOne({tg_chat_id},{password: hashPassword})
             return 1
-        }
-        return 0 
+        } 
+        return 0
     }
 
-    checkSecretCode = async (secretCode, tg_chat_id) => {
+    setSecretCode = async (secretCode, tg_chat_id) => {
         const tgUserExist = await TelegramUser.findOne({tg_chat_id})
-        const login = tgUserExist.login
 
-        const webUser = await User.findOne({login})
-        const hashSecretCode = webUser.secret_code
-
-        if (await bcrypt.compare(secretCode, hashSecretCode)) {
-            const tghashSecretCode = await bcrypt.hash(secretCode, 10);
-            await TelegramUser.updateOne({tg_chat_id},{web_secret_code: tghashSecretCode})
-
+        if (tgUserExist) {
+            const hashSecretCode = crypto.createHash('sha256').update(secretCode).digest('base64');
+            await TelegramUser.updateOne({tg_chat_id},{web_secret_code: hashSecretCode})
             return 1
-        }
-        return 0 
+        } 
+        return 0
+    }
+
+    setNewUser = async (login, tg_chat_id, password) => {
+        const userNew = new User({login, tg_chat_id, password})
+        await userNew.save()
     }
 }
 

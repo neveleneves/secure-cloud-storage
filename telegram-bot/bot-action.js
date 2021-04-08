@@ -64,8 +64,7 @@ bot.on('callback_query', async (msg) => {
 
     if (msg.data === 'register') {
         if(isRegistered) {
-            bot.sendMessage(id, 'Я Вас помню, Вы уже регистрировались!')
-            bot.sendMessage(id, `${await ActionDB.checkAuthState(id)}`)
+            bot.sendMessage(id, `Пользователь с такими данными уже зарегистрирован`)
         } else {
             await ActionDB.saveChatID(id)
             bot.sendMessage(id, `Введите Ваш логин для начала регистрации`)
@@ -75,7 +74,7 @@ bot.on('callback_query', async (msg) => {
             bot.sendMessage(id, `Вы не регистрировались, введите команду`+ 
             ` /register.`)
         } else {
-            bot.sendMessage(id, `${await ActionDB.checkAuthState(id)}`)
+            bot.sendMessage(id, `Введите Ваш логин для начала авторизации`)
         }
     }
     bot.deleteMessage(id, msg.message.message_id);
@@ -83,59 +82,71 @@ bot.on('callback_query', async (msg) => {
 bot.on('message', async (msg) => {
     const {chat: {id}} = msg;
     
-    if(msg.text[0] !== '/') {
-        const isExist = await ActionDB.checkUserExist(id)
-        if(!isExist) {
-            bot.sendMessage(id, `Вы не регистрировались, введите команду`+ 
-            ` /register.`)
+    if(msg.text[0] === '/') {
+        return
+    }
+
+    const isExist = await ActionDB.checkUserExist(id)
+    if (isExist) {
+        bot.sendMessage(id, `Пользователь с такими данными уже зарегистрирован`)
+        return
+    }
+
+    const authState = await ActionDB.getAuthState(id)
+
+    if(authState === 0) {
+        const isLoginSet = await ActionDB.setLogin(msg.text, id)
+
+        if(isLoginSet) {
+            bot.sendMessage(id, `Шаг выполнен✅\n\n`
+             + `Теперь введите пароль!`)
+            await ActionDB.setAuthState(id,1)
         } else {
-            const authState = await ActionDB.getAuthState(id)
+            bot.sendMessage(id, `Шаг не выполнен❌\n\n` 
+            + `Введён неверный логин, попробуйте заново!`+
+            `\nИспользуйте логин с которым вы регистрировались на сайте.`)
+            bot.sendMessage(id, `Введите Ваш логин для аутентификации`)
 
-            if(authState === '0') {
-                const isLoginExist = await ActionDB.checkLogin(msg.text, id)
-
-                if(isLoginExist) {
-                    bot.sendMessage(id, `Шаг выполнен✅\n\n`
-                     + `Теперь введите пароль!`)
-                    await ActionDB.setAuthState(id,1)
-                } else {
-                    bot.sendMessage(id, `Шаг не выполнен❌\n\n` 
-                    + `Введён неверный логин, попробуйте снова`+
-                    `\nИспользуйте логин с которым вы регистрировались на сайте.`)
-                }
-            } else if(authState === '1') {
-                const isPasswordExist = await ActionDB.checkPassword(msg.text, id)
-
-                if(isPasswordExist) {
-                    bot.sendMessage(id, `Шаг выполнен✅\n\n`
-                    +`Теперь введите секретный ключ с сайта!`)
-                    await ActionDB.setAuthState(id,2)
-                } else {
-                    bot.sendMessage(id, `Шаг не выполнен❌\n\n` 
-                    + `Введён неверный пароль, попробуйте снова` +
-                    `\nИспользуйте пароль с которым вы регистрировались на сайте.`)
-                }
-            } else if(authState === '2') {
-                const isSecretCode =  await ActionDB.checkSecretCode(msg.text, id)
-
-                if (isSecretCode) {
-                    bot.sendMessage(id, `Шаг выполнен✅\n\n`
-                    + `Вернитесь на сайт и подтвердите верификацию ключа!`)
-                    await ActionDB.setAuthState(id,3)
-                } else {
-                    bot.sendMessage(id, `Шаг не выполнен❌\n\n` 
-                    + `Введён неверный секретный ключ, попробуйте снова` +
-                    `\nИспользуйте секретный ключ сгенерированный на сайте.`)
-                }
-            } else if (authState === '3') {
-                bot.sendMessage(id, `Вы не подтвердили секретный ключ на сайте❌\n`
-                + `Вернитесь и закончите текущий шаг!`)
-            } else if (authState === '4') {
-                bot.sendMessage(id, `Необходимо выполнить завершающий шаг аутентификации.\n`+
-                `Введите данный секретный ключ на сайте!`)
-                //Генерация секретного ключа в Telegram
-            }
+            await ActionDB.setAuthState(id,0)
         }
+    } else if(authState === 1) {
+        const isPasswordSet = await ActionDB.setPassword(msg.text, id)
+
+        if(isPasswordSet) {
+            bot.sendMessage(id, `Шаг выполнен✅\n\n`
+            +`Теперь введите секретный ключ с сайта!`)
+            await ActionDB.setAuthState(id,2)
+        } else {
+            bot.sendMessage(id, `Шаг не выполнен❌\n\n` 
+            + `Введён неверный пароль, попробуйте заново!` +
+            `\nИспользуйте пароль с которым вы регистрировались на сайте.`)
+            bot.sendMessage(id, `Введите Ваш логин с регистрации на сайте`)
+
+            await ActionDB.setAuthState(id,0)
+        }
+    } else if(authState === 2) {
+        const isSecretCodeSet =  await ActionDB.setSecretCode(msg.text, id)
+
+        if (isSecretCodeSet) {
+            bot.sendMessage(id, `Шаг выполнен✅\n\n`
+            + `Вернитесь на сайт и подтвердите верификацию ключа!`)
+            await ActionDB.setAuthState(id,3)
+        } else {
+            bot.sendMessage(id, `Шаг не выполнен❌\n\n` 
+            + `Введён неверный секретный ключ, попробуйте заново!` +
+            `\nИспользуйте секретный ключ сгенерированный на сайте.`)
+            bot.sendMessage(id, `Введите Ваш логин с регистрации на сайте`)
+
+            await ActionDB.setAuthState(id,0)
+        }
+    } else if (authState === 3) {
+        bot.sendMessage(id, `Шаг не выполнен❌\n\n`
+        + `Вы не подтвердили секретный ключ на сайте, попробуйте заново!`)
+        bot.sendMessage(id, `Введите Ваш логин с регистрации на сайте`)
+
+        await ActionDB.setAuthState(id,0)
+    } else if (authState === 4) {
+        bot.sendMessage(id, `Вы уже зарегистрировались✅`)
     } 
 })
 bot.onText(/\/about/, (msg) => {

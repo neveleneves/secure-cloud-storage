@@ -2,7 +2,7 @@ const request = require('request')
 const config = require('config')
 
 class AssetRequest { 
-    botRequest = (route, method = "GET", body = null, headers = {}) => {
+    botRequest = (resRedirect, route, method = "GET", body = null, headers = {}) => {
         if(body) {
             headers['Content-Type'] = 'application/json';
             body = JSON.stringify(body);
@@ -17,10 +17,11 @@ class AssetRequest {
         };
 
         request(options, function(err, res, body) {
-            if (err) {
-                console.error('Error Bot-Request: ', err);
+            if (res || err) {
+                const {message} = JSON.parse(body)
+                resRedirect.status(res.statusCode).json({message})
             }
-        });
+        })
     }
 }
 module.exports = AssetRequest

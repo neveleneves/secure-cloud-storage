@@ -72,11 +72,11 @@ export default function AuthPage() {
                  authErrors={authErrorsHandler}
                  />
                 <span className={s.authStepLine}></span>
-                <AuthThirdStep 
+                {/* <AuthThirdStep 
                 type={authTabHandler.authType} 
-                />
-                <span className={s.authStepLine}></span>
-                <AuthDoneStep />
+                /> */}
+                {/* <span className={s.authStepLine}></span> */}
+                {/* <AuthDoneStep /> */}
               </div>
               <div className={s.authNav}>
                 {/* <button className="auth__button-back"></button> */}
