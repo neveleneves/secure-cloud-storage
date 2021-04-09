@@ -43,15 +43,13 @@ router.post(
         //Logic for user registration
         const {email, password, login} = req.body 
 
-        const uniqueUser = {
-            email: await User.findOne({email}),
-            login: await User.findOne({login})
-        } 
-        
-        if (uniqueUser.email || uniqueUser.login) {
+        const uniqueUser = await User.findOne({login})
+
+        if (uniqueUser) {
             return res.status(400).json({message: 'Этот пользователь уже зарегистрирован'})
         } else {
             const hashPassword = crypto.createHmac('sha256', `${login}`).update(password).digest('hex');
+            crypto.com
             // Сохранение в cookie-сессии
 
             // const userNew = new User ({email, login, password: hashPassword, secret_code: 'default'})
@@ -60,7 +58,7 @@ router.post(
             const userNew = {email, login, password: hashPassword}
             req.session.user = userNew 
 
-            res.status(201).json({message:'Пользователь зарегистрирован'})
+            res.status(200).json({message:'Данные введены верно'})
         }
     } catch (e) {
         res.status(500).json({message: 'Ошибка при регистрации'})
@@ -97,14 +95,15 @@ router.post(
         //Logic for user login 
         const {email, password, login} = req.body 
 
-        const uniqueUser = await User.findOne({email});
+        const uniqueUser = await User.findOne({login});
 
         if(!uniqueUser) {
-            return res.status(400).json({message: 'Пользователь - не найден'})
+            return res.status(400).json({message: 'Пользователь - не зарегистрирован'})
         } else {
-            const comparePassword = await bcrypt.compare(password, uniqueUser.password)
-            
-            if(!comparePassword) {
+            const hashPassword = crypto.createHmac('sha256', `${login}`)
+            .update(password).digest('hex')
+
+            if(hashPassword !== uniqueUser.password) {
                 return res.status(400).json({message: 'Данные пользователя - не совпадают'})
             }
 

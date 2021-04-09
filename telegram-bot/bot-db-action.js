@@ -1,7 +1,6 @@
 const crypto = require('crypto')
 const TelegramUser = require('../models/TelegramUser')
 const User = require('../models/WebUser')
-
 class BotActionDB {
     checkUserExist = async (tg_chat_id) => {
         try {
@@ -13,92 +12,207 @@ class BotActionDB {
             return 1
             
         } catch (e) {
-            console.warn('Error: ', e.message)
+            console.warn('Check user exist error: ', e.message)
         }
     }
 
-    saveChatID = async (tg_chat_id) => {
-        const userExist = await TelegramUser.findOne({tg_chat_id})
+    checkTgUserExist = async (tg_chat_id) => {
+        try {
+            const tgUserExist = await TelegramUser.findOne({tg_chat_id})
 
-        if(!userExist) {
-            const userNew = new TelegramUser ({
-                auth_state: '0',
-                tg_chat_id,
-            })
-            await userNew.save()
+            if(!tgUserExist) { 
+                return 0
+            }
+            return 1
+        } catch (e) {
+            console.warn('Check tg-user exist error: ', e.message)
         }
     }
 
-    checkAuthState = async (tg_chat_id) => {
-        const telegramUser = await TelegramUser.findOne({tg_chat_id})
-        let message = ``
+    setChatID = async (tg_chat_id) => {
+        try {
+            const userExist = await TelegramUser.findOne({tg_chat_id})
 
-        switch (telegramUser.auth_state) {
-            case '0':
-                message = `Введите Ваш логин для`+
-                ` продолжения аутентификации.`
-                break;
-            case '1':
-                message = `Введите Ваш пароль для`+
-                ` продолжения аутентификации.`
-                break;
-            case '2':
-                message = `Вам нужно ввести секретный`+ 
-                ` ключ с сайта.`
-                break;   
-            default:
-                message = `Введите Ваш логин для`+
-                 ` продолжения аутентификации.`
-                break;
+            if(!userExist) {
+                const userNew = new TelegramUser ({
+                    auth_type: 'register',
+                    auth_state: 0,
+                    tg_chat_id,
+                })
+                await userNew.save()
+            }   
+        } catch (e) {
+            console.warn('Set chat ID error: ', e.message)
         }
-        return `Давайте продолжим!\n` + message 
     }
+
+    setAuthType = async (tg_chat_id, auth_type) => {
+        try {
+            await TelegramUser.updateOne({tg_chat_id},{auth_type})
+        } catch (e) {
+            console.warn('Set auth type error: ', e.message)
+        }
+    }
+    
+    // getAuthType = async (tg_chat_id) => {
+    //     try {
+    //         await
+    //     } catch (e) {
+    //         console.warn('Get auth type error: ', e.message)
+    //     }
+    // }
 
     getAuthState = async (tg_chat_id) => {
-        const telegramUser = await TelegramUser.findOne({tg_chat_id})
-        return telegramUser.auth_state || 0
+        try {
+            const telegramUser = await TelegramUser.findOne({tg_chat_id})
+            return telegramUser.auth_state  
+        } catch (e) {
+            console.warn('Get auth state error: ', e.message)
+        }
     }
 
     setAuthState = async (tg_chat_id, stateValue) => {
-        await TelegramUser.updateOne({tg_chat_id},{auth_state: stateValue})
+        try {
+            await TelegramUser.updateOne({tg_chat_id},{auth_state: stateValue})   
+        } catch (e) {
+            console.warn('Set auth state error: ', e.message)
+        }
     }
 
     setLogin = async (login, tg_chat_id) => {
-        const tgUserExist = await TelegramUser.findOne({tg_chat_id})
+        try {
+            const tgUserExist = await TelegramUser.findOne({tg_chat_id})
 
-        if (tgUserExist) {
-            await TelegramUser.updateOne({tg_chat_id},{login})
-            return 1
-        } 
-        return 0
+            if (tgUserExist) {
+                await TelegramUser.updateOne({tg_chat_id},{login})
+                return 1
+            } 
+            return 0   
+        } catch (e) {
+            console.warn('Set login error: ', e.message)
+        }
     }
 
     setPassword = async (password, tg_chat_id) => {
-        const tgUserExist = await TelegramUser.findOne({tg_chat_id})
-        const hashPassword = crypto.createHmac('sha256', `${tgUserExist.login}`)
-        .update(password).digest('hex');
+        try {
+            const tgUserExist = await TelegramUser.findOne({tg_chat_id})
+            const hashPassword = crypto.createHmac('sha256', `${tgUserExist.login}`)
+            .update(password).digest('hex');
 
-        if (tgUserExist) {
-            await TelegramUser.updateOne({tg_chat_id},{password: hashPassword})
-            return 1
-        } 
-        return 0
+            if (tgUserExist) {
+                await TelegramUser.updateOne({tg_chat_id},{password: hashPassword})
+                return 1
+            } 
+            return 0   
+        } catch (e) {
+            console.warn('Set password error: ', e.message)
+        }
     }
 
     setSecretCode = async (secretCode, tg_chat_id) => {
-        const tgUserExist = await TelegramUser.findOne({tg_chat_id})
+        try {
+            const tgUserExist = await TelegramUser.findOne({tg_chat_id})
 
-        if (tgUserExist) {
-            const hashSecretCode = crypto.createHash('sha256').update(secretCode).digest('base64');
-            await TelegramUser.updateOne({tg_chat_id},{web_secret_code: hashSecretCode})
-            return 1
-        } 
-        return 0
+            if (tgUserExist) {
+                const hashSecretCode = crypto.createHash('sha256').update(secretCode).digest('base64');
+                await TelegramUser.updateOne({tg_chat_id},{web_secret_code: hashSecretCode})
+                return 1
+            } 
+            return 0   
+        } catch (e) {
+            console.warn('Set secret code error: ', e.message)
+        }
     }
 
     setNewUser = async (login, tg_chat_id, password) => {
-        const userNew = new User({login, tg_chat_id, password})
-        await userNew.save()
+        try {
+            const userNew = new User({login, tg_chat_id, password})
+            await userNew.save()   
+        } catch (e) {
+            console.warn('Set new user error: ', e.message)
+        }
+    }
+
+    loginHandler = async (login, id) => {
+        try {
+            const isLoginSet = await this.setLogin(login, id)
+
+            if(isLoginSet) {
+                await this.setAuthState(id,1)
+
+                return `Шаг выполнен✅\n\nТеперь введите пароль!`
+            } else {
+                await this.setAuthState(id,0)
+
+                return `Шаг не выполнен❌\n\n` 
+                + `Введён неверный логин, попробуйте заново!` +
+                `\nИспользуйте логин с которым вы регистрировались на сайте.`
+            }   
+        } catch (e) {
+            console.warn('Login handling error: ', e.message)
+        }
+    }
+
+    passwordHandler = async (password, id) => {
+        try {
+            const isPasswordSet = await this.setPassword(password, id)
+
+            if(isPasswordSet) {
+                await this.setAuthState(id,2)
+
+                return `Шаг выполнен✅\n\n`
+                +`Теперь введите секретный ключ с сайта!`
+            } else {
+                await this.setAuthState(id,0)
+
+                return `Шаг не выполнен❌\n\n` 
+                + `Введён неверный пароль, попробуйте заново!` +
+                `\nИспользуйте пароль с которым вы регистрировались на сайте.`
+            }
+        } catch (e) {
+            console.warn('Password handling error: ', e.message)
+        }
+    }
+
+    secretCodeHandler = async (secretCode, id) => {
+        try {
+            const isSecretCodeSet =  await this.setSecretCode(secretCode, id)
+
+            if (isSecretCodeSet) {
+                await this.setAuthState(id,3)
+
+                return `Шаг выполнен✅\n\n`
+                + `Вернитесь на сайт и подтвердите верификацию ключа!`
+            } else {
+                await this.setAuthState(id,0)
+
+                return `Шаг не выполнен❌\n\n` 
+                + `Введён неверный секретный ключ, попробуйте заново!` +
+                `\nИспользуйте секретный ключ сгенерированный на сайте.`
+            }
+        } catch (e) {
+            console.warn('Secret code handling error: ', e.message)
+        }
+    }
+
+    verifyHandler = async (id) => {
+        try { 
+            await this.setAuthState(id,0)
+    
+            return `Шаг не выполнен❌\n\n`
+            + `Вы не подтвердили секретный ключ на сайте, попробуйте заново!`
+        } catch (e) {
+            console.warn('Verify state error: ', e.message)
+        }
+    }
+
+    authSuccessHandler = async (id) => {
+        try {
+            //Проверить состояние аутентификации
+            return `Аутентификация успешно завершена✅`
+        } catch (e) {
+            console.log('Check auth success error: ', e.message)
+        }
     }
 }
 

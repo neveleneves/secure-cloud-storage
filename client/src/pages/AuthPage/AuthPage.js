@@ -72,9 +72,9 @@ export default function AuthPage() {
                  authErrors={authErrorsHandler}
                  />
                 <span className={s.authStepLine}></span>
-                {/* <AuthThirdStep 
+                <AuthThirdStep 
                 type={authTabHandler.authType} 
-                /> */}
+                />
                 {/* <span className={s.authStepLine}></span> */}
                 {/* <AuthDoneStep /> */}
               </div>
