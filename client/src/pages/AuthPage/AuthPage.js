@@ -1,8 +1,8 @@
 import React from "react";
 import { AuthFirstStep } from "../../components/AuthFirstStep/AuthFirstStep";
-import { AuthSecondStep } from "../../components/AuthSecondStep/AuthSecondStep";
+import { RegSecondStep } from "../../components/RegSecondStep/RegSecondStep";
+import { LoginSecondStep } from "../../components/LoginSecondStep/LoginSecondStep";
 import { AuthThirdStep } from "../../components/AuthThirdStep/AuthThirdStep";
-import { AuthDoneStep } from "../../components/AuthDoneStep/AuthDoneStep";
 
 import s from './AuthPage.module.css'
 
@@ -65,12 +65,22 @@ export default function AuthPage() {
                 authStateStep={authStateStep}
                 />
                 <span className={s.authStepLine}></span>
-                <AuthSecondStep
-                 type={authTabHandler.authType}
-                 authSecretCode={authSecretCode}
-                 authStateStep={authStateStep}
-                 authErrors={authErrorsHandler}
-                 />
+                {
+                  authTabHandler.authType === "registration" ?
+                  <RegSecondStep
+                  type={authTabHandler.authType}
+                  authSecretCode={authSecretCode}
+                  authStateStep={authStateStep}
+                  authErrors={authErrorsHandler}
+                  />
+                  :
+                  <LoginSecondStep
+                  type={authTabHandler.authType}
+                  authSecretCode={authSecretCode}
+                  authStateStep={authStateStep}
+                  authErrors={authErrorsHandler}
+                  />
+                }
                 <span className={s.authStepLine}></span>
                 <AuthThirdStep 
                 type={authTabHandler.authType} 

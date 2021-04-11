@@ -5,9 +5,9 @@ import { useRequst } from "../../hooks/request.hook";
 import {MessageError} from "../MessageError/MessageError"
 import {MessageSuccess} from "../MessageSuccess/MessageSuccess";
 
-import s from './AuthSecondStep.module.css'
+import s from './RegSecondStep.module.css'
 
-export const AuthSecondStep = (props) => {
+export const RegSecondStep = (props) => {
   const authType = props.type;
   const step = props.authStateStep;
   const {...errorsData} = props.authErrors;
@@ -38,7 +38,7 @@ export const AuthSecondStep = (props) => {
   const generateCodeHandler = async () => {
     try {
       errorsData.changeErrors(false);
-      const secretCodeValue = await ajaxRequest(`/api/auth/secret_code_request`); 
+      const secretCodeValue = await ajaxRequest(`/api/auth/reg/secret_code/generate`); 
 
       if (secretCodeValue) {
           secretCode.changeSecretCode(secretCodeValue);
@@ -49,10 +49,10 @@ export const AuthSecondStep = (props) => {
     }
   }
 
-  const verifyCodeHandler = async () => {
+  const verifyWebCodeHandler = async () => {
     try {
       errorsData.changeErrors(false);
-      const verifyCheck = await ajaxRequest(`/api/auth/verify_secret_code`, 'GET'); 
+      const verifyCheck = await ajaxRequest(`/api/auth/reg/secret_code/verify`); 
 
       if (verifyCheck) {
         setStepSuccess(true);
@@ -73,9 +73,7 @@ export const AuthSecondStep = (props) => {
         className={step.stepState.active === 'authThirdStep' ? 
         stepActiveTitle : 
         stepInactiveTitle}>
-          {authType === 'registration' ? 
-          `Шаг 2: Регистрация с помощью Telegram-бота` : 
-          `Шаг 2: Авторизация с помощью Telegram-бота`}
+          Шаг 2: Регистрация с помощью Telegram-бота
         </h2>
         <div 
         className={step.stepState.active === 'authThirdStep' ? 
@@ -86,16 +84,14 @@ export const AuthSecondStep = (props) => {
               <div className={s.textWrapper}>
                 {!secretCode.secretCodeValue ? 
                     <h3 className={s.subtitle}>
-                    Для продолжения {authType === 'registration' ? 
-                    `зарегистрируйте ` : `авторизируйте `} аккаунт с помощью Telegram-бота.
+                    Для продолжения зарегистрируйте аккаунт с помощью Telegram-бота.
                     <br/>Сгененируйте секретный ключ и используйте его в Telegram.
                     </h3>
                   :
                     <h3 className={s.subtitle}>
-                    Введите ключ в аккаунте Telegram-бота, по ссылке:
+                    Введите ключ в чате Telegram-бота, по ссылке:
                     <a className={s.link} href="https://t.me/caption_storage_bot" target="_blank" rel="noreferrer"> @caption_storage_bot</a>
-                    <br/>После прохождения  {authType === 'registration' ? 
-                    `регистрации` : `авторизации`}, вернитесь и подтвердите верификацию.
+                    <br/>После прохождения регистрации, вернитесь и подтвердите верификацию.
                     </h3>
                 }
               </div>
@@ -120,7 +116,7 @@ export const AuthSecondStep = (props) => {
               >Сгенерировать</button>
               <button 
               className={buttonStyle}
-              onClick={verifyCodeHandler}
+              onClick={verifyWebCodeHandler}
               disabled={stateButton}
               >Подтвердить</button>
             </div>

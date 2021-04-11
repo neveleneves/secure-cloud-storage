@@ -109,18 +109,27 @@ class BotActionDB {
         }
     }
 
-    setSecretCode = async (secretCode, tg_chat_id) => {
+    setWebSecretCode = async (secretCode, tg_chat_id) => {
         try {
             const tgUserExist = await TelegramUser.findOne({tg_chat_id})
 
             if (tgUserExist) {
-                const hashSecretCode = crypto.createHash('sha256').update(secretCode).digest('base64');
+                const hashSecretCode = crypto.createHash('sha256').update(secretCode).digest('base64')
                 await TelegramUser.updateOne({tg_chat_id},{web_secret_code: hashSecretCode})
                 return 1
             } 
             return 0   
         } catch (e) {
-            console.warn('Set secret code error: ', e.message)
+            console.warn('Set web secret code error: ', e.message)
+        }
+    }
+
+    setTelegramSecretCode = async (secretCode, tg_chat_id) => {
+        try {
+            const hashTgSecretCode = crypto.createHash('sha256').update(secretCode).digest('base64')
+            await TelegramUser.updateOne({tg_chat_id},{tg_secret_code: hashTgSecretCode})
+        } catch (e) {
+            console.warn('Set Telegram secret code error: ', e.message)
         }
     }
 
@@ -176,7 +185,7 @@ class BotActionDB {
 
     secretCodeHandler = async (secretCode, id) => {
         try {
-            const isSecretCodeSet =  await this.setSecretCode(secretCode, id)
+            const isSecretCodeSet =  await this.setWebSecretCode(secretCode, id)
 
             if (isSecretCodeSet) {
                 await this.setAuthState(id,3)

@@ -71,16 +71,17 @@ bot.on('callback_query', async (msg) => {
             await ActionDB.setChatID(id)
             bot.sendMessage(id, `Введите Ваш логин для начала регистрации`)
         }
-    } else if (msg.data === 'login') {
-        if(!isRegistered) {
-            bot.sendMessage(id, `Вы не регистрировались, введите команду`+ 
-            ` /register.`)
-        } else {
-            await ActionDB.setAuthType(id, 'login')
-            await ActionDB.setAuthState(id, 0)
-            bot.sendMessage(id, `Введите Ваш логин для начала авторизации`)
-        }
-    }
+    } 
+    // else if (msg.data === 'login') {
+    //     if(!isRegistered) {
+    //         bot.sendMessage(id, `Вы не регистрировались, введите команду`+ 
+    //         ` /register.`)
+    //     } else {
+    //         await ActionDB.setAuthType(id, 'login')
+    //         await ActionDB.setAuthState(id, 0)
+    //         bot.sendMessage(id, `Введите Ваш логин для начала авторизации`)
+    //     }
+    // }
     bot.deleteMessage(id, msg.message.message_id);
 })
 

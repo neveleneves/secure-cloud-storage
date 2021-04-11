@@ -23,7 +23,7 @@ export const AuthFirstStep = (props) => {
   const authHandler = async () => {
     try {
       errorsData.changeErrors(false);
-      const data = await ajaxRequest(`/api/auth/${authType}`, 'POST', {...formData.authInputs});
+      const data = await ajaxRequest(`/api/auth/${authType}/validate`, 'POST', {...formData.authInputs});
       
       if (data) {
         setStepSuccess(true);

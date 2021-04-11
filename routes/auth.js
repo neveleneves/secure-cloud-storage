@@ -1,6 +1,5 @@
 const {Router} = require('express')
 const jwt = require('jsonwebtoken')
-const bcrypt = require('bcryptjs')
 const config = require('config')
 const {check, validationResult, body} = require('express-validator')
 const randomize = require('randomatic');
@@ -16,7 +15,7 @@ const router = Router()
 
 //Route for registration /api/auth/registration 
 router.post(
-    '/registration',
+    '/registration/validate',
     [
         check('email', 'Неправильный e-mail адрес').isEmail(),
         check('password', 'Пароль должен содержать не менее 8 символов').isLength({min:8}),
@@ -68,7 +67,7 @@ router.post(
 
 //Route for login /api/auth/login 
 router.post(
-    '/login', 
+    '/login/validate', 
     [
         check('email', 'Неверные данные для входа').isEmail(),
         check('password', 'Неверные данные для входа').isLength({min:8}),
@@ -126,8 +125,8 @@ router.post(
     }
 })
 
-//Route for request a secret code for Telegram-bot /api/auth/secret_code_request
-router.get('/secret_code_request', 
+//Route for generate a secret code for Telegram-bot /api/auth/reg/secret_code/generate
+router.get('/reg/secret_code/generate', 
     async (req, res) => {
     try {
         const secret_code = randomize('0', 12)
@@ -135,6 +134,7 @@ router.get('/secret_code_request',
 
         if(!req.session.user) {
             res.status(504).json({message: 'Время сессии истекло'})
+            return
         }
         req.session.user = {...req.session.user, secret_code: hashSecretCode}
 
@@ -151,12 +151,13 @@ router.get('/secret_code_request',
     }
 })
 
-//Route for verify a secret code for Telegram-bot /api/auth/secret_code_request
-router.get('/verify_secret_code', 
+//Route for verify a secret code for Telegram-bot /api/auth/reg/secret_code/verify
+router.get('/reg/secret_code/verify', 
     async (req, res) => {
     try {
         if(!req.session.user) {
             res.status(504).json({message: 'Время сессии истекло'})
+            return
         }
 
         const verifyUser = {
@@ -165,7 +166,63 @@ router.get('/verify_secret_code',
             password: req.session.user.password
         }
 
-        Request.botRequest(res, '/reg/secret_code/verify', 'GET', verifyUser)
+        //POST?
+        Request.botRequest(res, '/telegram/reg/secret_code/verify', 'GET', verifyUser)
+    } catch (e) {
+        res.status(500).json({message: 'Не удалось подтвердить секретный ключ'})
+        console.warn("Не удалось подтвердить секретный ключ: ", e.message);
+    }
+})
+
+//Route for send a secret code into Telegram /api/auth/login/secret_code/request
+router.get('/login/secret_code/request', 
+    async (req, res) => {
+    try {
+        if(!req.session.user) {
+            res.status(504).json({message: 'Время сессии истекло'})
+            return
+        }
+        
+        const uniqueUser = await User.findOne({login: req.session.user.login})
+        const telegramUser = {
+            tg_chat_id: uniqueUser.tg_chat_id
+        }
+
+        //POST?
+        Request.botRequest(res, '/telegram/login/secret_code/send', 'GET', telegramUser)
+    } catch (e) {
+        res.status(500).json({message: 'Не удалось запросить секретный ключ'})
+        console.warn("Не удалось запросить секретный ключ: ", e.message);
+    }
+})
+
+//Route for verify a secret code from Telegram /api/auth/secret_code/request
+router.post(
+    '/login/secret_code/verify',
+    [
+        check('secret_code', 'Неверный секретный ключ').isLength({min:12})
+    ],
+    async (req, res) => {
+    try {
+        if(!req.session.user) {
+            res.status(504).json({message: 'Время сессии истекло'})
+            return
+        }
+
+        const validationErrors = validationResult(req)
+        if(!validationErrors.isEmpty()) {
+            return res.status(400).json({
+                errors: validationErrors.errors,
+                message: `${validationErrors.errors[0].msg || `Неизвестная ошибка верификации`}`
+            })
+        }
+
+        const {secret_code} = req.body
+        if(!secret_code) {
+            res.status(504).json({message: 'Время сессии истекло'})
+            return
+        }
+
     } catch (e) {
         res.status(500).json({message: 'Не удалось подтвердить секретный ключ'})
         console.warn("Не удалось подтвердить секретный ключ: ", e.message);
