@@ -35,7 +35,6 @@ class BotActionDB {
 
             if(!userExist) {
                 const userNew = new TelegramUser ({
-                    auth_type: 'register',
                     auth_state: 0,
                     tg_chat_id,
                 })
@@ -45,22 +44,6 @@ class BotActionDB {
             console.warn('Set chat ID error: ', e.message)
         }
     }
-
-    setAuthType = async (tg_chat_id, auth_type) => {
-        try {
-            await TelegramUser.updateOne({tg_chat_id},{auth_type})
-        } catch (e) {
-            console.warn('Set auth type error: ', e.message)
-        }
-    }
-    
-    // getAuthType = async (tg_chat_id) => {
-    //     try {
-    //         await
-    //     } catch (e) {
-    //         console.warn('Get auth type error: ', e.message)
-    //     }
-    // }
 
     getAuthState = async (tg_chat_id) => {
         try {
@@ -155,7 +138,8 @@ class BotActionDB {
 
                 return `Шаг не выполнен❌\n\n` 
                 + `Введён неверный логин, попробуйте заново!` +
-                `\nИспользуйте логин с которым вы регистрировались на сайте.`
+                `\nИспользуйте логин с которым вы регистрировались на сайте.` +
+                `\n\nВведите Ваш логин для начала регистрации.`
             }   
         } catch (e) {
             console.warn('Login handling error: ', e.message)
@@ -176,7 +160,8 @@ class BotActionDB {
 
                 return `Шаг не выполнен❌\n\n` 
                 + `Введён неверный пароль, попробуйте заново!` +
-                `\nИспользуйте пароль с которым вы регистрировались на сайте.`
+                `\nИспользуйте пароль с которым вы регистрировались на сайте.` +
+                `\n\nВведите Ваш логин для начала регистрации.`
             }
         } catch (e) {
             console.warn('Password handling error: ', e.message)
@@ -197,7 +182,8 @@ class BotActionDB {
 
                 return `Шаг не выполнен❌\n\n` 
                 + `Введён неверный секретный ключ, попробуйте заново!` +
-                `\nИспользуйте секретный ключ сгенерированный на сайте.`
+                `\nИспользуйте секретный ключ сгенерированный на сайте.` +
+                `\n\nВведите Ваш логин для начала регистрации.`
             }
         } catch (e) {
             console.warn('Secret code handling error: ', e.message)
@@ -209,19 +195,25 @@ class BotActionDB {
             await this.setAuthState(id,0)
     
             return `Шаг не выполнен❌\n\n`
-            + `Вы не подтвердили секретный ключ на сайте, попробуйте заново!`
+            + `Вы не подтвердили секретный ключ на сайте, попробуйте заново!` +
+            `\n\nВведите Ваш логин для начала регистрации.`
         } catch (e) {
             console.warn('Verify state error: ', e.message)
         }
     }
 
-    authSuccessHandler = async (id) => {
-        try {
-            //Проверить состояние аутентификации
-            return `Аутентификация успешно завершена✅`
-        } catch (e) {
-            console.log('Check auth success error: ', e.message)
+    checkCompareSecretCodes = (hashComparable, hashSecretCode) => {
+        if(hashComparable === hashSecretCode) {
+            return 1
         }
+        return 0
+    }
+
+    checkComparePasswords = (hashComparable, hashPasswords) => {
+        if(hashComparable === hashPasswords) {
+            return 1
+        }
+        return 0
     }
 }
 

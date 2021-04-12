@@ -7,7 +7,6 @@ class AssetRequest {
             headers['Content-Type'] = 'application/json';
             body = JSON.stringify(body);
         }
-        console.log(body)
 
         const options = {
             url: `${config.get("botServerURL")}/bot${config.get("TelegramBotToken")}${route}`,

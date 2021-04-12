@@ -11,6 +11,7 @@ import { useHandlerErrors } from "../../hooks/handlerErrors.hook";
 import { useToggleTab } from "../../hooks/authToggle.hook";
 import { useSwitchStep } from "../../hooks/switchAuthSteps.hook";
 import { useSecretCode } from "../../hooks/secretCode.hook"
+import { useHandlerSC } from "../../hooks/handlerSCForm.hook";
 
 export default function AuthPage() {
   const authFormHandler = useHandlerForm();
@@ -19,6 +20,8 @@ export default function AuthPage() {
   const authStateStep = useSwitchStep();
 
   const authSecretCode = useSecretCode();
+  
+  const authSCHandler = useHandlerSC();
 
   const tabClickHandler = (event) => {
     authTabHandler.activeTabHandler(event);
@@ -26,6 +29,8 @@ export default function AuthPage() {
     authErrorsHandler.changeErrors(false);
 
     authSecretCode.clearSecretCode();
+
+    authSCHandler.clearSCInput();
   }
 
   return (
@@ -76,7 +81,7 @@ export default function AuthPage() {
                   :
                   <LoginSecondStep
                   type={authTabHandler.authType}
-                  authSecretCode={authSecretCode}
+                  authSCForm={authSCHandler}
                   authStateStep={authStateStep}
                   authErrors={authErrorsHandler}
                   />

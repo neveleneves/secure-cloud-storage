@@ -42,18 +42,18 @@ router.post(
         //Logic for user registration
         const {email, password, login} = req.body 
 
+        //Find a user into DB by login
         const uniqueUser = await User.findOne({login})
 
+        //Check if data is new
         if (uniqueUser) {
             return res.status(400).json({message: 'Этот пользователь уже зарегистрирован'})
         } else {
+            //Hashing a password
             const hashPassword = crypto.createHmac('sha256', `${login}`).update(password).digest('hex');
             crypto.com
-            // Сохранение в cookie-сессии
 
-            // const userNew = new User ({email, login, password: hashPassword, secret_code: 'default'})
-            // await userNew.save()
-
+            //Formation of data for saving in cookie session
             const userNew = {email, login, password: hashPassword}
             req.session.user = userNew 
 
@@ -92,20 +92,27 @@ router.post(
         }
 
         //Logic for user login 
+
+        //Getting data from a form on the site
         const {email, password, login} = req.body 
 
+        //Find a user into DB by login
         const uniqueUser = await User.findOne({login});
 
+        //Check if a user exists in the DB
         if(!uniqueUser) {
             return res.status(400).json({message: 'Пользователь - не зарегистрирован'})
         } else {
+            //Hashing a password
             const hashPassword = crypto.createHmac('sha256', `${login}`)
             .update(password).digest('hex')
 
+            //Compare a passwords from DB and form
             if(hashPassword !== uniqueUser.password) {
                 return res.status(400).json({message: 'Данные пользователя - не совпадают'})
             }
 
+            //Getting a jwt token for auth ???
             const jsonToken = jwt.sign(
                 {
                     userID: uniqueUser.id,
@@ -116,7 +123,10 @@ router.post(
                 config.get('JWTsecret'),
                 {expiresIn: '1h'}
             )
+
+            //Save data in cookie session
             req.session.user = uniqueUser 
+
             res.json({jsonToken, userID: uniqueUser.id})
         }
     } catch (e) {
@@ -129,21 +139,19 @@ router.post(
 router.get('/reg/secret_code/generate', 
     async (req, res) => {
     try {
-        const secret_code = randomize('0', 12)
-        const hashSecretCode = crypto.createHash('sha256').update(secret_code).digest('base64');
-
+        //Check if the auth session is active
         if(!req.session.user) {
             res.status(504).json({message: 'Время сессии истекло'})
             return
         }
+
+        //Getting a random secret code for WEB and hashing code 
+        const secret_code = randomize('0', 12)
+        const hashSecretCode = crypto.createHash('sha256').update(secret_code).digest('base64');
+
+        //Updating a data session
         req.session.user = {...req.session.user, secret_code: hashSecretCode}
 
-        // const updatedUser = await User.updateOne({_id}, {secret_code: hashSecretCode});
-        // if(!updatedUser) {
-        //     return res.status(400).json({message: 'Пользователь - не найден'})
-        // }
-
-        // Request.botRequest('/auth/web_secret_code/success', 'POST', userSuccess)
         res.status(200).json(secret_code)
     } catch (e) {
         res.status(500).json({message: 'Не удалось сгенирировать секретный ключ'})
@@ -155,19 +163,21 @@ router.get('/reg/secret_code/generate',
 router.get('/reg/secret_code/verify', 
     async (req, res) => {
     try {
+        //Check if the auth session is active
         if(!req.session.user) {
             res.status(504).json({message: 'Время сессии истекло'})
             return
         }
 
+        //Formation of data for sending to bot-server
         const verifyUser = {
             login: req.session.user.login,
             secret_code: req.session.user.secret_code,
             password: req.session.user.password
         }
 
-        //POST?
-        Request.botRequest(res, '/telegram/reg/secret_code/verify', 'GET', verifyUser)
+        //Sending a data to bot-server for verify reg
+        Request.botRequest(res, '/telegram/reg/secret_code/verify', 'POST', verifyUser)
     } catch (e) {
         res.status(500).json({message: 'Не удалось подтвердить секретный ключ'})
         console.warn("Не удалось подтвердить секретный ключ: ", e.message);
@@ -178,17 +188,19 @@ router.get('/reg/secret_code/verify',
 router.get('/login/secret_code/request', 
     async (req, res) => {
     try {
+        //Check if the auth session is active
         if(!req.session.user) {
             res.status(504).json({message: 'Время сессии истекло'})
             return
         }
         
+        //Get a user data by login and catch user chat id 
         const uniqueUser = await User.findOne({login: req.session.user.login})
         const telegramUser = {
             tg_chat_id: uniqueUser.tg_chat_id
         }
 
-        //POST?
+        //Sending a data to bot-server for request a secret code
         Request.botRequest(res, '/telegram/login/secret_code/send', 'GET', telegramUser)
     } catch (e) {
         res.status(500).json({message: 'Не удалось запросить секретный ключ'})
@@ -204,11 +216,13 @@ router.post(
     ],
     async (req, res) => {
     try {
+        //Check if the auth session is active
         if(!req.session.user) {
             res.status(504).json({message: 'Время сессии истекло'})
             return
         }
 
+        //Data validation check
         const validationErrors = validationResult(req)
         if(!validationErrors.isEmpty()) {
             return res.status(400).json({
@@ -218,11 +232,16 @@ router.post(
         }
 
         const {secret_code} = req.body
-        if(!secret_code) {
-            res.status(504).json({message: 'Время сессии истекло'})
-            return
+
+        //Get a user data by login and formation of data for sending to bot-server
+        const uniqueUser = await User.findOne({login: req.session.user.login})
+        const telegramUser = {
+            tg_chat_id: uniqueUser.tg_chat_id,
+            secret_code: crypto.createHash('sha256').update(secret_code).digest('base64')
         }
 
+        //Sending a data to bot-server for verify login
+        Request.botRequest(res, '/telegram/login/secret_code/verify', 'POST', telegramUser)
     } catch (e) {
         res.status(500).json({message: 'Не удалось подтвердить секретный ключ'})
         console.warn("Не удалось подтвердить секретный ключ: ", e.message);

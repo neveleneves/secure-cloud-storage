@@ -10,6 +10,7 @@ import s from './LoginSecondStep.module.css'
 export const LoginSecondStep = (props) => {
   const authType = props.type;
   const step = props.authStateStep;
+  const secretCodeForm = props.authSCForm
   const {...errorsData} = props.authErrors;
 
   const {stepInactiveStyles, stepInactiveTitle, stepInactiveBody, activeStep} = useActiveStep(s);
@@ -52,7 +53,8 @@ export const LoginSecondStep = (props) => {
   const verifyTgCodeHandler = async () => {
     try {
       errorsData.changeErrors(false);
-      const verifyCheck = await ajaxRequest(`/api/auth/login/secret_code/verify`, 'POST', 0); 
+      const verifyCheck = await ajaxRequest(`/api/auth/login/secret_code/verify`,
+      'POST', {...secretCodeForm.secretCodeInput}); 
 
       if (verifyCheck) {
         setStepSuccess(true);
@@ -98,25 +100,25 @@ export const LoginSecondStep = (props) => {
                     </h3>
                 }
               </div>
-              <div className={s.keyMessage}>
+              <div className={s.keyContainer}>
                 <form className={s.form} onSubmit={submitHandler}>
                   <input
-                    className={s.formInput}
+                    className={s.keyInput}
                     placeholder="Введите секретный ключ"
-                    id="secret-code"
+                    id="secret_code"
                     type="text"
-                    name="secret-code"
-                    // value={formData.authInputs.email}
-                    // onChange={formData.onChangeInputs}
+                    name="secret_code"
+                    value={secretCodeForm.secretCodeInput.secret_code}
+                    onChange={secretCodeForm.onChangeSCInput}
                   />
                 </form>
               </div>
             </div>
-            <div className={s.navKeyGenerate}>
+            <div className={s.navKey}>
               {(error && errorsData.isError) ? <MessageError message={error.message}/> : null}
               {stepSuccess ? <MessageSuccess type={authType}/> : null}
               <button 
-              className={s.buttonGenerate}
+              className={s.buttonSendKey}
               onClick={sendCodeHandler}
               disabled={loadingProcess}
               >Выслать ключ</button>

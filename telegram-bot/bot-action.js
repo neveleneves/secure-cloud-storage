@@ -38,25 +38,6 @@ bot.onText(/\/register/, (msg) => {
         }
     })
 })
-
-// bot.onText(/\/login/, (msg) => {
-//     const {chat: {id}} = msg;
-
-//     bot.sendMessage(id, `Начнём авторизацию аккаунта?`, {
-//         reply_markup: {
-//             inline_keyboard: [[
-//                 {
-//                   text: `Да`,
-//                   callback_data: 'login'
-//                 },
-//                 {
-//                   text: 'Нет',
-//                   callback_data: 0
-//                 }
-//             ]]
-//         }
-//     })
-// })
 bot.on("polling_error", console.log);
 
 bot.on('callback_query', async (msg) => {
@@ -72,16 +53,6 @@ bot.on('callback_query', async (msg) => {
             bot.sendMessage(id, `Введите Ваш логин для начала регистрации`)
         }
     } 
-    // else if (msg.data === 'login') {
-    //     if(!isRegistered) {
-    //         bot.sendMessage(id, `Вы не регистрировались, введите команду`+ 
-    //         ` /register.`)
-    //     } else {
-    //         await ActionDB.setAuthType(id, 'login')
-    //         await ActionDB.setAuthState(id, 0)
-    //         bot.sendMessage(id, `Введите Ваш логин для начала авторизации`)
-    //     }
-    // }
     bot.deleteMessage(id, msg.message.message_id);
 })
 
@@ -115,7 +86,7 @@ bot.on('message', async (msg) => {
             bot.sendMessage(id, await ActionDB.verifyHandler(id))
             break;
         case 4:
-            bot.sendMessage(id, await ActionDB.authSuccessHandler(id))
+            bot.sendMessage(id, `Аутентификация успешно завершена✅`)
         default:
             break;
     }

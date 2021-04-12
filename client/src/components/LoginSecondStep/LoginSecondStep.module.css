@@ -79,19 +79,6 @@
 /* .textWrapper {
   max-width: 525px;
 } */
-.formInput {
-  padding: 0px 20px;
-  width: 250px;
-  height: 40px;
-  border: 0;
-  font-family: Roboto; 
-  font-style: normal;
-  font-weight: normal;
-  font-size: 14px;
-}
-.formInput::-webkit-input-placeholder {
-  color: #A5A5A5;
-}
 .subtitle {
   font-family: Roboto;
   font-style: normal;
@@ -108,7 +95,7 @@
 .link:hover, .link:active, .link:focus{
   color: #1671c7;
 }
-.keyMessage {
+.keyContainer {
   height: 40px;
   display: flex;
   align-items: center;
@@ -117,17 +104,26 @@
   font-weight: 300;
   font-size: 14px;
 }
-.key{
-  margin-left: 15px;
-  font-size: 15px;
+.keyInput {
+  padding: 0px 20px;
+  width: 250px;
+  height: 40px;
+  border: 0;
+  font-family: Roboto; 
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
 }
-.navKeyGenerate {
+.keyInput::-webkit-input-placeholder {
+  color: #A5A5A5;
+}
+.navKey {
   margin-left: 30px;
   width: 365px;
   height: 95px;
   position: relative;
 }
-.navKeyGenerate button {
+.navKey button {
   position: absolute;
   bottom: 0;
   width: 135px;
@@ -140,12 +136,12 @@
   text-align: center;
   transition: all 0.2s ease;
 }
-.buttonGenerate {
+.buttonSendKey {
   left: 30px;
   color: #0F82EC;
   border: 1px solid #0F82EC;
 }
-.buttonGenerate:hover, .buttonGenerate:active, .buttonGenerate:focus{
+.buttonSendKey:hover, .buttonSendKey:active, .buttonSendKey:focus{
   background-color: #0f81ec25;
 }
 .buttonVerify{
