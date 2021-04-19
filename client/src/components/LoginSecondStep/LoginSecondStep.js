@@ -12,23 +12,25 @@ export const LoginSecondStep = (props) => {
   const step = props.authStateStep;
   const secretCodeForm = props.authSCForm
   const {...errorsData} = props.authErrors;
+  const {...stepSuccess} = props.authSuccess
 
-  const {stepInactiveStyles, stepInactiveTitle, stepInactiveBody, activeStep} = useActiveStep(s);
-  const {stepActiveStyles, stepActiveTitle, stepActiveBody, disableStep} = useDoneStep(s);
+  const {stepInactiveStyles, stepInactiveTitle, stepInactiveBody, activeStep, resetActiveStep} = useActiveStep(s);
+  const {stepActiveStyles, stepActiveTitle, stepActiveBody, disableStep, resetDoneStep} = useDoneStep(s);
   const {loadingProcess, ajaxRequest, error} = useRequst();
 
   const [buttonStyle, setButtonStyle] = useState(`${s.buttonVerify}`);
   const [stateButton, setActiveButton] = useState(true);
-  const [stepSuccess, setStepSuccess] = useState(false);
   const [stateSecretCode, setStateSecretCode] = useState(false)
 
   useEffect(() => {
     if(step.stepState.active === 'authSecondStep') {
       activeStep(s)
+      resetDoneStep(s)
     } else if(step.stepState.active === 'authThirdStep') {
       disableStep(s)
+      resetActiveStep(s)
     }
-  }, [step.stepState.active, activeStep, disableStep])
+  }, [step.stepState.active, activeStep, disableStep, resetActiveStep, resetDoneStep])
 
 
   const changeStateButton = () => {
@@ -53,11 +55,13 @@ export const LoginSecondStep = (props) => {
   const verifyTgCodeHandler = async () => {
     try {
       errorsData.changeErrors(false);
+      stepSuccess.changeSuccess(true);
+
       const verifyCheck = await ajaxRequest(`/api/auth/login/secret_code/verify`,
       'POST', {...secretCodeForm.secretCodeInput}); 
 
       if (verifyCheck) {
-        setStepSuccess(true);
+        stepSuccess.changeSuccess(true);
         step.switchActiveStep('doneAuthSecondStep');
       }
     } catch (e) {
@@ -116,7 +120,7 @@ export const LoginSecondStep = (props) => {
             </div>
             <div className={s.navKey}>
               {(error && errorsData.isError) ? <MessageError message={error.message}/> : null}
-              {stepSuccess ? <MessageSuccess type={authType}/> : null}
+              {stepSuccess.isSuccess ? <MessageSuccess type={authType}/> : null}
               <button 
               className={s.buttonSendKey}
               onClick={sendCodeHandler}

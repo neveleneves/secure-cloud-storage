@@ -5,6 +5,12 @@ export const useDoneStep = (s) => {
     const [stepActiveTitle, setTitleStyle] = useState(`${s.title} ${s.titleActive}`);
     const [stepActiveBody, setBodyStyle] = useState(`${s.stepBodyStyle}`)
 
+    const resetDoneStep = useCallback(s => {
+        setStepStyles(`${s.step} ${s.stepSuccessMask}`)
+        setTitleStyle(`${s.title} ${s.titleActive}`)
+        setBodyStyle(`${s.stepBodyStyle}`)
+    },[])
+
     const stepMask = (s) => {
         setStepStyles(`${s.step} ${s.stepSuccessMask} ${s.stepSuccessMaskActive}`);
     }
@@ -19,16 +25,17 @@ export const useDoneStep = (s) => {
     }
 
     const disableStep = useCallback(s =>  {
-        setTimeout(stepMask, 1000, s);
-        setTimeout(hideStep, 1300, s);
-        setTimeout(disableActiveTitle, 1300, s)
+        setTimeout(stepMask, 400, s);
+        setTimeout(hideStep, 700, s);
+        setTimeout(disableActiveTitle, 700, s)
     },[])
 
     return {
         stepActiveStyles,
         stepActiveTitle,
         stepActiveBody,
-        disableStep
+        disableStep,
+        resetDoneStep
     }
 };
   

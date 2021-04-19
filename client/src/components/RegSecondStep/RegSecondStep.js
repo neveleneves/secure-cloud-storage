@@ -2,8 +2,8 @@ import React, { useEffect, useState} from "react";
 import { useActiveStep } from "../../hooks/activeStep.hook";
 import { useDoneStep } from "../../hooks/doneStep.hook";
 import { useRequst } from "../../hooks/request.hook";
-import {MessageError} from "../MessageError/MessageError"
-import {MessageSuccess} from "../MessageSuccess/MessageSuccess";
+import { MessageError } from "../MessageError/MessageError"
+import { MessageSuccess } from "../MessageSuccess/MessageSuccess";
 
 import s from './RegSecondStep.module.css'
 
@@ -11,23 +11,25 @@ export const RegSecondStep = (props) => {
   const authType = props.type;
   const step = props.authStateStep;
   const {...errorsData} = props.authErrors;
+  const {...stepSuccess} = props.authSuccess
   const secretCode = props.authSecretCode;
 
-  const {stepInactiveStyles, stepInactiveTitle, stepInactiveBody, activeStep} = useActiveStep(s);
-  const {stepActiveStyles, stepActiveTitle, stepActiveBody, disableStep} = useDoneStep(s);
+  const {stepInactiveStyles, stepInactiveTitle, stepInactiveBody, activeStep, resetActiveStep} = useActiveStep(s);
+  const {stepActiveStyles, stepActiveTitle, stepActiveBody, disableStep, resetDoneStep} = useDoneStep(s);
   const {loadingProcess, ajaxRequest, error} = useRequst();
 
   const [buttonStyle, setButtonStyle] = useState(`${s.buttonVerify}`);
   const [stateButton, setActiveButton] = useState(true);
-  const [stepSuccess, setStepSuccess] = useState(false);
 
   useEffect(() => {
     if(step.stepState.active === 'authSecondStep') {
       activeStep(s)
+      resetDoneStep(s)
     } else if(step.stepState.active === 'authThirdStep') {
       disableStep(s)
+      resetActiveStep(s)
     }
-  }, [step.stepState.active, activeStep, disableStep])
+  }, [step.stepState.active, activeStep, disableStep, resetActiveStep, resetDoneStep])
 
 
   const changeStateButton = () => {
@@ -52,10 +54,12 @@ export const RegSecondStep = (props) => {
   const verifyWebCodeHandler = async () => {
     try {
       errorsData.changeErrors(false);
+      stepSuccess.changeSuccess(false);
+
       const verifyCheck = await ajaxRequest(`/api/auth/reg/secret_code/verify`); 
 
       if (verifyCheck) {
-        setStepSuccess(true);
+        stepSuccess.changeSuccess(true);
         step.switchActiveStep('doneAuthSecondStep');
       }
     } catch (e) {
@@ -108,7 +112,7 @@ export const RegSecondStep = (props) => {
             </div>
             <div className={s.navKeyGenerate}>
               {(error && errorsData.isError) ? <MessageError message={error.message}/> : null}
-              {stepSuccess ? <MessageSuccess type={authType}/> : null}
+              {stepSuccess.isSuccess ? <MessageSuccess type={authType}/> : null}
               <button 
               className={s.buttonGenerate}
               onClick={generateCodeHandler}
@@ -118,7 +122,7 @@ export const RegSecondStep = (props) => {
               className={buttonStyle}
               onClick={verifyWebCodeHandler}
               disabled={stateButton}
-              >Подтвердить</button>
+              >Подтвердить</button> 
             </div>
           </div>
         </div>

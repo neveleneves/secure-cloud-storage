@@ -8,28 +8,41 @@ import s from './AuthPage.module.css'
 
 import { useHandlerForm } from "../../hooks/handlerForm.hook";
 import { useHandlerErrors } from "../../hooks/handlerErrors.hook";
+import { useHandlerSuccess } from "../../hooks/handlerSuccess.hook";
 import { useToggleTab } from "../../hooks/authToggle.hook";
 import { useSwitchStep } from "../../hooks/switchAuthSteps.hook";
 import { useSecretCode } from "../../hooks/secretCode.hook"
 import { useHandlerSC } from "../../hooks/handlerSCForm.hook";
 
 export default function AuthPage() {
-  const authFormHandler = useHandlerForm();
-  const authErrorsHandler = useHandlerErrors();
+  //Hook for toggle a auth type 
   const authTabHandler = useToggleTab();
+  
+  //Hook for switch a active auth step 
   const authStateStep = useSwitchStep();
 
+  //Hooks for success and error message
+  const authErrorsHandler = useHandlerErrors();
+  const authSuccessHandler = useHandlerSuccess();
+
+  //Hook for user form into 1st auth step
+  const authFormHandler = useHandlerForm();
+  
+  //Hook for secret code message into 2nd step (register)
   const authSecretCode = useSecretCode();
   
+  //Hook for secret code form into 2nd step (login)
   const authSCHandler = useHandlerSC();
 
   const tabClickHandler = (event) => {
+    //Toggle auth type and reset active step
     authTabHandler.activeTabHandler(event);
+    authStateStep.switchActiveStep('defaultAuthStep')
+
+    //Reset state for steps, clean a forms/messages 
     authFormHandler.clearInputs();
     authErrorsHandler.changeErrors(false);
-
     authSecretCode.clearSecretCode();
-
     authSCHandler.clearSCInput();
   }
 
@@ -67,6 +80,7 @@ export default function AuthPage() {
                 type={authTabHandler.authType}
                 authForm={authFormHandler}
                 authErrors={authErrorsHandler}
+                authSuccess={authSuccessHandler}
                 authStateStep={authStateStep}
                 />
                 <span className={s.authStepLine}></span>
@@ -77,6 +91,7 @@ export default function AuthPage() {
                   authSecretCode={authSecretCode}
                   authStateStep={authStateStep}
                   authErrors={authErrorsHandler}
+                  authSuccess={authSuccessHandler}
                   />
                   :
                   <LoginSecondStep
@@ -84,11 +99,13 @@ export default function AuthPage() {
                   authSCForm={authSCHandler}
                   authStateStep={authStateStep}
                   authErrors={authErrorsHandler}
+                  authSuccess={authSuccessHandler}
                   />
                 }
                 <span className={s.authStepLine}></span>
                 <AuthThirdStep 
                 type={authTabHandler.authType} 
+                authStateStep={authStateStep}
                 />
                 {/* <span className={s.authStepLine}></span> */}
                 {/* <AuthDoneStep /> */}

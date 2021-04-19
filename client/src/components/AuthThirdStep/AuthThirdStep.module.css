@@ -3,16 +3,159 @@
   background-color: #F4F4F4;
   border-radius: 5px;
   margin-bottom: 30px;
+  position: relative;
+  height: 50px;
+  transition: height 0.5s ease;
 }
 .stepWrapper {
   max-width: 920px;
   margin: 0px auto;
   padding: 18px 0px; 
 }
-.title{
+.stepSuccessMask {
+  height: 200px;
+}
+.stepSuccessMask::before {
+  content: "";
+  width: 100%;
+  padding-top: 0px;
+  position: absolute;
+  border-radius: 5px;
+  background-color: #F4F4F4;
+  z-index: 999;
+  transition: all 0.4s ease;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+.stepSuccessMaskActive::before{
+  padding-top: 150px;
+}
+.stepSuccess{
+  height: 50px;
+}
+.stepStartMask::before {
+  content: "";
+  width: 100%;
+  padding-top: 150px;
+  position: absolute;
+  border-radius: 5px;
+  background-color: #F4F4F4;
+  z-index: 999;
+  transition: all 0.4s ease;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: block;
+}
+.stepStart{
+  height: 200px;
+}
+.stepStartMaskActive::before{
+  padding-top: 0;
+}
+.title{ 
   font-family: Roboto;
   font-style: normal;
   font-weight: normal;
   font-size: 14px;
   color: #A5A5A5;
+}
+.titleActive {
+  color: #000;
+  margin-bottom: 25px;
+}
+.stepBodyStyle {
+  display: block;
+}
+.hideBodyStyle {
+  display: none;
+}
+.bodyContainer{
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+/* .textWrapper {
+  max-width: 525px;
+} */
+.subtitle {
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: normal;
+  font-weight: 300;
+  font-size: 14px;
+  line-height: 200%;
+  height: 50px;
+  margin-bottom: 35px;
+}
+.link {
+  color: #0F82EC;
+}
+.link:hover, .link:active, .link:focus{
+  color: #1671c7;
+}
+.keyContainer {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 14px;
+}
+.keyInput {
+  padding: 0px 20px;
+  width: 250px;
+  height: 40px;
+  border: 0;
+  font-family: Roboto; 
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+}
+.keyInput::-webkit-input-placeholder {
+  color: #A5A5A5;
+}
+.navKey {
+  margin-left: 30px;
+  width: 365px;
+  height: 95px;
+  position: relative;
+}
+.navKey button {
+  position: absolute;
+  bottom: 0;
+  width: 135px;
+  height: 35px;
+  border-radius: 50px;
+  font-family: Roboto;
+  font-style:normal;
+  font-weight:700;
+  font-size: 15px;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+.buttonSendKey {
+  left: 30px;
+  color: #0F82EC;
+  border: 1px solid #0F82EC;
+}
+.buttonSendKey:hover, .buttonSendKey:active, .buttonSendKey:focus{
+  background-color: #0f81ec25;
+}
+.buttonVerify{
+  right: 30px;
+  color: #bdbdbd;
+  border: 1px solid #bdbdbd;
+}
+.buttonVerifyActive{
+  right: 30px;
+  color: white;
+  background-color: #0F82EC;
+  border: 1px solid #0F82EC;
+}
+.buttonVerifyActive:hover, .buttonVerifyActive:active{
+  background-color: #1671c7;
+  border: 1px solid #1671c7;
 }
