@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { NavLink } from "react-router-dom";
+
 import { AuthFirstStep } from "../../components/AuthFirstStep/AuthFirstStep";
 import { RegSecondStep } from "../../components/RegSecondStep/RegSecondStep";
 import { LoginSecondStep } from "../../components/LoginSecondStep/LoginSecondStep";
-import { AuthThirdStep } from "../../components/AuthThirdStep/AuthThirdStep";
+import { RegThirdStep } from "../../components/RegThirdStep/RegThirdStep";
+import { LoginThirdStep } from "../../components/LoginThirdStep/LoginThirdStep";
 
 import s from './AuthPage.module.css'
 
@@ -13,6 +16,7 @@ import { useToggleTab } from "../../hooks/authToggle.hook";
 import { useSwitchStep } from "../../hooks/switchAuthSteps.hook";
 import { useSecretCode } from "../../hooks/secretCode.hook"
 import { useHandlerSC } from "../../hooks/handlerSCForm.hook";
+import { useSuccessLogin } from "../../hooks/successLogin.hook";
 
 export default function AuthPage() {
   //Hook for toggle a auth type 
@@ -34,17 +38,32 @@ export default function AuthPage() {
   //Hook for secret code form into 2nd step (login)
   const authSCHandler = useHandlerSC();
 
+  const {
+    resetLoginSuccess, 
+    activeLoginSuccess, 
+    buttonState, 
+    buttonStyle
+  } = useSuccessLogin(s);
+
   const tabClickHandler = (event) => {
     //Toggle auth type and reset active step
     authTabHandler.activeTabHandler(event);
-    authStateStep.switchActiveStep('defaultAuthStep')
+    authStateStep.switchActiveStep('defaultAuthStep');
 
     //Reset state for steps, clean a forms/messages 
     authFormHandler.clearInputs();
     authErrorsHandler.changeErrors(false);
     authSecretCode.clearSecretCode();
     authSCHandler.clearSCInput();
+    resetLoginSuccess(s);
   }
+
+  useEffect(() => {
+    if(authStateStep.stepState.active === 'authThirdStep' &&
+     authTabHandler.authType === 'login') {
+       activeLoginSuccess(s)
+    } 
+  }, [authStateStep.stepState.active, authTabHandler.authType, activeLoginSuccess])
 
   return (
     <section className={s.auth}>
@@ -103,18 +122,30 @@ export default function AuthPage() {
                   />
                 }
                 <span className={s.authStepLine}></span>
-                <AuthThirdStep 
-                type={authTabHandler.authType} 
-                authStateStep={authStateStep}
-                />
+                {
+                  authTabHandler.authType === "registration" ?
+                  <RegThirdStep 
+                  authStateStep={authStateStep}
+                  />
+                  :
+                  <LoginThirdStep 
+                  authStateStep={authStateStep}
+                 />
+                }
                 {/* <span className={s.authStepLine}></span> */}
-                {/* <AuthDoneStep /> */}
               </div>
               <div className={s.authNav}>
-                {/* <button className="auth__button-back"></button> */}
-                <button className={s.buttonSubmit} disabled>
-                  Завершить
-                </button>
+                {
+                  authTabHandler.authType === "login" ?
+                  <NavLink to="/storage">
+                    <button 
+                    className={buttonStyle}
+                    disabled={buttonState}
+                    >Завершить</button>
+                  </NavLink>
+                  :
+                  null
+                }
               </div>
             </div>
           </div>

@@ -113,3 +113,12 @@
   border: 1px solid #bdbdbd;
   color: #bdbdbd;
 }
+.buttonSubmitActive{
+  background-color: white;
+  border: 1px solid #0fbb68;
+  color: #0fb363;
+}
+.buttonSubmitActive:hover, .buttonSubmitActive:active, .buttonSubmitActive:focus{
+  background-color: #0fbb68;
+  color: white;
+}

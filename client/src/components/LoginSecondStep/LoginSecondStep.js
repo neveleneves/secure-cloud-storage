@@ -55,7 +55,6 @@ export const LoginSecondStep = (props) => {
   const verifyTgCodeHandler = async () => {
     try {
       errorsData.changeErrors(false);
-      stepSuccess.changeSuccess(true);
 
       const verifyCheck = await ajaxRequest(`/api/auth/login/secret_code/verify`,
       'POST', {...secretCodeForm.secretCodeInput}); 
