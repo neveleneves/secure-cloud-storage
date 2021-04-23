@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect} from "react";
 import { NavLink } from "react-router-dom";
 
 import { AuthFirstStep } from "../../components/AuthFirstStep/AuthFirstStep";
@@ -17,6 +17,9 @@ import { useSwitchStep } from "../../hooks/switchAuthSteps.hook";
 import { useSecretCode } from "../../hooks/secretCode.hook"
 import { useHandlerSC } from "../../hooks/handlerSCForm.hook";
 import { useSuccessLogin } from "../../hooks/successLogin.hook";
+import { useLoginConfirm} from "../../hooks/loginConfirm.hook"
+
+import { AuthContext } from "../../context/authContext";
 
 export default function AuthPage() {
   //Hook for toggle a auth type 
@@ -38,12 +41,23 @@ export default function AuthPage() {
   //Hook for secret code form into 2nd step (login)
   const authSCHandler = useHandlerSC();
 
+  const authConfirm = useLoginConfirm()
+
+  const authConfirmPass = useContext(AuthContext)
+
   const {
     resetLoginSuccess, 
     activeLoginSuccess, 
     buttonState, 
     buttonStyle
   } = useSuccessLogin(s);
+
+    useEffect(() => {
+      if(authStateStep.stepState.active === 'authThirdStep' &&
+       authTabHandler.authType === 'login') {
+         activeLoginSuccess(s)
+      } 
+    }, [authStateStep.stepState.active, authTabHandler.authType, activeLoginSuccess])
 
   const tabClickHandler = (event) => {
     //Toggle auth type and reset active step
@@ -58,12 +72,11 @@ export default function AuthPage() {
     resetLoginSuccess(s);
   }
 
-  useEffect(() => {
-    if(authStateStep.stepState.active === 'authThirdStep' &&
-     authTabHandler.authType === 'login') {
-       activeLoginSuccess(s)
-    } 
-  }, [authStateStep.stepState.active, authTabHandler.authType, activeLoginSuccess])
+  const loginConfirmHandler = () => {
+    if(authConfirm.loginConfirmState) {
+      authConfirmPass.confirmUserPass(authConfirm.loginConfirmState)
+    }
+  }
 
   return (
     <section className={s.auth}>
@@ -119,6 +132,7 @@ export default function AuthPage() {
                   authStateStep={authStateStep}
                   authErrors={authErrorsHandler}
                   authSuccess={authSuccessHandler}
+                  authConfirm={authConfirm}
                   />
                 }
                 <span className={s.authStepLine}></span>
@@ -139,6 +153,7 @@ export default function AuthPage() {
                   authTabHandler.authType === "login" ?
                   <NavLink to="/storage">
                     <button 
+                    onClick={loginConfirmHandler}
                     className={buttonStyle}
                     disabled={buttonState}
                     >Завершить</button>

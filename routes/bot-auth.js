@@ -99,7 +99,7 @@ router.get(`/telegram/login/secret_code/send`,  async (req, res)  => {
 //Route for verify login /bot(Token)/telegram/login/secret_code/verify
 router.post(`/telegram/login/secret_code/verify`,  async (req, res)  => {
     try {
-        const {secret_code, tg_chat_id} = req.body
+        const {secret_code, tg_chat_id, user_id} = req.body
 
         //Check if the auth session is active
         if(!secret_code || !tg_chat_id) {
@@ -119,8 +119,8 @@ router.post(`/telegram/login/secret_code/verify`,  async (req, res)  => {
         }
 
         bot.sendMessage(tg_chat_id, `Верификация секретного ключа - пройдена✅`)
-    
-        return res.status(200).json({message: 'Верификация секретного ключа - пройдена'})
+
+        return res.status(200).json({userLoginSuccess: user_id})
     } catch (e) {
         console.warn("Не удалось верифицировать секретный ключ: ", e.message);
         return res.status(500).json({message: 'Не удалось верифицировать секретный ключ'})

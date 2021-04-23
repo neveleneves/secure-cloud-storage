@@ -2,11 +2,13 @@ const express = require('express')
 const config = require('config')
 const mongoose = require('mongoose')
 const session = require('express-session');
+const cookieParser = require("cookie-parser");
+const getAuthStatus = require('./middleware/checkAuthStatus');
 
 const app = express()
-const cookieParser = require("cookie-parser")
 app.use(express.json({extended: true}))
-app.use(cookieParser())
+
+app.use(cookieParser());
 
 app.use(session({
     name: 'sid',
@@ -16,10 +18,13 @@ app.use(session({
     cookie: { 
         // secure: true,   for prod
         secure: false,
-        sameSite: true,
+        sameSite: 'strict',
+        httpOnly: true,
         maxAge: 1000 * 60 * 15
-      }
+    }
 }))
+
+// app.use(getAuthStatus)
 
 //Route authentication
 app.use('/api/auth', require('./routes/auth'))

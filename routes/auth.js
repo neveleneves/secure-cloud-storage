@@ -1,12 +1,12 @@
 const {Router} = require('express')
-const jwt = require('jsonwebtoken')
-const config = require('config')
 const {check, validationResult, body} = require('express-validator')
 const randomize = require('randomatic');
 const crypto = require('crypto')
 
 const User = require('../models/WebUser')
-const AssetRequest = require('./redirect-requst')
+const AssetRequest = require('./redirect-requst');
+const checkAuthStatus = require('../middleware/checkAuthStatus');
+
 const Request = new AssetRequest()
 
 const router = Router()
@@ -112,22 +112,17 @@ router.post(
                 return res.status(400).json({message: 'Данные пользователя - не совпадают'})
             }
 
-            //Getting a jwt token for auth ???
-            const jsonToken = jwt.sign(
-                {
-                    userID: uniqueUser.id,
-                    userEmail: uniqueUser.email,
-                    userLogin: uniqueUser.login,
-                    userPassword: uniqueUser.password
-                },
-                config.get('JWTsecret'),
-                {expiresIn: '1h'}
-            )
-
             //Save data in cookie session
-            req.session.user = uniqueUser 
+            const userLogin = {
+                login,
+                password: uniqueUser.password,
+                tg_chat_id: uniqueUser.tg_chat_id,
+                user_id: uniqueUser._id,
+            }
 
-            res.json({jsonToken, userID: uniqueUser.id})
+            req.session.user =  userLogin
+
+            res.status(200).json({message:'Данные введены верно'})
         }
     } catch (e) {
         res.status(500).json({message: 'Ошибка при авторизации'})
@@ -195,9 +190,8 @@ router.get('/login/secret_code/request',
         }
         
         //Get a user data by login and catch user chat id 
-        const uniqueUser = await User.findOne({login: req.session.user.login})
         const telegramUser = {
-            tg_chat_id: uniqueUser.tg_chat_id
+            tg_chat_id: req.session.user.tg_chat_id
         }
 
         //Sending a data to bot-server for request a secret code
@@ -234,19 +228,53 @@ router.post(
         const {secret_code} = req.body
 
         //Get a user data by login and formation of data for sending to bot-server
-        const uniqueUser = await User.findOne({login: req.session.user.login})
         const telegramUser = {
-            tg_chat_id: uniqueUser.tg_chat_id,
+            tg_chat_id: req.session.user.tg_chat_id,
+            user_id: req.session.user.user_id,
             secret_code: crypto.createHash('sha256').update(secret_code).digest('base64')
         }
 
-        //Sending a data to bot-server for verify login
         Request.botRequest(res, '/telegram/login/secret_code/verify', 'POST', telegramUser)
     } catch (e) {
         res.status(500).json({message: 'Не удалось подтвердить секретный ключ'})
         console.warn("Не удалось подтвердить секретный ключ: ", e.message);
     }
 })
+
 // Logout + cookie clear
+//Route for logout
+
+// router.get(
+//     '/logout',
+//     async (req, res) => {
+//     try {
+//         if(req.session) {
+//             console.log(req.session)
+//             req.session.destroy()
+//         }
+//         console.log(req.session)
+
+//         res.clearCookie('token')
+//         res.clearCookie('sid')
+
+//         res.cookie('token', {}, {maxAge: -1})
+//         res.cookie('sid', {}, {maxAge: -1})
+
+//         res.redirect('/')
+//     } catch (e) {
+//         res.status(500).json({message: 'Не удалось выйти из аккаунта'})
+//         console.warn("Не удалось выйти из аккаунта: ", e.message);
+//     }
+// })
+
+router.get('/user/login_check', checkAuthStatus, async (res, req) => {
+    try {
+        res.status(200).json(true)
+
+    } catch (error) {
+        res.status(500).json({message: 'Не удалось проверить авторизацию пользователя'})
+        console.warn("Не удалось проверить авторизацию пользователя: ", e.message);
+    }
+})
 
 module.exports = router;
