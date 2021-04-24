@@ -41,9 +41,9 @@ export default function AuthPage() {
   //Hook for secret code form into 2nd step (login)
   const authSCHandler = useHandlerSC();
 
-  const authConfirm = useLoginConfirm()
+  const authConfirmPass = useLoginConfirm()
 
-  const authConfirmPass = useContext(AuthContext)
+  const authConfirmStatus = useContext(AuthContext)
 
   const {
     resetLoginSuccess, 
@@ -73,8 +73,8 @@ export default function AuthPage() {
   }
 
   const loginConfirmHandler = () => {
-    if(authConfirm.loginConfirmState) {
-      authConfirmPass.confirmUserPass(authConfirm.loginConfirmState)
+    if(authConfirmPass.loginConfirmState) {
+      authConfirmStatus.confirmUserPass(authConfirmPass.loginConfirmState)
     }
   }
 
@@ -132,7 +132,7 @@ export default function AuthPage() {
                   authStateStep={authStateStep}
                   authErrors={authErrorsHandler}
                   authSuccess={authSuccessHandler}
-                  authConfirm={authConfirm}
+                  authConfirmPass={authConfirmPass}
                   />
                 }
                 <span className={s.authStepLine}></span>

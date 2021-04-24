@@ -39,6 +39,16 @@
   font-weight: 600;
   font-size: 16px;
 }
+.menuList {
+  display: flex;
+  justify-content: space-between;
+}
+.menuList li {
+  margin-right: 50px;
+}
+.menuList li:last-child {
+  margin-right: 0px;
+}
 .itemLink:hover,
 .itemLink:active,
 .itemLink:focus {

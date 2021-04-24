@@ -5,7 +5,6 @@ const crypto = require('crypto')
 
 const User = require('../models/WebUser')
 const AssetRequest = require('./redirect-requst');
-const checkAuthStatus = require('../middleware/checkAuthStatus');
 
 const Request = new AssetRequest()
 
@@ -240,41 +239,4 @@ router.post(
         console.warn("Не удалось подтвердить секретный ключ: ", e.message);
     }
 })
-
-// Logout + cookie clear
-//Route for logout
-
-// router.get(
-//     '/logout',
-//     async (req, res) => {
-//     try {
-//         if(req.session) {
-//             console.log(req.session)
-//             req.session.destroy()
-//         }
-//         console.log(req.session)
-
-//         res.clearCookie('token')
-//         res.clearCookie('sid')
-
-//         res.cookie('token', {}, {maxAge: -1})
-//         res.cookie('sid', {}, {maxAge: -1})
-
-//         res.redirect('/')
-//     } catch (e) {
-//         res.status(500).json({message: 'Не удалось выйти из аккаунта'})
-//         console.warn("Не удалось выйти из аккаунта: ", e.message);
-//     }
-// })
-
-router.get('/user/login_check', checkAuthStatus, async (res, req) => {
-    try {
-        res.status(200).json(true)
-
-    } catch (error) {
-        res.status(500).json({message: 'Не удалось проверить авторизацию пользователя'})
-        console.warn("Не удалось проверить авторизацию пользователя: ", e.message);
-    }
-})
-
 module.exports = router;

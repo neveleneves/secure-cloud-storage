@@ -24,10 +24,12 @@ app.use(session({
     }
 }))
 
-// app.use(getAuthStatus)
 
-//Route authentication
+//Route for authentication
 app.use('/api/auth', require('./routes/auth'))
+
+//Route for user actions
+app.use('/api/user', require('./routes/user'))
 
 //Set the server port value
 const PORT = config.get('port') || 5000

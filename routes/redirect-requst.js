@@ -24,7 +24,7 @@ class AssetRequest {
                         userLoginSuccess,
                     },
                     config.get('JWTsecret'),
-                    {expiresIn: '180s'}
+                    {expiresIn: '14d'}
                     )
                     resRedirect.cookie('token', jsonToken, {httpOnly: true});
 

@@ -1,9 +1,21 @@
-import React from "react";
+import React, { useContext } from "react";
 import { NavLink } from "react-router-dom";
+
 import s from './Navbar.module.css'
 
+import { useRequst } from "../../hooks/request.hook";
+import { AuthContext } from "../../context/authContext";
+
 export const Navbar = (props) => {
-  const isAuthState = props.isAuth
+  const authConfirmStatus = useContext(AuthContext)
+  const {ajaxRequest} = useRequst()
+
+  const logoutHandler = async () => {
+    try {
+      await ajaxRequest(`/api/user/logout`, 'POST'); 
+      authConfirmStatus.confirmUserLogout()
+    } catch (e) {}
+  }
 
   return (
     <header className={s.header}> 
@@ -14,9 +26,9 @@ export const Navbar = (props) => {
               Caption
             </a>
           </div>
-          <div className={s.menu}>
+          <nav className={s.menu}>
             {
-              isAuthState ? 
+              authConfirmStatus.isAuth ? 
               <ul className={s.menuList}>
                 <li className={s.listItem}>
                   <NavLink className={s.itemLink} to="/">
@@ -29,7 +41,11 @@ export const Navbar = (props) => {
                   </NavLink>
                 </li>
                 <li className={s.listItem}>
-                  <NavLink className={s.itemLink} to="/logout">
+                  <NavLink 
+                  className={s.itemLink}
+                  onClick={logoutHandler}
+                  to="/"
+                  >
                     Выход
                   </NavLink>
                 </li>
@@ -43,7 +59,7 @@ export const Navbar = (props) => {
                 </li>
               </ul>
             }
-          </div>
+          </nav>
         </div>
         <span className={s.navbarLine}></span>
       </nav>

@@ -1,8 +1,13 @@
-import React from "react";
+import React, { useContext } from "react";
 import { NavLink } from "react-router-dom";
+
 import s from './IntroPage.module.css'
 
+import { AuthContext } from "../../context/authContext";
+
 export default function IntroPage() {
+  const authConfirmPass = useContext(AuthContext)
+
   return (
     <section className={s.intro}>
       <div className={`${s.wrapper} ${s.container}`}>
@@ -32,9 +37,16 @@ export default function IntroPage() {
           </ul>
         </div>
         <div className={s.buttonWrapper}>
-          <NavLink className={s.buttonLink} to="/auth">
-            <h2 className={s.buttonTitle}>Создать хранилище</h2>
-          </NavLink>
+          {
+            authConfirmPass.token ? 
+            <NavLink className={s.buttonLink} to="/storage">
+              <h2 className={s.buttonTitle}>Войти в хранилище</h2>
+            </NavLink>
+            :
+            <NavLink className={s.buttonLink} to="/auth">
+              <h2 className={s.buttonTitle}>Создать хранилище</h2>
+            </NavLink>
+          }
         </div>
       </div>
     </section>

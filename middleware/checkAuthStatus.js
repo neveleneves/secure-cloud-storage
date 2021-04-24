@@ -9,12 +9,13 @@ module.exports = function checkAuthStatus(req, res, next) {
         return res.status(401).json({message: 'Пользователь не авторизирован'})
     }
 
-    jwt.verify(tokenCookie, config.get('JWTsecret'), (err, user_id) => {
-
+    jwt.verify(tokenCookie, config.get('JWTsecret'), (err, user) => {
         if (err) {
+            console.log(err)
             return res.redirect('/api/auth/logout')
         }
-        req.user = user_id
+        
+        req.user = user
         next()
     })
 };

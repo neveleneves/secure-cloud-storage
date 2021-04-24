@@ -13,7 +13,7 @@ export const LoginSecondStep = (props) => {
   const secretCodeForm = props.authSCForm
   const {...errorsData} = props.authErrors
   const {...stepSuccess} = props.authSuccess
-  const {...authConfirm} = props.authConfirm
+  const {...authConfirmPass} = props.authConfirmPass
 
   const {stepInactiveStyles, stepInactiveTitle, stepInactiveBody, activeStep, resetActiveStep} = useActiveStep(s);
   const {stepActiveStyles, stepActiveTitle, stepActiveBody, disableStep, resetDoneStep} = useDoneStep(s);
@@ -61,7 +61,7 @@ export const LoginSecondStep = (props) => {
       'POST', {...secretCodeForm.secretCodeInput}); 
 
       if (verifyCheck) {
-        authConfirm.changeLoginConfirm(verifyCheck)
+        authConfirmPass.changeLoginConfirm(verifyCheck)
         stepSuccess.changeSuccess(true);
         step.switchActiveStep('doneAuthSecondStep');
       }

@@ -2,12 +2,12 @@ import {useEffect, useState} from 'react'
 
 import { useRequst } from './request.hook';
 
-export const useConfirmPass = () => {
+export const useConfirmStatus = () => {
     const [token, setToken] = useState('') 
     const [userID, setUserID] = useState('') 
     const [isAuth, setIsAuth] = useState(false)
 
-    const {loadingProcess, ajaxRequest, error} = useRequst()
+    const {loadingProcess, ajaxRequest} = useRequst()
 
     const confirmUserPass = (userForPass) => {
         if(userForPass) {
@@ -17,17 +17,22 @@ export const useConfirmPass = () => {
         }
     }
 
+    const confirmUserLogout = () => {
+        setToken('')
+        setUserID('')
+        setIsAuth(false)
+    }
+
     useEffect(() => {
         const checkUserAuth = async () => {
             try {
-                const userIsAuth = await ajaxRequest('/api/auth/user/login_check') 
-                
-                if(userIsAuth) {
-                    
-                }
+                const userIsAuth = await ajaxRequest('/api/user/check') 
 
+                if(userIsAuth) {
+                    confirmUserPass(userIsAuth)
+                }
             } catch (e) {}
-        } 
+        }
         checkUserAuth()
     }, [ajaxRequest]) 
 
@@ -35,7 +40,9 @@ export const useConfirmPass = () => {
         token,
         userID,
         isAuth,
-        confirmUserPass
+        confirmUserPass,
+        confirmUserLogout,
+        loadingProcess,
     }
 };
   
