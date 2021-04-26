@@ -1,0 +1,38 @@
+.storage {
+  background: url(../../img/storage-background.jpg) no-repeat top;
+  min-height: 100vh;
+}
+.wrapper {
+  margin: 0px auto;
+  padding-top: 170px;
+}
+/* .container {
+  max-width: 1230px;
+} */
+.body {
+  width: 100%;
+  height: calc(100vh - 170px);
+  background-color: white;
+}
+.wrapperBody {
+  margin: 0px auto;
+  max-width: 1230px;
+}
+.containerBody {
+  display: grid;
+  gap: 30px;
+  grid-template-columns: repeat(12, 1fr);
+  grid-auto-rows: minmax(750px, auto);
+}
+.content {
+  margin-top: 40px;
+  grid-column: 1/9;
+}
+.contentHeader {
+  margin-bottom: 50px;
+}
+.sidebar {
+  margin-top: 40px;
+  grid-column: 9/13;
+  /* background-color: black; */
+}

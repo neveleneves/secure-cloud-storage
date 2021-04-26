@@ -4,6 +4,8 @@ const checkAuthStatus = require('../middleware/checkAuthStatus');
 
 const router = Router()
 
+//Current prefix /api/user
+
 //Route for check a user auth status /api/user/check
 router.get('/check', checkAuthStatus, async (req, res) => {
     try {

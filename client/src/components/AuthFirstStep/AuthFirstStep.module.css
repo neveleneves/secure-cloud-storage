@@ -1,6 +1,6 @@
 .step {
   width: 100%;
-  background-color: #F4F4F4;
+  background-color: #f4f4f4;
   border-radius: 5px;
   margin-bottom: 30px;
   position: relative;
@@ -10,7 +10,7 @@
 .stepWrapper {
   max-width: 920px;
   margin: 0px auto;
-  padding: 18px 0px; 
+  padding: 18px 0px;
 }
 .stepSuccessMask {
   height: 200px;
@@ -21,17 +21,17 @@
   padding-top: 0px;
   position: absolute;
   border-radius: 5px;
-  background-color: #F4F4F4;
+  background-color: #f4f4f4;
   z-index: 999;
   transition: all 0.4s ease;
   bottom: 0;
   left: 0;
   right: 0;
 }
-.stepSuccessMaskActive::before{
+.stepSuccessMaskActive::before {
   padding-top: 150px;
 }
-.stepSuccess{
+.stepSuccess {
   height: 50px;
 }
 .stepStartMask::before {
@@ -40,7 +40,7 @@
   padding-top: 150px;
   position: absolute;
   border-radius: 5px;
-  background-color: #F4F4F4;
+  background-color: #f4f4f4;
   z-index: 999;
   transition: all 0.4s ease;
   bottom: 0;
@@ -48,18 +48,18 @@
   right: 0;
   display: block;
 }
-.stepStart{
+.stepStart {
   height: 200px;
 }
-.stepStartMaskActive::before{
+.stepStartMaskActive::before {
   padding-top: 0;
 }
-.title{
+.title {
   font-family: Roboto;
   font-style: normal;
   font-weight: normal;
   font-size: 14px;
-  color: #A5A5A5;
+  color: #a5a5a5;
 }
 .titleActive {
   color: #000;
@@ -82,7 +82,7 @@
   display: flex;
   justify-content: space-between;
 }
-.formRow{
+.formRow {
   display: flex;
 }
 .formRow:first-child {
@@ -93,13 +93,13 @@
   width: 215px;
   height: 40px;
   border: 0;
-  font-family: Roboto; 
+  font-family: Roboto;
   font-style: normal;
   font-weight: normal;
   font-size: 14px;
 }
 .formInput::-webkit-input-placeholder {
-  color: #A5A5A5;
+  color: #a5a5a5;
 }
 .formInput:last-child {
   margin-left: 15px;
@@ -116,26 +116,30 @@
   height: 35px;
   border-radius: 50px;
   font-family: Roboto;
-  font-style:normal;
-  font-weight:700;
+  font-style: normal;
+  font-weight: 700;
   font-size: 15px;
   text-align: center;
   transition: all 0.2s ease;
-  border: 1px solid #0F82EC;
+  border: 1px solid #0f82ec;
 }
 .buttonClear {
   left: 30px;
-  color: #0F82EC;
+  color: #0f82ec;
 }
-.buttonClear:hover, .buttonClear:active, .buttonClear:focus {
+.buttonClear:hover,
+.buttonClear:active,
+.buttonClear:focus {
   background-color: #0f81ec25;
 }
-.buttonPost{
+.buttonPost {
   right: 30px;
   color: white;
-  background-color: #0F82EC;
+  background-color: #0f82ec;
 }
-.buttonPost:hover, .buttonPost:active, .buttonPost:focus{
+.buttonPost:hover,
+.buttonPost:active,
+.buttonPost:focus {
   background-color: #1671c7;
   border: 1px solid #1671c7;
 }

@@ -3,7 +3,6 @@ const config = require('config')
 const mongoose = require('mongoose')
 const session = require('express-session');
 const cookieParser = require("cookie-parser");
-const getAuthStatus = require('./middleware/checkAuthStatus');
 
 const app = express()
 app.use(express.json({extended: true}))
@@ -23,7 +22,6 @@ app.use(session({
         maxAge: 1000 * 60 * 15
     }
 }))
-
 
 //Route for authentication
 app.use('/api/auth', require('./routes/auth'))

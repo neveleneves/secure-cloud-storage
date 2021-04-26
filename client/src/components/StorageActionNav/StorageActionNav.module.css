@@ -1,0 +1,51 @@
+.actionNav {
+  margin-bottom: 25px;
+}
+.searchRow {
+  margin-bottom: 25px;
+}
+.searchField {
+  width: 390px;
+  height: 40px;
+  border: 1px solid #b9b9b9;
+  padding-left: 15px;
+  box-sizing: border-box;
+  font-family: Roboto;
+  font-style: normal;
+  font-size: 16px;
+}
+.buttonsRow {
+  display: flex;
+  justify-content: space-between;
+}
+.buttonsRow button {
+  width: 180px;
+  height: 35px;
+  border-radius: 50px;
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 15px;
+  text-align: center;
+  border: 1px solid #0f82ec;
+  padding: 0px;
+}
+.uploadFile {
+  background-color: #0f82ec;
+  color: white;
+}
+.uploadFile:active,
+.uploadFile:hover,
+.uploadFile:focus {
+  background-color: #1671c7;
+  border: 1px solid #1671c7;
+}
+.createFolder {
+  background-color: white;
+  color: #0f82ec;
+}
+.createFolder:active,
+.createFolder:hover,
+.createFolder:focus {
+  background-color: #0f81ec25;
+}
