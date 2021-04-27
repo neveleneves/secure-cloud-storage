@@ -1,26 +1,30 @@
 .filePathList {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: flex-start;
-    height: 40px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+  height: 40px;
+  margin-bottom: 30px;
 }
 .pathLink {
-    font-family: Roboto;
-    font-style: normal;
-    font-weight: 300;
-    font-size: 15px;
-    color: #6d6d6d;
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 15px;
+  color: #6d6d6d;
+  transition: all 0.3s ease;
 }
-.pathLink:hover, .pathLink:active, .pathLink:focus {
-    color: #0F82EC;
+.pathLink:hover,
+.pathLink:active,
+.pathLink:focus {
+  color: #0f82ec;
 }
 .activePathLink {
-    color: #0084ff;
-    font-weight: 500;
-    pointer-events: none;
+  color: #0084ff;
+  font-weight: 500;
+  pointer-events: none;
 }
 .nextDir {
-    color: #6d6d6d;
-    margin: 0px 5px;
+  color: #6d6d6d;
+  margin: 0px 5px;
 }

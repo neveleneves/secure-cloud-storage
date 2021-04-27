@@ -1,8 +1,9 @@
 import React from "react";
-import StorageActionNav from "../../components/StorageActionNav/StorageActionNav";
 
-import StorageFileStructure from "../../components/StorageFileStructure/StorageFileStructure";
 import StoragePathList from "../../components/StoragePathList/StoragePathList";
+import StorageActionNav from "../../components/StorageActionNav/StorageActionNav";
+import StorageDirStructure from "../../components/StorageDirStructure/StorageDirStructure";
+import StorageActiveMenu from "../../components/StorageActiveMenu/StorageActiveMenu";
 
 import s from "./StoragePage.module.css";
 
@@ -13,16 +14,15 @@ export default function StoragePage() {
         <div className={s.body}>
           <div className={s.wrapperBody}>
             <div className={s.containerBody}>
-              <div className={s.content}>
-                <div className={s.contentHeader}>
-                  <StoragePathList />
-                </div>
-                <div className={s.contentBody}>
-                  <StorageFileStructure />
-                </div>
+              <div className={s.contentHeader}>
+                <StoragePathList />
+                <StorageActionNav />
+              </div>
+              <div className={s.contentBody}>
+                <StorageDirStructure />
               </div>
               <div className={s.sidebar}>
-                <StorageActionNav />
+                <StorageActiveMenu />
               </div>
             </div>
           </div>
