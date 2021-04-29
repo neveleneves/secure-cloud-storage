@@ -26,7 +26,6 @@ export const AuthFirstStep = (props) => {
     }
   }, [step.stepState.active, disableStep, activeStep, resetActiveStep, resetDoneStep])
   
-
   const authHandler = async () => {
     try {
       errorsData.changeErrors(false);

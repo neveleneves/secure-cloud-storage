@@ -1,10 +1,11 @@
 const express = require('express')
-const config = require('config')
-const mongoose = require('mongoose')
 const session = require('express-session');
 const cookieParser = require("cookie-parser");
+const config = require('config')
+const mongoose = require('mongoose')
 
 const app = express()
+
 app.use(express.json({extended: true}))
 
 app.use(cookieParser());
@@ -26,8 +27,11 @@ app.use(session({
 //Route for authentication
 app.use('/api/auth', require('./routes/auth'))
 
-//Route for user actions
+//Route for user state
 app.use('/api/user', require('./routes/user'))
+
+//Route for actions in storage
+app.use('/api/storage', require('./routes/storage'))
 
 //Set the server port value
 const PORT = config.get('port') || 5000

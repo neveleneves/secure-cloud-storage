@@ -30,12 +30,13 @@
   font-family: Roboto;
   font-style: normal;
   font-size: 15px;
+  border-radius: 50px;
 }
 .searchField:focus,
 .searchField:active {
   border: 1px solid #0f82ec;
 }
-.buttonsRow {
+.buttonsRow form {
   width: 380px;
   height: 35px;
   display: flex;
@@ -46,18 +47,18 @@
 .buttonsRow button {
   width: 180px;
   height: 100%;
-  /* border-radius: 50px; */
+  border-radius: 50px;
   font-family: Roboto;
   font-style: normal;
   font-weight: 700;
   font-size: 15px;
   text-align: center;
   transition: all 0.2s ease;
-  border: 1px solid #0f82ec;
   padding: 0px;
 }
 .uploadFile {
   background-color: #0f82ec;
+  border: 1px solid #0f82ec;
   color: white;
 }
 .uploadFile:active,
@@ -66,12 +67,19 @@
   background-color: #1671c7;
   border: 1px solid #1671c7;
 }
-.createFolder {
+.sendFileDisable {
   background-color: white;
-  color: #0f82ec;
+  border: 1px solid #bdbdbd;
+  color: #bdbdbd;
 }
-.createFolder:active,
-.createFolder:hover,
-.createFolder:focus {
-  background-color: #0f81ec25;
+.sendFileActive {
+  background-color: white;
+  border: 1px solid #0fbb68;
+  color: #0fb363;
+}
+.sendFileActive:active,
+.sendFileActive:hover,
+.sendFileActive:focus {
+  background-color: #0fbb68;
+  color: white;
 }
