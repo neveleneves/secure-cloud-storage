@@ -9,7 +9,7 @@
 tr td {
   border-bottom: 2px solid #b9b9b9;
 }
-tr:not(:first-child){
+tr:not(:first-child) {
   transition: all 0.1s ease;
   max-height: 50px;
 }
@@ -26,7 +26,8 @@ tr:not(:first-child):hover {
 .titleLine td {
   padding: 0px 0px 15px 0px;
 }
-.titleTypeFile, .fileType{
+.titleTypeFile,
+.fileType {
   width: 45px;
   text-align: center;
   vertical-align: middle;
@@ -62,4 +63,15 @@ tr:not(:first-child):hover {
 }
 .fileDownload {
   margin-right: 5px;
+}
+.titleContainer {
+  max-width: fit-content;
+  margin: 50px auto;
+}
+.emptyTitle {
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 16px;
+  color: #6d6d6d;
 }

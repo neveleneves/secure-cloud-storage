@@ -1,13 +1,17 @@
 import React from "react";
 
-import StoragePathList from "../../components/StoragePathList/StoragePathList";
-import StorageActionNav from "../../components/StorageActionNav/StorageActionNav";
-import StorageDirStructure from "../../components/StorageDirStructure/StorageDirStructure";
-import StorageActiveMenu from "../../components/StorageActiveMenu/StorageActiveMenu";
+import { StoragePathList } from "../../components/StoragePathList/StoragePathList";
+import { StorageActionNav } from "../../components/StorageActionNav/StorageActionNav";
+import { StorageDirStructure } from "../../components/StorageDirStructure/StorageDirStructure";
+import { StorageActiveMenu } from "../../components/StorageActiveMenu/StorageActiveMenu";
 
 import s from "./StoragePage.module.css";
 
+import { useGetStorage } from "../../hooks/getStorageDirectory.hook";
+
 export default function StoragePage() {
+  const {loadingProcess, storageFiles} = useGetStorage()
+
   return (
     <section className={s.storage}>
       <div className={`${s.wrapper} ${s.container}`}>
@@ -19,7 +23,9 @@ export default function StoragePage() {
                 <StorageActionNav />
               </div>
               <div className={s.contentBody}>
-                <StorageDirStructure />
+                <StorageDirStructure 
+                userStorage={storageFiles}
+                />
               </div>
               <div className={s.sidebar}>
                 <StorageActiveMenu />

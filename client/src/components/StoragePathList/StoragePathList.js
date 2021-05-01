@@ -2,7 +2,7 @@ import React from "react";
 
 import s from "./StoragePathList.module.css";
 
-export default function StoragePathList() {
+export const StoragePathList = () => {
   return (
     <ul className={s.filePathList}>
       <li className={s.pathItem}>

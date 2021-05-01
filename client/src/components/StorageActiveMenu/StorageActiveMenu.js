@@ -2,7 +2,7 @@ import React from "react";
 
 import s from "./StorageActiveMenu.module.css";
 
-export default function StorageActiveMenu() {
+export const StorageActiveMenu = () => {
   return (
     <div className={s.storageMenu}>
       <nav className={s.menuNav}>

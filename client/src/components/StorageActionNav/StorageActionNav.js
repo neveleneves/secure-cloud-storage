@@ -1,14 +1,14 @@
 import React, { useRef, useState } from "react";
-import { useRequst } from "../../hooks/request.hook";
+// import { useRequst } from "../../hooks/request.hook";
 
 import s from "./StorageActionNav.module.css";
 
-export default function StorageActionNav() {
+export const StorageActionNav = () => {
   const hiddenFileInput = useRef(null);
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [sendButtonStyle, setSendButtonStyle] = useState(`${s.sendFileDisable}`);
-  const {ajaxRequest, loadingProcess, error } = useRequst();
+  // const {ajaxRequest, loadingProcess, error } = useRequst();
 
   const uploadOnClickHandler = () => {
     hiddenFileInput.current.click();
@@ -34,7 +34,7 @@ export default function StorageActionNav() {
       const formData = new FormData();
       formData.append("file", file);
 
-      const uploadResponse = await fetch("/api/storage/upload", {
+      await fetch("/api/storage/upload", {
         method: "POST",
         body: formData,
       });

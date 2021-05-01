@@ -6,7 +6,7 @@ import s from './Navbar.module.css'
 import { useRequst } from "../../hooks/request.hook";
 import { AuthContext } from "../../context/authContext";
 
-export const Navbar = (props) => {
+export const Navbar = () => {
   const authConfirmStatus = useContext(AuthContext)
   const {ajaxRequest} = useRequst()
 
