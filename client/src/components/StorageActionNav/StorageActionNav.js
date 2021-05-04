@@ -3,11 +3,15 @@ import React, { useRef, useState } from "react";
 
 import s from "./StorageActionNav.module.css";
 
-export const StorageActionNav = () => {
+export const StorageActionNav = (props) => {
+  const { updateStorage, loadingStorage} = props;
+
   const hiddenFileInput = useRef(null);
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [sendButtonStyle, setSendButtonStyle] = useState(`${s.sendFileDisable}`);
+  const [sendButtonStyle, setSendButtonStyle] = useState(
+    `${s.sendFileDisable}`
+  );
   // const {ajaxRequest, loadingProcess, error } = useRequst();
 
   const uploadOnClickHandler = () => {
@@ -16,10 +20,10 @@ export const StorageActionNav = () => {
 
   const uploadOnChangeHandler = (event) => {
     const newFile = event.target.files[0];
-    
+
     if (newFile) {
       setFile(newFile);
-      setSendButtonStyle(`${s.sendFileActive}`)
+      setSendButtonStyle(`${s.sendFileActive}`);
     }
   };
 
@@ -34,16 +38,26 @@ export const StorageActionNav = () => {
       const formData = new FormData();
       formData.append("file", file);
 
-      await fetch("/api/storage/upload", {
+      const response = await fetch("/api/storage/upload", {
         method: "POST",
         body: formData,
       });
-      
+      const uploadFile = await response.json();
+
+      if (!response.ok) {
+        throw new Error(uploadFile.message || "Запрос был выполнен неверно");
+      }
+
+      updateStorage();
+
       setLoading(false);
       setFile(null);
-      setSendButtonStyle(`${s.sendFileDisable}`)
+      setSendButtonStyle(`${s.sendFileDisable}`);
     } catch (e) {
       setLoading(false);
+      setFile(null);
+      setSendButtonStyle(`${s.sendFileDisable}`);
+
       console.warn("Не удалось загрузить файл: ", e.message);
     }
   };
@@ -89,4 +103,4 @@ export const StorageActionNav = () => {
       </nav>
     </div>
   );
-}
+};

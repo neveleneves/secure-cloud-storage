@@ -1,0 +1,52 @@
+.fileLine {
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 15px;
+}
+.fileLine td {
+  padding: 10px 0px;
+  vertical-align: middle;
+  overflow: hidden;
+  white-space: nowrap; 
+  text-overflow: ellipsis;
+}
+.fileType {
+  width: 45px;
+  text-align: center;
+  vertical-align: middle;
+}
+.fileName {
+  max-width: 500px;
+  text-align: left;
+}
+.fileNameLink {
+  color: black;
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 16px;
+}
+.fileSize,
+.fileAction {
+  width: 200px;
+  text-align: center;
+}
+.fileAction button {
+  border: 0px;
+  background-color:initial;
+  width: 25px;
+  padding: 0px;
+}
+.fileDelete svg path, .fileDownload svg path{
+  transition: all 0.2s ease;
+}
+.fileDownload {
+  margin-right: 5px;
+}
+.fileDelete:hover svg path, .fileDelete:active svg path, .fileDelete:focus svg path {
+  stroke: #ff0000;
+}
+.fileDownload:hover svg path, .fileDownload:active svg path, .fileDownload:focus svg path{
+  stroke: #00df77;
+}

@@ -1,14 +1,32 @@
 import { useEffect, useState } from "react";
 
+import { useRequst } from "./request.hook";
+
 export const useGetStorage = () => {
   const [loadingProcess, setLoading] = useState(true);
   const [storageFiles, setStorageFiles] = useState(null);
+  const {ajaxRequest} = useRequst();
+
+  const updateUserStorage = async () => {
+    try {
+      setLoading(true)
+      const storageUpdated = await ajaxRequest("/api/storage/load");
+
+      if (storageUpdated.length) {
+        setStorageFiles(storageUpdated);
+      }
+      setLoading(false);
+    } catch (e) {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     let isCancelled = false;
 
-    async function getUserStorage() {
+    const getUserStorage = async () => {
       try {
+        setLoading(true)
         const response = await fetch("/api/storage/load", { method: "GET" });
         const userStorage = await response.json();
 
@@ -17,7 +35,7 @@ export const useGetStorage = () => {
         }
 
         if (!isCancelled) {
-          if (userStorage.length > 1) {
+          if (userStorage.length) {
             setStorageFiles(userStorage);
           }
           setLoading(false);
@@ -27,7 +45,7 @@ export const useGetStorage = () => {
           setLoading(false);
         }
       }
-    }
+    };
     getUserStorage();
 
     return () => {
@@ -38,5 +56,6 @@ export const useGetStorage = () => {
   return {
     loadingProcess,
     storageFiles,
+    updateUserStorage
   };
 };

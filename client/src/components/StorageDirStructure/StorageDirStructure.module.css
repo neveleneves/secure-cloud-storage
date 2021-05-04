@@ -26,43 +26,19 @@ tr:not(:first-child):hover {
 .titleLine td {
   padding: 0px 0px 15px 0px;
 }
-.titleTypeFile,
-.fileType {
+.titleTypeFile {
   width: 45px;
   text-align: center;
   vertical-align: middle;
 }
-.titleName,
-.fileName {
+.titleName {
   width: 575px;
   text-align: left;
 }
-.fileNameLink {
-  color: black;
-  font-family: Roboto;
-  font-style: normal;
-  font-weight: 300;
-  font-size: 16px;
-}
-.titleLastChange,
-.titleAction,
-.fileLastChange,
-.fileAction {
+.titleSize,
+.titleAction{
   width: 200px;
   text-align: center;
-}
-.fileLine {
-  font-family: Roboto;
-  font-style: normal;
-  font-weight: 300;
-  font-size: 15px;
-}
-.fileLine td {
-  padding: 10px 0px;
-  vertical-align: middle;
-}
-.fileDownload {
-  margin-right: 5px;
 }
 .titleContainer {
   max-width: fit-content;

@@ -9,15 +9,16 @@ module.exports = async function checkStorageExist(req, res, next) {
 
     const storageExist = await StorageProfile.findOne({
       name: userID,
-      parent_dir: userID,
+      parent_dir: 'uploads',
       path: "/",
       type: "directory",
     });
 
+
     if (!storageExist) {
       const newStorage = new StorageProfile({
         name: userID,
-        parent_dir: userID,
+        parent_dir: 'uploads',
         path: "/",
         type: "directory",
       });
