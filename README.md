@@ -2,7 +2,7 @@
 Secure cloud file storage with data encryption
 ____
 ## Stack of project:
-* JS, HTML, CSS-modules
+* JS, JSX, CSS-modules
 * React.js 
 * Express.js
 * REST API, AJAX
