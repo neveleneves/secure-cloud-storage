@@ -41,8 +41,10 @@ tr:not(:first-child):hover {
   text-align: center;
 }
 .titleContainer {
-  max-width: fit-content;
-  margin: 50px auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
 }
 .emptyTitle {
   font-family: Roboto;
@@ -50,4 +52,15 @@ tr:not(:first-child):hover {
   font-weight: 300;
   font-size: 16px;
   color: #6d6d6d;
+}
+.loaderContainer {
+  width: 100%;
+  height: 200px
+}
+.loaderContainer div{
+  display: flex;
+  width: inherit;
+  height: inherit;
+  justify-content: center;
+  align-items: center;
 }

@@ -1,65 +1,29 @@
-import React, { useRef, useState } from "react";
-// import { useRequst } from "../../hooks/request.hook";
+import React from "react";
+
+import { useUploadFile } from "../../hooks/uploadFIle.hook";
 
 import s from "./StorageActionNav.module.css";
 
 export const StorageActionNav = (props) => {
-  const { updateStorage, loadingStorage} = props;
+  const { updateStorage } = props;
 
-  const hiddenFileInput = useRef(null);
-  const [file, setFile] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [sendButtonStyle, setSendButtonStyle] = useState(
-    `${s.sendFileDisable}`
-  );
-  // const {ajaxRequest, loadingProcess, error } = useRequst();
+  const {
+    hiddenFileInput,
+    sendButtonStyle,
+    file,
+    loadingProcess,
+    sendToServer,
+    uploadOnClickHandler,
+    uploadOnChangeHandler,
+  } = useUploadFile(s);
 
-  const uploadOnClickHandler = () => {
-    hiddenFileInput.current.click();
-  };
-
-  const uploadOnChangeHandler = (event) => {
-    const newFile = event.target.files[0];
-
-    if (newFile) {
-      setFile(newFile);
-      setSendButtonStyle(`${s.sendFileActive}`);
-    }
+  const sendFileHandler = async () => {
+    await sendToServer();
+    await updateStorage();
   };
 
   const submitHandler = (event) => {
     event.preventDefault();
-  };
-
-  const sendToServer = async () => {
-    try {
-      setLoading(true);
-
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const response = await fetch("/api/storage/upload", {
-        method: "POST",
-        body: formData,
-      });
-      const uploadFile = await response.json();
-
-      if (!response.ok) {
-        throw new Error(uploadFile.message || "Запрос был выполнен неверно");
-      }
-
-      updateStorage();
-
-      setLoading(false);
-      setFile(null);
-      setSendButtonStyle(`${s.sendFileDisable}`);
-    } catch (e) {
-      setLoading(false);
-      setFile(null);
-      setSendButtonStyle(`${s.sendFileDisable}`);
-
-      console.warn("Не удалось загрузить файл: ", e.message);
-    }
   };
 
   return (
@@ -93,8 +57,8 @@ export const StorageActionNav = (props) => {
             />
             <button
               className={sendButtonStyle}
-              onClick={sendToServer}
-              disabled={loading || !file}
+              onClick={sendFileHandler}
+              disabled={loadingProcess || !file}
             >
               Отправить
             </button>

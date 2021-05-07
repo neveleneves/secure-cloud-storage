@@ -1,19 +1,24 @@
 import { useEffect, useState } from "react";
 
-import { useRequst } from "./request.hook";
-
 export const useGetStorage = () => {
-  const [loadingProcess, setLoading] = useState(true);
+  const [loadingProcess, setLoading] = useState(false);
   const [storageFiles, setStorageFiles] = useState(null);
-  const {ajaxRequest} = useRequst();
 
-  const updateUserStorage = async () => {
+  const getUserStorage = async () => {
     try {
-      setLoading(true)
-      const storageUpdated = await ajaxRequest("/api/storage/load");
+      setLoading(true);
 
-      if (storageUpdated.length) {
-        setStorageFiles(storageUpdated);
+      const response = await fetch("/api/storage/load", { method: "GET" });
+      const userStorage = await response.json();
+
+      if (!response.ok) {
+        throw new Error(userStorage.message || "Запрос был выполнен неверно");
+      }
+
+      if (userStorage.length) {
+        setStorageFiles(userStorage);
+      } else {
+        setStorageFiles(null);
       }
       setLoading(false);
     } catch (e) {
@@ -26,17 +31,22 @@ export const useGetStorage = () => {
 
     const getUserStorage = async () => {
       try {
-        setLoading(true)
-        const response = await fetch("/api/storage/load", { method: "GET" });
-        const userStorage = await response.json();
-
-        if (!response.ok) {
-          throw new Error(userStorage.message || "Запрос был выполнен неверно");
-        }
-
         if (!isCancelled) {
+          setLoading(true);
+
+          const response = await fetch("/api/storage/load", { method: "GET" });
+          const userStorage = await response.json();
+
+          if (!response.ok) {
+            throw new Error(
+              userStorage.message || "Запрос был выполнен неверно"
+            );
+          }
+
           if (userStorage.length) {
             setStorageFiles(userStorage);
+          } else {
+            setStorageFiles(null);
           }
           setLoading(false);
         }
@@ -56,6 +66,6 @@ export const useGetStorage = () => {
   return {
     loadingProcess,
     storageFiles,
-    updateUserStorage
+    getUserStorage,
   };
 };

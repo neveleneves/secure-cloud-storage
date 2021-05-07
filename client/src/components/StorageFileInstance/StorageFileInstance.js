@@ -1,6 +1,4 @@
-import React, { useState } from "react";
-
-import { useRequest } from "../../hooks/request.hook";
+import React from "react";
 
 import { ReactComponent as DocumentLogo } from "../../img/text-document-alt.svg";
 import { ReactComponent as MediaLogo } from "../../img/image-document.svg";
@@ -9,44 +7,24 @@ import { ReactComponent as DirectoryLogo } from "../../img/folder.svg";
 import { ReactComponent as DownloadLogo } from "../../img/download.svg";
 import { ReactComponent as DeleteLogo } from "../../img/delete.svg";
 
+import { useFileAction } from "../../hooks/fileInstanceAction.hook";
+
 import s from "./StorageFileInstance.module.css";
 
 export const StorageFileInstance = (props) => {
-  const { file, updateStorage} = props;
+  const { file, updateStorage } = props;
 
-  const [loadingDownload, setLoadingDownload] = useState(false);
-  const [loadingDelete, setLoadingDelete] = useState(false);
-  const { ajaxRequest } = useRequest();
+  const {
+    loadingDownload,
+    loadingDelete,
+    fileState,
+    downloadOnClickHandler,
+    deleteFile,
+  } = useFileAction(file);
 
-  const downloadFileHandler = async () => {
-    try {
-      setLoadingDownload(true);
-
-      const fileDownloaded = await ajaxRequest("/api/storage/download/:id");
-      if(fileDownloaded) {
-        
-      }
-      setLoadingDownload(false);
-    } catch (e) {
-      setLoadingDownload(false);
-      console.warn("Не удалось загрузить файл с сервера", e.message);
-    }
-  };
-
-  const deleteFileHandler = async () => {
-    try {
-      setLoadingDelete(true);
-
-      const fileDeleted = await ajaxRequest("/api/storage/delete/:id", 'DELETE')
-      if(fileDeleted) {
-        updateStorage()
-      }
-
-      setLoadingDelete(false);
-    } catch (e) {
-      setLoadingDelete(false);
-      console.warn("Не удалось удалить файл с сервера", e.message);
-    }
+  const deleteOnClickHandler = async (event) => {
+    await deleteFile();
+    await updateStorage();
   };
 
   const getTypeFileLogo = () => {
@@ -62,25 +40,35 @@ export const StorageFileInstance = (props) => {
     }
   };
 
-  return (
+  return fileState ? (
     <tr className={s.fileLine}>
       <td className={s.fileType}>{getTypeFileLogo()}</td>
       <td className={s.fileName}>
-        <a className={s.fileNameLink} href="/">
-          {file.name}
-        </a>
+        <button 
+        className={s.fileNameLink} 
+        onClick={downloadOnClickHandler}>
+        {file.name}</button>
       </td>
       <td className={s.fileSize}>{file.size} MB</td>
       <td className={s.fileAction}>
         <nav className={s.fileNav}>
-          <button onClick={downloadFileHandler} className={s.fileDownload}>
+          <button
+            className={s.fileDownload}
+            onClick={downloadOnClickHandler}
+            disabled={loadingDownload}
+          >
             <DownloadLogo />
           </button>
-          <button onClick={deleteFileHandler} className={s.fileDelete}>
+          <button
+            className={s.fileDelete}
+            href={"!#"}
+            onClick={deleteOnClickHandler}
+            disabled={loadingDelete}
+          >
             <DeleteLogo />
           </button>
         </nav>
       </td>
     </tr>
-  );
+  ) : null;
 };

@@ -30,7 +30,7 @@ export const useConfirmStatus = () => {
                 const userIsAuth = await response.json()
                 
                 if (!response.ok) {
-                    throw new Error(userIsAuth.message || "Запрос был выполнен  неверно");
+                    throw new Error(userIsAuth.message || "Запрос был выполнен неверно");
                 }
                 
                 if(!isCancelled) {

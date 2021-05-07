@@ -1,7 +1,7 @@
 import React, { useEffect, useState} from "react";
 import { useActiveStep } from "../../hooks/activeStep.hook";
 import { useDoneStep } from "../../hooks/doneStep.hook";
-import { useRequst } from "../../hooks/request.hook";
+import { useRequest } from "../../hooks/request.hook";
 import { MessageError } from "../MessageError/MessageError"
 import { MessageSuccess } from "../MessageSuccess/MessageSuccess";
 
@@ -16,7 +16,7 @@ export const RegSecondStep = (props) => {
 
   const {stepInactiveStyles, stepInactiveTitle, stepInactiveBody, activeStep, resetActiveStep} = useActiveStep(s);
   const {stepActiveStyles, stepActiveTitle, stepActiveBody, disableStep, resetDoneStep} = useDoneStep(s);
-  const {loadingProcess, ajaxRequest, error} = useRequst();
+  const {loadingProcess, ajaxRequest, error} = useRequest();
 
   const [buttonStyle, setButtonStyle] = useState(`${s.buttonVerify}`);
   const [stateButton, setActiveButton] = useState(true);

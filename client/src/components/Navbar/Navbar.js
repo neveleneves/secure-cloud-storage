@@ -3,12 +3,12 @@ import { NavLink } from "react-router-dom";
 
 import s from './Navbar.module.css'
 
-import { useRequst } from "../../hooks/request.hook";
+import { useRequest } from "../../hooks/request.hook";
 import { AuthContext } from "../../context/authContext";
 
 export const Navbar = () => {
   const authConfirmStatus = useContext(AuthContext)
-  const {ajaxRequest} = useRequst()
+  const {ajaxRequest} = useRequest()
 
   const logoutHandler = async () => {
     try {

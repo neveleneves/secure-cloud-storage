@@ -21,18 +21,23 @@
   text-align: left;
 }
 .fileNameLink {
+  border: 0;
+  padding: 0;
+  cursor: pointer;
   color: black;
   font-family: Roboto;
   font-style: normal;
   font-weight: 300;
   font-size: 16px;
+  background-color:initial;
 }
 .fileSize,
 .fileAction {
   width: 200px;
   text-align: center;
 }
-.fileAction button {
+.fileAction button{
+  cursor: pointer;
   border: 0px;
   background-color:initial;
   width: 25px;

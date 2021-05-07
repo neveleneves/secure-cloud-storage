@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import { useRequst } from "../../hooks/request.hook";
+import { useRequest } from "../../hooks/request.hook";
 import { useDoneStep } from "../../hooks/doneStep.hook";
 import { useActiveStep } from "../../hooks/activeStep.hook";
 import { MessageError } from "../MessageError/MessageError";
@@ -13,7 +13,7 @@ export const AuthFirstStep = (props) => {
   const {...stepSuccess} = props.authSuccess
   const step = props.authStateStep;
 
-  const {loadingProcess, ajaxRequest, error} = useRequst();
+  const {loadingProcess, ajaxRequest, error} = useRequest();
   const {stepInactiveStyles, stepInactiveTitle, stepInactiveBody, activeStep,resetActiveStep} = useActiveStep(s)
   const {stepActiveStyles, stepActiveTitle, stepActiveBody, disableStep, resetDoneStep} = useDoneStep(s);
   useEffect(() => {

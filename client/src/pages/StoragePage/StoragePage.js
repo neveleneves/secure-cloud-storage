@@ -10,8 +10,8 @@ import s from "./StoragePage.module.css";
 import { useGetStorage } from "../../hooks/getStorageDirectory.hook";
 
 export default function StoragePage() {
-  const {loadingProcess, storageFiles, updateUserStorage} = useGetStorage()
-
+  const {loadingProcess, storageFiles, getUserStorage} = useGetStorage()
+  
   return (
     <section className={s.storage}>
       <div className={`${s.wrapper} ${s.container}`}>
@@ -21,14 +21,14 @@ export default function StoragePage() {
               <div className={s.contentHeader}>
                 <StoragePathList />
                 <StorageActionNav 
-                updateStorage={updateUserStorage}
+                updateStorage={getUserStorage}
                 loadingStorage={loadingProcess}
                 />
               </div>
               <div className={s.contentBody}>
                 <StorageDirStructure 
                 userFiles={storageFiles}
-                updateStorage={updateUserStorage}
+                updateStorage={getUserStorage}
                 loadingStorage={loadingProcess}
                 />
               </div>

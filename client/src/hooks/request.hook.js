@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 
-export const useRequst = () => {
+export const useRequest = () => {
   const [error, setError] = useState(null);
   const [loadingProcess, setLoading] = useState(false);
 
