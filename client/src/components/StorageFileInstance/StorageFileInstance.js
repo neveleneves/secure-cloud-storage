@@ -47,7 +47,10 @@ export const StorageFileInstance = (props) => {
         <button 
         className={s.fileNameLink} 
         onClick={downloadOnClickHandler}>
-        {file.name}</button>
+          <span
+          className={s.fileNameLinkText}
+          >{file.name}</span>
+        </button>
       </td>
       <td className={s.fileSize}>{file.size} MB</td>
       <td className={s.fileAction}>

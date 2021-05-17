@@ -1,15 +1,25 @@
 .fileLine {
+  height: 50px;
+  display: table;
+  table-layout: fixed;
+  width: 100%;
+  transition: all 0.1s ease;
+  max-height: 50px;
   font-family: Roboto;
   font-style: normal;
   font-weight: 300;
   font-size: 15px;
 }
+.fileLine:hover {
+  background-color: #e7e7e7;
+}
 .fileLine td {
   padding: 10px 0px;
   vertical-align: middle;
-  overflow: hidden;
-  white-space: nowrap; 
-  text-overflow: ellipsis;
+  border-bottom: 2px solid #b9b9b9;
+}
+.fileLine:first-child {
+  border-top: 2px solid #b9b9b9;
 }
 .fileType {
   width: 45px;
@@ -17,7 +27,7 @@
   vertical-align: middle;
 }
 .fileName {
-  max-width: 500px;
+  width: 575px;
   text-align: left;
 }
 .fileNameLink {
@@ -30,6 +40,10 @@
   font-weight: 300;
   font-size: 16px;
   background-color:initial;
+  max-width: 575px;
+  overflow: hidden;
+  white-space: nowrap; 
+  text-overflow: ellipsis;
 }
 .fileSize,
 .fileAction {

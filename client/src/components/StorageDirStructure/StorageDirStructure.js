@@ -21,13 +21,15 @@ export const StorageDirStructure = (props) => {
             </div>
           ) : (
             <table className={s.dirTable}>
-              <tbody>
+              <thead>
                 <tr className={s.titleLine}>
                   <td className={s.titleTypeFile}></td>
                   <td className={s.titleName}>Имя</td>
                   <td className={s.titleSize}>Размер файла</td>
                   <td className={s.titleAction}>Действие</td>
                 </tr>
+              </thead>
+              <tbody>
                 {userFiles.map((fileInstance) => {
                   return (
                     <StorageFileInstance
@@ -41,11 +43,11 @@ export const StorageDirStructure = (props) => {
             </table>
           )}
         </div>
-      ) : 
-      <div className={s.loaderContainer}>
-        <LoadingSpinner/>
-      </div>
-      }
+      ) : (
+        <div className={s.loaderContainer}>
+          <LoadingSpinner />
+        </div>
+      )}
     </div>
   );
 };

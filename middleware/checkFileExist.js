@@ -21,7 +21,7 @@ module.exports = async function checkFileExist(req, res, next) {
 
     const fileToAction = await StorageProfile.findOne({
       parent_dir: userID,
-      name: fileName,
+      unique_name: fileName,
     });
     if (!fileToAction) {
       return res.status(400).json({ message: "Выбранный файл - отсутствует" });
@@ -31,7 +31,7 @@ module.exports = async function checkFileExist(req, res, next) {
     if (!fs.existsSync(file)) {
       await StorageProfile.findOneAndDelete({
         parent_dir: userID,
-        name: fileName,
+        unique_name: fileName,
       });
 
       return res

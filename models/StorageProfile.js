@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 
 const StorageProfilesSchema = new Schema({
   name: { type: String, required: true, unique: true },
+  unique_name: { type: String, required: false, unique: true },
   parent_dir: { type: String, required: true, unique: false },
   size: { type: Number, required: false, unique: false },
   path: { type: String, required: true, unique: false },

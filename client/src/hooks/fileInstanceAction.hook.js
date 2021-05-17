@@ -12,7 +12,7 @@ export const useFileAction = (file) => {
     try {
       setLoadingDownload(true);
 
-      const response = await fetch(`/api/storage/download/${file.name}`);
+      const response = await fetch(`/api/storage/download/${file.unique_name}`);
       if (response.ok) {
         let { protocol, hostname, port } = window.location;
         hostname === "localhost"
@@ -23,7 +23,7 @@ export const useFileAction = (file) => {
           `${protocol}//` +
             `${hostname}` +
             `:${port}` +
-            `/api/storage/download/${file.name}`,
+            `/api/storage/download/${file.unique_name}`,
           "_blank"
         );
       }
@@ -40,7 +40,7 @@ export const useFileAction = (file) => {
       setLoadingDelete(true);
 
       const fileDeleted = await ajaxRequest(
-        `/api/storage/delete/${file.name}`,
+        `/api/storage/delete/${file.unique_name}`,
         "DELETE"
       );
 

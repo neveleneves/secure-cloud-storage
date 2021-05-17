@@ -45,6 +45,7 @@ router.post(
 
       const newFile = new StorageProfile({
         name: file.originalname,
+        unique_name: file.filename,
         parent_dir: userID,
         path: currentDir,
         size: (file.size / 1024 / 1024).toFixed(2),
@@ -122,7 +123,7 @@ router.delete(
 
       const deletedFile = await StorageProfile.findOneAndDelete({
         parent_dir: userID,
-        name: fileName,
+        unique_name: fileName,
       });
       if (!deletedFile) {
         return res
@@ -151,22 +152,48 @@ router.delete(
   }
 );
 
-//Route for delete directory from server by id
-// router.delete(
-//   "/delete/:file(*)",
-//   [checkAuthStatus, checkStorageExist, checkFileExist],
-//   async (req, res) => {
-//     try {
-//       const fileName = req.params.file
-//       const userID = req.user.userLoginSuccess;
+//!!!!!!!!!!! Сurrent position
+router.post(
+  "/create_dir/:dir(*)",
+  [checkAuthStatus, checkStorageExist],
+  async (req, res) => {
+    try {
+      const dirName = req.params.dir;
+      console.log(dirName);
+      if (!dirName) {
+        return res
+          .status(400)
+          .json({ message: `Невозможно создать директорию с таким именем` });
+      }
 
-//       const file = path.join(__dirname, '..', `/uploads/${userID}/${fileName}`);
+      const userID = req.user.userLoginSuccess;
+      const dirToCreate = await StorageProfile.find({
+        name: dirName,
+        parent_dir: userID,
+        type: "directory",
+      });
+      if (dirToCreate.length) {
+        return res
+          .status(400)
+          .json({ message: `Директория с таким именем уже существует` });
+      }
 
-//     } catch (e) {
-//       res.status(500).json({ message: "Не удалось удалить файл с хранилища" });
-//       console.warn("Не удалось удалить файл с хранилища: ", e.message);
-//     }
-//   }
-// );
+      const newDirectory = new StorageProfile({
+        name: dirName,
+        unique_name: dirName,                               //!!!!!!!!!!!!!!!!!!!!!!!!!!
+        parent_dir: userID,
+        path: "/",                                          //!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // size: (file.size / 1024 / 1024).toFixed(2),
+        type: "directory",
+      });
+      await newDirectory.save();
+
+      res.status(200).json({ message: "Директория успешно создана" });
+    } catch (e) {
+      res.status(500).json({ message: "Не удалось создать директорию" });
+      console.warn("Не удалось создать директорию: ", e.message);
+    }
+  }
+);
 
 module.exports = router;

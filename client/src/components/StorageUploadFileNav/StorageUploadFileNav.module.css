@@ -1,0 +1,49 @@
+.buttonsRow form {
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  box-sizing: border-box;
+}
+.buttonsRow button {
+  width: 180px;
+  height: 100%;
+  border-radius: 50px;
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 15px;
+  text-align: center;
+  transition: all 0.2s ease;
+  padding: 0px;
+}
+.buttonsRow button:first-child {
+  margin-right: 15px;
+}
+.uploadFile {
+  background-color: #0f82ec;
+  border: 1px solid #0f82ec;
+  color: white;
+}
+.uploadFile:active,
+.uploadFile:hover,
+.uploadFile:focus {
+  background-color: #1671c7;
+  border: 1px solid #1671c7;
+}
+.sendFileDisable {
+  background-color: white;
+  border: 1px solid #bdbdbd;
+  color: #bdbdbd;
+}
+.sendFileActive {
+  background-color: white;
+  border: 1px solid #0fbb68;
+  color: #0fb363;
+}
+.sendFileActive:active,
+.sendFileActive:hover,
+.sendFileActive:focus {
+  background-color: #0fbb68;
+  color: white;
+}
