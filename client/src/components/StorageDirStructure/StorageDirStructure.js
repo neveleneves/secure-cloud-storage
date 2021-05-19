@@ -6,7 +6,7 @@ import { StorageFileInstance } from "../StorageFileInstance/StorageFileInstance"
 import s from "./StorageDirStructure.module.css";
 
 export const StorageDirStructure = (props) => {
-  const { userFiles, updateStorage, loadingStorage } = props;
+  const { userFiles, updateStorage, loadingStorage} = props;
 
   return (
     <div className={s.dirStructure}>

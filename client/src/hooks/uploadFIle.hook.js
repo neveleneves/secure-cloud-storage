@@ -1,6 +1,9 @@
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
+import { DirectoryPathContext } from "../context/directoryPathContext";
 
 export const useUploadFile = (s) => {
+  const {getFullPath} = useContext(DirectoryPathContext);
+
   const [loadingProcess, setLoading] = useState(false);
   const hiddenFileInput = useRef(null);
   const [file, setFile] = useState(null);
@@ -28,7 +31,9 @@ export const useUploadFile = (s) => {
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await fetch("/api/storage/upload", {
+      const fullPath = getFullPath();
+
+      const response = await fetch(`/api/storage/upload/${fullPath}`, {
         method: "POST",
         body: formData,
       });
@@ -58,5 +63,6 @@ export const useUploadFile = (s) => {
     sendToServer,
     uploadOnClickHandler,
     uploadOnChangeHandler,
+    getFullPath
   };
 };

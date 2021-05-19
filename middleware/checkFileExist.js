@@ -37,7 +37,7 @@ module.exports = async function checkFileExist(req, res, next) {
       return res
         .status(400)
         .json({ message: "Указан несуществующий файл или путь" });
-    }
+    } 
     next();
   } catch (e) {
     res

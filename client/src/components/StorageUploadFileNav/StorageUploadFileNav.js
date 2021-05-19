@@ -15,11 +15,12 @@ export const StorageUploadFileNav = (props) => {
     sendToServer,
     uploadOnClickHandler,
     uploadOnChangeHandler,
+    getFullPath
   } = useUploadFile(s);
 
   const sendFileHandler = async () => {
     await sendToServer();
-    await updateStorage();
+    await updateStorage(getFullPath());
   };
 
   const submitHandler = (event) => {

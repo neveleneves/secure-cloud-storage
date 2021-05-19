@@ -8,11 +8,18 @@ import s from "./StorageExtraNav.module.css";
 export const StorageExtraNav = (props) => {
   const { updateStorage } = props;
   const {
-    onClickCreateDir,
+    createDirectory,
     onChangeCreateDirName,
     createButtonStype,
     createNameDir,
+    loadingProcess,
+    getFullPath
   } = useCreateDir(s)
+
+  const createDirOnClickHandler = async (event) => {
+    await createDirectory();
+    await updateStorage(getFullPath());
+  }
 
   const submitHandler = (event) => {
     event.preventDefault();
@@ -46,8 +53,8 @@ export const StorageExtraNav = (props) => {
           />
           <button
             className={createButtonStype}
-            onClick={onClickCreateDir}
-            disabled={!createNameDir}
+            onClick={createDirOnClickHandler}
+            disabled={!createNameDir || loadingProcess}
           >
             <CreateFolderLogo />
           </button>

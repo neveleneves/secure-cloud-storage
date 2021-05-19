@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
 
-export const useGetStorage = () => {
+export const useGetStorage = (focusDirectory) => {
   const [loadingProcess, setLoading] = useState(false);
   const [storageFiles, setStorageFiles] = useState(null);
 
-  const getUserStorage = async () => {
+  const getUserStorage = async (focusUpdate) => {
     try {
       setLoading(true);
 
-      const response = await fetch("/api/storage/load", { method: "GET" });
+      const response = await fetch(`/api/storage/load/${focusUpdate}`, {
+        method: "GET",
+      });
       const userStorage = await response.json();
 
       if (!response.ok) {
@@ -34,7 +36,13 @@ export const useGetStorage = () => {
         if (!isCancelled) {
           setLoading(true);
 
-          const response = await fetch("/api/storage/load", { method: "GET" });
+          const fullPath = focusDirectory.reduce((path, dirItem) => {
+            return path + dirItem.pathValue;
+          }, "");
+
+          const response = await fetch(`/api/storage/load/${fullPath}`, {
+            method: "GET",
+          });
           const userStorage = await response.json();
 
           if (!response.ok) {
@@ -61,7 +69,7 @@ export const useGetStorage = () => {
     return () => {
       isCancelled = true;
     };
-  }, []);
+  }, [focusDirectory]);
 
   return {
     loadingProcess,

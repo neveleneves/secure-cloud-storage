@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { DirectoryPathContext } from "../context/directoryPathContext";
 import { useRequest } from "./request.hook";
 
 export const useCreateDir = (s) => {
@@ -6,14 +7,19 @@ export const useCreateDir = (s) => {
     `${s.createFolder}`
   );
   const [createNameDir, setCreateNameDir] = useState(null);
-  const { loadingProcess, ajaxRequest, error } = useRequest();
+  const { loadingProcess, ajaxRequest } = useRequest();
 
-  const onClickCreateDir = async (event) => {
+  const {getFullPath} = useContext(DirectoryPathContext);
+
+  const createDirectory = async (event) => {
     try {
-      const directoryCreated = await ajaxRequest(
-        `/api/storage/create_dir/${createNameDir}`, 'POST'
-      );
+      const fullPath = getFullPath();
 
+      const directoryCreated = await ajaxRequest(
+        `/api/storage/create_dir/${fullPath}`,
+        "POST",
+        {createNameDir}
+      );
     } catch (e) {
       console.warn("Не удалось создать директорию: ", e.message);
     }
@@ -30,7 +36,9 @@ export const useCreateDir = (s) => {
   return {
     createButtonStype,
     createNameDir,
-    onClickCreateDir,
+    createDirectory,
     onChangeCreateDirName,
+    loadingProcess,
+    getFullPath
   };
 };

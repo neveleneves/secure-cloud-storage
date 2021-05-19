@@ -1,27 +1,25 @@
-import React from "react";
+import React, { useContext } from "react";
 
 import s from "./StoragePathList.module.css";
 
+import { StoragePathInstance } from "../StoragePathInstance/StoragePathInstance";
+
+import {DirectoryPathContext} from "../../context/directoryPathContext"
+
 export const StoragePathList = () => {
+  const {currentPath, changeCurrentPath} = useContext(DirectoryPathContext);
+
   return (
     <ul className={s.filePathList}>
-      <li className={s.pathItem}>
-        <a className={s.pathLink} href="/">
-          Домашняя папка
-        </a>
-        <span className={s.nextDir}>/</span>
-      </li>
-      <li className={s.pathItem}>
-        <a className={s.pathLink} href="/">
-          Работа
-        </a>
-        <span className={s.nextDir}>/</span>
-      </li>
-      <li className={`${s.pathItem}`}>
-        <a className={`${s.pathLink} ${s.activePathLink}`} href="/">
-          Задачи
-        </a>
-      </li>
+      {currentPath.map((pathInstance) => {
+        return (
+        <StoragePathInstance
+        pathValue={pathInstance.pathValue}
+        name={pathInstance.name}
+        key={pathInstance.pathValue}
+         />
+        )
+      })}
     </ul>
   );
-}
+};
