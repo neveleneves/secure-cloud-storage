@@ -9,24 +9,22 @@ export const useCreateDir = (s) => {
   const [createNameDir, setCreateNameDir] = useState(null);
   const { loadingProcess, ajaxRequest } = useRequest();
 
-  const {getFullPath} = useContext(DirectoryPathContext);
+  const { getFullPath } = useContext(DirectoryPathContext);
 
   const createDirectory = async (event) => {
     try {
       const fullPath = getFullPath();
 
-      const directoryCreated = await ajaxRequest(
-        `/api/storage/create_dir/${fullPath}`,
-        "POST",
-        {createNameDir}
-      );
+      await ajaxRequest(`/api/storage/create_dir/${fullPath}`, "POST", {
+        createNameDir,
+      });
     } catch (e) {
       console.warn("Не удалось создать директорию: ", e.message);
     }
   };
 
   const onChangeCreateDirName = (event) => {
-    setCreateNameDir(event.target.value);
+    setCreateNameDir(event.target.value.replace(/\s+/g, ''));
 
     if (event.target.value) {
       setCreateButtonStyle(`${s.createFolder} ${s.createFolderActive}`);
@@ -39,6 +37,6 @@ export const useCreateDir = (s) => {
     createDirectory,
     onChangeCreateDirName,
     loadingProcess,
-    getFullPath
+    getFullPath,
   };
 };

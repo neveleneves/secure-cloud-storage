@@ -12,12 +12,20 @@ import { useCurrentPath } from "../../hooks/currentPath.hook";
 import { DirectoryPathContext } from "../../context/directoryPathContext";
 
 export default function StoragePage() {
-  const { changeCurrentPath, currentPath, getFullPath} = useCurrentPath();
+  const { currentPath, changeCurrentPath, getFullPath, backToDirectory } =
+    useCurrentPath();
   const { loadingProcess, storageFiles, getUserStorage } =
     useGetStorage(currentPath);
 
   return (
-    <DirectoryPathContext.Provider value={{ currentPath, changeCurrentPath, getFullPath}}>
+    <DirectoryPathContext.Provider
+      value={{
+        currentPath,
+        changeCurrentPath,
+        backToDirectory,
+        getFullPath,
+      }}
+    >
       <section className={s.storage}>
         <div className={`${s.wrapper} ${s.container}`}>
           <div className={s.body}>

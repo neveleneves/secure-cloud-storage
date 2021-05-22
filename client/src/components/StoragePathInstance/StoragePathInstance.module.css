@@ -1,26 +1,25 @@
 .pathItem {
-    display: flex;
-    align-items: center;
-  }
-  .pathLink {
-    font-family: Roboto;
-    font-style: normal;
-    font-weight: 300;
-    font-size: 15px;
-    color: #6d6d6d;
-    transition: all 0.3s ease;
-  }
-  .pathLink:hover,
-  .pathLink:active,
-  .pathLink:focus {
-    color: #0f82ec;
-  }
-  .activePathLink {
-    color: #0084ff;
-    font-weight: 500;
-    pointer-events: none;
-  }
-  .nextDir {
-    margin: 0px 5px;
-  }
-  
+  display: flex;
+  align-items: center;
+}
+.pathLink {
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 15px;
+  color: #6d6d6d;
+  transition: all 0.3s ease;
+  border: 0px;
+  padding: 0px;
+  background-color: initial;
+}
+.pathLink:hover,
+.pathLink:active,
+.pathLink:focus {
+  color: #0f82ec;
+}
+.activePathLink {
+  color: #0084ff;
+  font-weight: 500;
+  pointer-events: none;
+}

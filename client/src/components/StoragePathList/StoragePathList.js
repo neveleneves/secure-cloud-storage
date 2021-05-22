@@ -4,21 +4,23 @@ import s from "./StoragePathList.module.css";
 
 import { StoragePathInstance } from "../StoragePathInstance/StoragePathInstance";
 
-import {DirectoryPathContext} from "../../context/directoryPathContext"
+import { DirectoryPathContext } from "../../context/directoryPathContext";
 
 export const StoragePathList = () => {
-  const {currentPath, changeCurrentPath} = useContext(DirectoryPathContext);
+  const { currentPath, backToDirectory } = useContext(DirectoryPathContext);
 
   return (
     <ul className={s.filePathList}>
-      {currentPath.map((pathInstance) => {
+      {currentPath.map((pathInstance, index, fullPath) => {
         return (
-        <StoragePathInstance
-        pathValue={pathInstance.pathValue}
-        name={pathInstance.name}
-        key={pathInstance.pathValue}
-         />
-        )
+          <StoragePathInstance
+            indexPath={index}
+            name={pathInstance.name}
+            stateActive={index === fullPath.length - 1 ? true : false}
+            backToDirectory={backToDirectory}
+            key={`${pathInstance.name}-${index}`}
+          />
+        );
       })}
     </ul>
   );

@@ -1,18 +1,23 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { DirectoryPathContext } from "../context/directoryPathContext";
 
 import { useRequest } from "./request.hook";
 
 export const useFileAction = (file) => {
-  const [loadingDownload, setLoadingDownload] = useState(false);
-  const [loadingDelete, setLoadingDelete] = useState(false);
+  const { getFullPath } = useContext(DirectoryPathContext);
+
+  const [loadingDownloadFile, setLoadingDownloadFile] = useState(false);
+  const [loadingDeleteFile, setLoadingDeleteFile] = useState(false);
   const [fileState, setFileState] = useState(file);
   const { ajaxRequest } = useRequest();
 
-  const downloadOnClickHandler = async () => {
+  const downloadFileOnClickHandler = async () => {
     try {
-      setLoadingDownload(true);
+      setLoadingDownloadFile(true);
 
-      const response = await fetch(`/api/storage/download/${file.unique_name}`);
+      const response = await fetch(
+        `/api/storage/download/file/${file.unique_name}`
+      );
       if (response.ok) {
         let { protocol, hostname, port } = window.location;
         hostname === "localhost"
@@ -23,43 +28,43 @@ export const useFileAction = (file) => {
           `${protocol}//` +
             `${hostname}` +
             `:${port}` +
-            `/api/storage/download/${file.unique_name}`,
+            `/api/storage/download/file/${file.unique_name}`,
           "_blank"
         );
       }
 
-      setLoadingDownload(false);
+      setLoadingDownloadFile(false);
     } catch (e) {
-      setLoadingDownload(false);
+      setLoadingDownloadFile(false);
       console.warn("Не удалось загрузить файл с сервера: ", e.message);
     }
   };
 
   const deleteFile = async () => {
     try {
-      setLoadingDelete(true);
+      setLoadingDeleteFile(true);
 
       const fileDeleted = await ajaxRequest(
-        `/api/storage/delete/${file.unique_name}`,
+        `/api/storage/delete/file/${file.unique_name}`,
         "DELETE"
       );
 
       if (fileDeleted) {
         setFileState(null);
-        setLoadingDelete(false);
-        // await updateStorage();
+        setLoadingDeleteFile(false);
       }
     } catch (e) {
-      setLoadingDelete(false);
+      setLoadingDeleteFile(false);
       console.warn("Не удалось удалить файл с сервера: ", e.message);
     }
   };
 
   return {
-    loadingDownload,
-    loadingDelete,
+    loadingDownloadFile,
+    loadingDeleteFile,
     fileState,
-    downloadOnClickHandler,
+    getFullPath,
+    downloadFileOnClickHandler,
     deleteFile,
   };
 };

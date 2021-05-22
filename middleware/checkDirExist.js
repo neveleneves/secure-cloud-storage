@@ -26,33 +26,9 @@ module.exports = async function checkDirExist(req, res, next) {
         .json({ message: "Такой директории - не существует" });
     }
 
-    req.params.path = `/${pathToDirectory}${dirToCheck}`
-    // if(!pathToDirectory) {
-    //   const parentExist = await StorageProfile.findOne({
-    //     name: userID,
-    //     parent_dir: 'uploads',
-    //     path: `/${pathToDirectory}`,
-    //     type: "directory",
-    //   });
-    //   if (!parentExist) {
-    //     return res
-    //       .status(400)
-    //       .json({ message: "Родительской директории - не существует" });
-    //   }
-    //   req.params.path = `/${userID}`;
-    // } else {
-    //   const directoryExist = await StorageProfile.findOne({
-    //     parent_dir: userID,
-    //     path: `/${pathToDirectory}`,
-    //     type: "directory",
-    //   });
-    //   if (!directoryExist) {
-    //     return res
-    //       .status(400)
-    //       .json({ message: "Такой директории - не существует" });
-    //   }
-    // }
-
+    if (!pathToDirectory) req.params.path = `/${dirToCheck}`;
+    else req.params.path = `/${pathToDirectory}/${dirToCheck}`;
+    
     next();
   } catch (e) {
     res

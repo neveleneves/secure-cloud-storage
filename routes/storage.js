@@ -1,5 +1,6 @@
 const { Router } = require("express");
-const path = require("path");
+const pathInit = require("path");
+const archiver = require("archiver");
 const fs = require("fs");
 
 const { upload } = require("../middleware/uploadSigleFile");
@@ -102,14 +103,14 @@ router.get(
 
 //Route for download file from server by id
 router.get(
-  "/download/:file(*)",
+  "/download/file/:file(*)",
   [checkAuthStatus, checkStorageExist, checkFileExist],
   async (req, res) => {
     try {
       const fileName = req.params.file;
       const userID = req.user.userLoginSuccess;
 
-      const filePath = path.join(
+      const filePath = pathInit.join(
         __dirname,
         "..",
         `/uploads/${userID}/${fileName}`
@@ -127,7 +128,7 @@ router.get(
 
 //Route for delete file from server by id
 router.delete(
-  "/delete/:file(*)",
+  "/delete/file/:file(*)",
   [checkAuthStatus, checkStorageExist, checkFileExist],
   async (req, res) => {
     try {
@@ -144,7 +145,7 @@ router.delete(
           .json({ message: "Не удалось удалить выбранный файл" });
       }
 
-      const filePath = path.join(
+      const filePath = pathInit.join(
         __dirname,
         "..",
         `/uploads/${userID}/${fileName}`
@@ -165,6 +166,7 @@ router.delete(
   }
 );
 
+//Route for create a new directory on server
 router.post(
   "/create_dir/:path(*)",
   [checkAuthStatus, checkStorageExist, checkDirExist],
@@ -201,7 +203,7 @@ router.post(
       });
       await newDirectory.save();
 
-      res.status(200).json({ message: "Директория успешно создана" });
+      res.status(201).json({ message: "Директория успешно создана" });
     } catch (e) {
       res.status(500).json({ message: "Не удалось создать директорию" });
       console.warn("Не удалось создать директорию: ", e.message);
@@ -209,4 +211,173 @@ router.post(
   }
 );
 
+//Route for download directory from server by path
+router.get(
+  "/download/dir/:path(*)",
+  [checkAuthStatus, checkStorageExist, checkDirExist],
+  async (req, res) => {
+    try {
+      const { path } = req.params;
+      const userID = req.user.userLoginSuccess;
+
+      const relatedFiles = await StorageProfile.find({
+        parent_dir: userID,
+        type: { $in: ["media", "document"] },
+        path: { $regex: path, $options: "m" },
+      });
+      if (!relatedFiles.length) {
+        return res
+          .status(204)
+          .json({ message: `Файлы в данной директории - отсутствуют` });
+      }
+
+      const filesPath = pathInit.join(__dirname, "..", `/uploads/${userID}`);
+      const archiveName = path.split("/").pop();
+      const newFilePath = filesPath + `/${archiveName}.zip`;
+
+      if (fs.existsSync(newFilePath)) {
+        fs.unlinkSync(newFilePath, (err) => {
+          if (err) {
+            return res
+              .status(400)
+              .json({ message: "Не удалось удалить выбранный файл" });
+          }
+        });
+      }
+
+      const output = fs.createWriteStream(newFilePath);
+
+      const archive = archiver("zip", {
+        zlib: { level: 9 },
+      });
+
+      archive.on("warning", (err) => {
+        if (err.code === "ENOENT") {
+          console.warn(err.message);
+        } else {
+          throw err;
+        }
+      });
+
+      archive.on("error", (err) => {
+        throw err;
+      });
+
+      archive.pipe(output);
+
+      relatedFiles.forEach((fileFromDB) => {
+        let fileToArchive = filesPath + `/${fileFromDB.unique_name}`;
+        archive.append(fs.createReadStream(fileToArchive), {
+          name: `${fileFromDB.unique_name}`,
+        });
+      });
+
+      output.on("close", () => {
+        const archivePath = pathInit.join(
+          __dirname,
+          "..",
+          `/uploads/${userID}/${archiveName}.zip`
+        );
+        res.download(archivePath);
+      });
+
+      await archive.finalize();
+    } catch (e) {
+      res
+        .status(500)
+        .json({ message: "Не удалось загрузить директорию с хранилища" });
+      console.warn("Не удалось загрузить директорию с хранилища: ", e.message);
+    }
+  }
+);
+
+//Route for delete dir from server by path
+router.delete(
+  "/delete/dir/:path(*)",
+  [checkAuthStatus, checkStorageExist, checkDirExist],
+  async (req, res) => {
+    try {
+      const { path } = req.params;
+      const userID = req.user.userLoginSuccess;
+
+      const relatedFiles = await StorageProfile.find({
+        parent_dir: userID,
+        type: { $in: ["media", "document", "directory"] },
+        path: { $regex: path, $options: "m" },
+      });
+      // if (!relatedFiles.length) {
+      //   return res
+      //     .status(204)
+      //     .json({ message: `Файлы в данной директории - отсутствуют` });
+      // }
+
+      const filesPath = pathInit.join(__dirname, "..", `/uploads/${userID}`);
+
+      for (let docFromDB of relatedFiles) {
+        if (docFromDB.type === "directory") {
+          console.log()
+          const deletedDirectory = await StorageProfile.deleteOne({
+            name: docFromDB.name,
+            parent_dir: docFromDB.parent_dir,
+            path: docFromDB.path,
+          });
+          if (!deletedDirectory) {
+            return res
+              .status(400)
+              .json({ message: "Не удалось удалить директорию с хранилища" });
+          }
+        } else if (
+          docFromDB.type === "media" ||
+          docFromDB.type === "document"
+        ) {
+          const fileToRemovePath = filesPath + `/${docFromDB.unique_name}`;
+
+          if (fs.existsSync(fileToRemovePath)) {
+            fs.unlinkSync(fileToRemovePath, (err) => {
+              if (err) {
+                return res
+                  .status(400)
+                  .json({ message: "Не удалось удалить выбранный файл" });
+              }
+            });
+
+            const deletedFile = await StorageProfile.deleteOne({
+              unique_name: docFromDB.unique_name,
+              parent_dir: docFromDB.parent_dir,
+              path: docFromDB.path,
+            });
+            if (!deletedFile) {
+              return res
+                .status(400)
+                .json({ message: "Не удалось удалить выбранный файл" });
+            }
+          }
+        }
+      }
+
+      const mainDirectoryName = path.split("/").pop();
+      const mainDirectoryPath = path.replace(`/${mainDirectoryName}`, "");
+
+      console.log(mainDirectoryName)
+      console.log(mainDirectoryPath)
+      const deletedDirectory = await StorageProfile.deleteOne({
+        unique_name: mainDirectoryName,
+        parent_dir: userID,
+        path: mainDirectoryPath,
+      });
+      if (!deletedDirectory) {
+        return res
+          .status(400)
+          .json({ message: "Не удалось удалить выбранный файл" });
+      }
+
+      res.status(200).json({ message: "Директория успешно удалена" });
+    } catch (e) {
+      res
+        .status(500)
+        .json({ message: "Не удалось удалить директорию с хранилища" });
+      console.warn("Не удалось удалить директорию с хранилища: ", e.message);
+    }
+  }
+);
 module.exports = router;

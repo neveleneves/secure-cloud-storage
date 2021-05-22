@@ -3,7 +3,6 @@ import { useState } from "react";
 export const useCurrentPath = () => {
   const [currentPath, setCurrentPath] = useState([
     { pathValue: "root", name: "Домашняя папка" },
-    //KEY WARNING BY SIMULAR NAME
   ]);
 
   const changeCurrentPath = (toDirectory) => {
@@ -16,6 +15,10 @@ export const useCurrentPath = () => {
     ]);
   };
 
+  const backToDirectory = (indexPath) => {
+    setCurrentPath([...currentPath].slice(0, indexPath + 1));
+  };
+
   const getFullPath = () => {
     const fullPath = currentPath.reduce((path, dirItem) => {
       return path + dirItem.pathValue;
@@ -26,6 +29,7 @@ export const useCurrentPath = () => {
   return {
     currentPath,
     changeCurrentPath,
-    getFullPath
+    backToDirectory,
+    getFullPath,
   };
 };
