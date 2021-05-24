@@ -84,7 +84,7 @@ router.get(
       });
       if (!userStorage) {
         return res
-          .status(400)
+          .status(404)
           .json({ message: "Файлы хранилища - не найдены" });
       }
 
@@ -315,7 +315,7 @@ router.delete(
 
       for (let docFromDB of relatedFiles) {
         if (docFromDB.type === "directory") {
-          console.log()
+          console.log();
           const deletedDirectory = await StorageProfile.deleteOne({
             name: docFromDB.name,
             parent_dir: docFromDB.parent_dir,
@@ -358,8 +358,6 @@ router.delete(
       const mainDirectoryName = path.split("/").pop();
       const mainDirectoryPath = path.replace(`/${mainDirectoryName}`, "");
 
-      console.log(mainDirectoryName)
-      console.log(mainDirectoryPath)
       const deletedDirectory = await StorageProfile.deleteOne({
         unique_name: mainDirectoryName,
         parent_dir: userID,
@@ -377,6 +375,35 @@ router.delete(
         .status(500)
         .json({ message: "Не удалось удалить директорию с хранилища" });
       console.warn("Не удалось удалить директорию с хранилища: ", e.message);
+    }
+  }
+);
+
+//Route for get a file results by search
+router.get(
+  "/search/file/:query(*)",
+  [checkAuthStatus, checkStorageExist],
+  async (req, res) => {
+    try {
+      const { query } = req.params;
+      const userID = req.user.userLoginSuccess;
+      
+      const searchResult = await StorageProfile.find({
+        parent_dir: userID,
+        name: { $regex: query, $options: "i" },
+        type: { $in: ["media", "document"] },
+      });
+      if (!searchResult) {
+        return res
+          .status(404)
+          .json({ message: "Нет результатов поиска по данному запросу" });
+      }
+      res.status(200).json(searchResult);
+    } catch (e) {
+      res
+        .status(500)
+        .json({ message: "Не удалось получить результаты поиска" });
+      console.warn("Не удалось получить результаты поиска: ", e.message);
     }
   }
 );

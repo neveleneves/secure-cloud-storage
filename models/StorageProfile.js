@@ -6,7 +6,7 @@ const StorageProfilesSchema = new Schema({
     type: String,
     required: true,
     index: true,
-    unique: true,
+    unique: false,
     sparse: true,
   },
   parent_dir: { type: String, required: true, unique: false },

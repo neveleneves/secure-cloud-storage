@@ -6,11 +6,15 @@ import { StorageUploadFileNav } from "../StorageUploadFileNav/StorageUploadFileN
 import s from "./StorageActionNav.module.css";
 
 export const StorageActionNav = (props) => {
-  const { updateStorage } = props;
+  const { updateStorage, searchStorageFiles, loadingSearch} = props;
 
   return (
     <div className={s.navContainer}>
-      <StorageExtraNav updateStorage={updateStorage}/>
+      <StorageExtraNav
+        updateStorage={updateStorage}
+        searchStorageFiles={searchStorageFiles}
+        loadingSearch={loadingSearch}
+      />
       <StorageUploadFileNav updateStorage={updateStorage} />
     </div>
   );

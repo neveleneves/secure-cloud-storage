@@ -1,11 +1,8 @@
 import { useContext, useState } from "react";
-import { DirectoryPathContext } from "../context/directoryPathContext";
 
 import { useRequest } from "./request.hook";
 
 export const useFileAction = (file) => {
-  const { getFullPath } = useContext(DirectoryPathContext);
-
   const [loadingDownloadFile, setLoadingDownloadFile] = useState(false);
   const [loadingDeleteFile, setLoadingDeleteFile] = useState(false);
   const [fileState, setFileState] = useState(file);
@@ -63,7 +60,6 @@ export const useFileAction = (file) => {
     loadingDownloadFile,
     loadingDeleteFile,
     fileState,
-    getFullPath,
     downloadFileOnClickHandler,
     deleteFile,
   };

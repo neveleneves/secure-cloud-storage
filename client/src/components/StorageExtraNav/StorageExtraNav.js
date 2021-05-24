@@ -1,4 +1,5 @@
 import React from "react";
+
 import { useCreateDir } from "../../hooks/createDirectory.hook";
 
 import { ReactComponent as CreateFolderLogo } from "../../img/folder-plus.svg";
@@ -6,20 +7,25 @@ import { ReactComponent as CreateFolderLogo } from "../../img/folder-plus.svg";
 import s from "./StorageExtraNav.module.css";
 
 export const StorageExtraNav = (props) => {
-  const { updateStorage } = props;
+  const { updateStorage, searchStorageFiles, loadingSearch } = props;
+
   const {
     createDirectory,
     onChangeCreateDirName,
     createButtonStype,
     createNameDir,
     loadingProcess,
-    getFullPath
-  } = useCreateDir(s)
+    getFullPath,
+  } = useCreateDir(s);
 
   const createDirOnClickHandler = async (event) => {
     await createDirectory();
     await updateStorage(getFullPath());
-  }
+  };
+
+  const searchOnChangeHandler = async (event) => {
+    await searchStorageFiles(event.target.value.replace(/\s+/g, ""));
+  };
 
   const submitHandler = (event) => {
     event.preventDefault();
@@ -36,6 +42,7 @@ export const StorageExtraNav = (props) => {
               id="search"
               type="text"
               name="search"
+              onChange={searchOnChangeHandler}
             />
           </label>
         </div>

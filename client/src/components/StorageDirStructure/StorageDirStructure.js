@@ -12,7 +12,7 @@ export const StorageDirStructure = (props) => {
     <div className={s.dirStructure}>
       {!loadingStorage ? (
         <div className={s.fileView}>
-          {!userFiles ? (
+          {!userFiles || !userFiles.length ? (
             <div className={s.titleContainer}>
               <h2 className={s.emptyTitle}>
                 В директории вашего хранилища - нет файлов

@@ -10,13 +10,22 @@ import s from "./StoragePage.module.css";
 import { useGetStorage } from "../../hooks/getStorageDirectory.hook";
 import { useCurrentPath } from "../../hooks/currentPath.hook";
 import { DirectoryPathContext } from "../../context/directoryPathContext";
+import { useSearchFile } from "../../hooks/searchFile.hook";
 
 export default function StoragePage() {
   const { currentPath, changeCurrentPath, getFullPath, backToDirectory } =
     useCurrentPath();
   const { loadingProcess, storageFiles, getUserStorage } =
     useGetStorage(currentPath);
+  const {
+    getSearchResultsStorage,
+    searchValue,
+    loadingSearchFiles,
+    searchResultFiles,
+  } = useSearchFile();
 
+  console.log(storageFiles)
+  console.log(searchResultFiles)
   return (
     <DirectoryPathContext.Provider
       value={{
@@ -35,14 +44,15 @@ export default function StoragePage() {
                   <StoragePathList />
                   <StorageActionNav
                     updateStorage={getUserStorage}
-                    loadingStorage={loadingProcess}
+                    searchStorageFiles={getSearchResultsStorage}
+                    loadingSearch={loadingSearchFiles}
                   />
                 </div>
                 <div className={s.contentBody}>
                   <StorageDirStructure
-                    userFiles={storageFiles}
+                    userFiles={!searchResultFiles ? storageFiles : searchResultFiles}
+                    loadingStorage={!searchResultFiles ? loadingProcess : loadingSearchFiles }
                     updateStorage={getUserStorage}
-                    loadingStorage={loadingProcess}
                   />
                 </div>
                 <div className={s.sidebar}>

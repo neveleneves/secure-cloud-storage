@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useContext } from "react";
 
 import { useFileAction } from "../../hooks/fileInstanceAction.hook";
 import { useDirAction } from "../../hooks/dirInstanceAction.hook";
+
+import { DirectoryPathContext } from "../../context/directoryPathContext";
 
 import { ReactComponent as DocumentLogo } from "../../img/text-document-alt.svg";
 import { ReactComponent as MediaLogo } from "../../img/image-document.svg";
@@ -13,6 +15,7 @@ import s from "./StorageFileInstance.module.css";
 
 export const StorageFileInstance = (props) => {
   const { file, updateStorage } = props;
+  const { getFullPath } = useContext(DirectoryPathContext);
 
   const {
     loadingDownloadFile,
@@ -20,7 +23,6 @@ export const StorageFileInstance = (props) => {
     fileState,
     downloadFileOnClickHandler,
     deleteFile,
-    getFullPath,
   } = useFileAction(file);
 
   const {
@@ -39,7 +41,7 @@ export const StorageFileInstance = (props) => {
 
   const deleteDirOnClickHandler = async (event) => {
     await deleteDirectory();
-    // await updateStorage(getFullPath());
+    await updateStorage(getFullPath());
   };
 
   const getTypeFileLogo = () => {
