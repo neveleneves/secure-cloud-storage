@@ -13,19 +13,19 @@ export const useSearchFile = () => {
 
   const getSearchResultsStorage = async (inputValue) => {
     try {
-      if (inputValue) {
-        setLoadingSearchFiles(true);
+      setLoadingSearchFiles(true);
+      setSearchValue(inputValue);
 
-        const searchResult = await ajaxRequest(
-          `/api/storage/search/file/${inputValue}`
-        );
+      const searchResult = await ajaxRequest(
+        `/api/storage/search/file/${inputValue}`
+      );
 
-        if (searchResult) {
-          setSearchResultFiles(searchResult);
-          setLoadingSearchFiles(false);
-        }
-      } else setSearchResultFiles(null);
+      if (searchResult) {
+        setSearchResultFiles(searchResult);
+        setLoadingSearchFiles(false);
+      }
     } catch (e) {
+      setSearchValue(null);
       setLoadingSearchFiles(false);
       console.warn("Не удалось найти запрошенный файл: ", e.message);
     }

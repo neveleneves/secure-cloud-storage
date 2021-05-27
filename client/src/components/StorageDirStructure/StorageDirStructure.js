@@ -6,7 +6,7 @@ import { StorageFileInstance } from "../StorageFileInstance/StorageFileInstance"
 import s from "./StorageDirStructure.module.css";
 
 export const StorageDirStructure = (props) => {
-  const { userFiles, updateStorage, loadingStorage} = props;
+  const { userFiles, updateStorage, loadingStorage } = props;
 
   return (
     <div className={s.dirStructure}>
@@ -30,15 +30,17 @@ export const StorageDirStructure = (props) => {
                 </tr>
               </thead>
               <tbody>
-                {userFiles.map((fileInstance) => {
-                  return (
-                    <StorageFileInstance
-                      file={fileInstance}
-                      updateStorage={updateStorage}
-                      key={fileInstance._id}
-                    />
-                  );
-                })}
+                {userFiles
+                  .sort((file) => (file.type === "directory" ? -1 : 1))
+                  .map((fileInstance) => {
+                    return (
+                      <StorageFileInstance
+                        file={fileInstance}
+                        updateStorage={updateStorage}
+                        key={fileInstance._id}
+                      />
+                    );
+                  })}
               </tbody>
             </table>
           )}

@@ -1,11 +1,11 @@
-.buttonsRow form {
+.uploadFileNav form {
   height: 35px;
   display: flex;
   align-items: center;
   justify-content: flex-start;
   box-sizing: border-box;
 }
-.buttonsRow button {
+.uploadFileNav button {
   width: 180px;
   height: 100%;
   border-radius: 50px;
@@ -17,8 +17,24 @@
   transition: all 0.2s ease;
   padding: 0px;
 }
-.buttonsRow button:first-child {
+.uploadFileNav button:first-child {
   margin-right: 15px;
+}
+.uploadFileInfo {
+  display: block;
+  text-align: center;
+  max-width: 375px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 20px;
+}
+.uploadFileName {
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: 700;
+  color: #0fbb68;
+  font-size: 15px;
 }
 .uploadFile {
   background-color: #0f82ec;

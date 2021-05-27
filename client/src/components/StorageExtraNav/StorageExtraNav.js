@@ -7,7 +7,7 @@ import { ReactComponent as CreateFolderLogo } from "../../img/folder-plus.svg";
 import s from "./StorageExtraNav.module.css";
 
 export const StorageExtraNav = (props) => {
-  const { updateStorage, searchStorageFiles, loadingSearch } = props;
+  const { updateStorage, searchStorageFiles } = props;
 
   const {
     createDirectory,

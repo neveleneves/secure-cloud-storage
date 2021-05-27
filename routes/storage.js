@@ -7,6 +7,7 @@ const { upload } = require("../middleware/uploadSigleFile");
 const checkAuthStatus = require("../middleware/checkAuthStatus");
 const checkStorageExist = require("../middleware/checkStorageExist");
 const checkFileExist = require("../middleware/checkFileExist");
+const encryptUploadFile = require("../middleware/encryptUploadFile");
 
 const StorageProfile = require("../models/StorageProfile");
 const checkDirExist = require("../middleware/checkDirExist");
@@ -18,7 +19,13 @@ const router = Router();
 //Route for upload file to storage
 router.post(
   "/upload/:path(*)",
-  [checkAuthStatus, checkStorageExist, upload.single("file"), checkDirExist],
+  [
+    checkAuthStatus,
+    checkStorageExist,
+    upload.single("file"),
+    checkDirExist,
+    encryptUploadFile,
+  ],
   async (req, res) => {
     try {
       const { path } = req.params;
@@ -387,7 +394,7 @@ router.get(
     try {
       const { query } = req.params;
       const userID = req.user.userLoginSuccess;
-      
+
       const searchResult = await StorageProfile.find({
         parent_dir: userID,
         name: { $regex: query, $options: "i" },

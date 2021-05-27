@@ -8,32 +8,21 @@ export const StorageActiveMenu = () => {
       <nav className={s.menuNav}>
         <ul className={s.menuList}>
           <li className={s.menuItem}>
-            <a className={`${s.menuLink} ${s.menuLinkActive}`} href="/">
+            <button className={`${s.menuLink} ${s.menuLinkActive}`}>
               Файлы хранилища
-            </a>
+            </button>
           </li>
           <li className={s.menuItem}>
-            <a className={s.menuLink} href="/">
-              Общие папки
-            </a>
+            <button className={s.menuLink}>Скрытые папки</button>
           </li>
           <li className={s.menuItem}>
-            <a className={s.menuLink} href="/">
-              Приватные папки
-            </a>
+            <button className={s.menuLink}>Скрытые файлы</button>
           </li>
           <li className={s.menuItem}>
-            <a className={s.menuLink} href="/">
-              Приватные файлы
-            </a>
-          </li>
-          <li className={s.menuItem}>
-            <a className={s.menuLink} href="/">
-              Удаленное
-            </a>
+            <button className={s.menuLink}>Удаленное</button>
           </li>
         </ul>
       </nav>
     </div>
   );
-}
+};

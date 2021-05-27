@@ -5,11 +5,11 @@ import s from "./StoragePathInstance.module.css";
 import { ReactComponent as PathSpliter } from "../../img/right-small.svg";
 
 export const StoragePathInstance = (props) => {
-  const { name, indexPath, stateActive, backToDirectory } = props;
-  
+  const { name, indexPath = null, stateActive, backToDirectory = null} = props;
+
   const anchorDirOnClickHandler = () => {
     backToDirectory(indexPath);
-  }
+  };
 
   return (
     <li className={s.pathItem}>
@@ -20,7 +20,9 @@ export const StoragePathInstance = (props) => {
         }
         onClick={anchorDirOnClickHandler}
         disabled={stateActive}
-      >{name}</button>
+      >
+        {name}
+      </button>
     </li>
   );
 };

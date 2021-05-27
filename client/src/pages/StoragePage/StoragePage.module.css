@@ -27,10 +27,10 @@
 }
 .contentHeader {
   margin-top: 40px;
-  grid-column: 1/11;
+  grid-column: 1/13;
 }
 .contentBody{
-  grid-column: 1/11;
+  grid-column: 1/13;
   grid-row: 2/5;
 }
 .sidebar {

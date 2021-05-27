@@ -15,7 +15,7 @@ export const StorageUploadFileNav = (props) => {
     sendToServer,
     uploadOnClickHandler,
     uploadOnChangeHandler,
-    getFullPath
+    getFullPath,
   } = useUploadFile(s);
 
   const sendFileHandler = async () => {
@@ -28,7 +28,17 @@ export const StorageUploadFileNav = (props) => {
   };
 
   return (
-    <nav className={s.buttonsRow}>
+    <nav className={s.uploadFileNav}>
+      <label className={s.uploadFileInfo}>
+        {file ? (
+          <span>
+            Выбранный файл:
+             <span className={s.uploadFileName}> {file.name}</span>
+          </span>
+        ) : (
+          <span>Выберите файл для загрузки</span>
+        )}
+      </label>
       <form
         className={s.fileUploadForm}
         onSubmit={submitHandler}
@@ -42,6 +52,7 @@ export const StorageUploadFileNav = (props) => {
           ref={hiddenFileInput}
           onChange={uploadOnChangeHandler}
           hidden
+          id="file-upload"
         />
         <button
           className={sendButtonStyle}
