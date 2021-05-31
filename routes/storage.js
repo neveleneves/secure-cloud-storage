@@ -22,8 +22,8 @@ router.post(
   [
     checkAuthStatus,
     checkStorageExist,
-    upload.single("file"),
     checkDirExist,
+    upload.single("file"),
     encryptUploadFile,
   ],
   async (req, res) => {
@@ -41,10 +41,10 @@ router.post(
           .json({ message: "Идентификатор пользователя - отсутствует" });
       }
 
-      const PARENT_PATH = `./uploads/${userID}`;
+      // const PARENT_PATH = `./uploads/${userID}`;
 
-      let currentDir = file.destination.replace(PARENT_PATH, ``);
-      if (!currentDir) currentDir = `/`;
+      // let currentDir = file.destination.replace(PARENT_PATH, ``);
+      // if (!currentDir) currentDir = `/`;
 
       let type = file.mimetype.split("/")[0];
       if (type === "application" || type === "text") {
@@ -55,7 +55,7 @@ router.post(
 
       const newFile = new StorageProfile({
         name: file.originalname,
-        unique_name: file.filename,
+        unique_name: file.uniqueName,
         parent_dir: userID,
         size: (file.size / 1024 / 1024).toFixed(2),
         path,
@@ -120,7 +120,7 @@ router.get(
       const filePath = pathInit.join(
         __dirname,
         "..",
-        `/uploads/${userID}/${fileName}`
+        `/uploads/${userID}/${fileName}/${fileName}`
       );
 
       res.download(filePath);
@@ -157,15 +157,16 @@ router.delete(
         "..",
         `/uploads/${userID}/${fileName}`
       );
-
-      fs.unlink(filePath, (err) => {
-        if (err) {
-          return res
-            .status(400)
-            .json({ message: "Не удалось удалить выбранный файл" });
-        }
-        res.status(200).json({ message: "Файл успешно удалён с хранилища" });
-      });
+      if (fs.existsSync(filePath)) {
+        fs.rmdir(filePath, { recursive: true }, (err) => {
+          if (err) {
+            return res
+              .status(400)
+              .json({ message: "Не удалось удалить выбранный файл" });
+          }
+          res.status(200).json({ message: "Файл успешно удалён с хранилища" });
+        });
+      }
     } catch (e) {
       res.status(500).json({ message: "Не удалось удалить файл с хранилища" });
       console.warn("Не удалось удалить файл с хранилища: ", e.message);
@@ -273,7 +274,8 @@ router.get(
       archive.pipe(output);
 
       relatedFiles.forEach((fileFromDB) => {
-        let fileToArchive = filesPath + `/${fileFromDB.unique_name}`;
+        let fileToArchive =
+          filesPath + `/${fileFromDB.unique_name}/${fileFromDB.unique_name}`;
         archive.append(fs.createReadStream(fileToArchive), {
           name: `${fileFromDB.unique_name}`,
         });
@@ -322,7 +324,6 @@ router.delete(
 
       for (let docFromDB of relatedFiles) {
         if (docFromDB.type === "directory") {
-          console.log();
           const deletedDirectory = await StorageProfile.deleteOne({
             name: docFromDB.name,
             parent_dir: docFromDB.parent_dir,
@@ -340,7 +341,7 @@ router.delete(
           const fileToRemovePath = filesPath + `/${docFromDB.unique_name}`;
 
           if (fs.existsSync(fileToRemovePath)) {
-            fs.unlinkSync(fileToRemovePath, (err) => {
+            fs.rmdir(fileToRemovePath, { recursive: true }, (err) => {
               if (err) {
                 return res
                   .status(400)
@@ -375,7 +376,6 @@ router.delete(
           .status(400)
           .json({ message: "Не удалось удалить выбранный файл" });
       }
-
       res.status(200).json({ message: "Директория успешно удалена" });
     } catch (e) {
       res
