@@ -27,7 +27,11 @@ module.exports = async function checkFileExist(req, res, next) {
       return res.status(400).json({ message: "Выбранный файл - отсутствует" });
     }
 
-    const file = path.join(__dirname, "..", `/uploads/${userID}/${fileName}/${fileName}`);
+    const file = path.join(
+      __dirname,
+      "..",
+      `/uploads/${userID}/${fileName}/${fileName}`
+    );
     if (!fs.existsSync(file)) {
       await StorageProfile.findOneAndDelete({
         parent_dir: userID,
@@ -37,7 +41,7 @@ module.exports = async function checkFileExist(req, res, next) {
       return res
         .status(400)
         .json({ message: "Указан несуществующий файл или путь" });
-    } 
+    }
     next();
   } catch (e) {
     res
