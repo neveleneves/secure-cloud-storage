@@ -9,7 +9,7 @@ module.exports = async function checkFileExist(req, res, next) {
     if (!fileName) {
       return res
         .status(400)
-        .json({ message: "Индификатор файла - отсутствует" });
+        .json({ message: "Идентификатор файла - отсутствует" });
     }
 
     const userID = req.user.userLoginSuccess;
@@ -27,12 +27,17 @@ module.exports = async function checkFileExist(req, res, next) {
       return res.status(400).json({ message: "Выбранный файл - отсутствует" });
     }
 
-    const file = path.join(
+    const fileToCheckDir = fileName.split(".");
+    fileToCheckDir.pop();
+
+    const filePath = path.join(
       __dirname,
       "..",
-      `/uploads/${userID}/${fileName}/${fileName}`
+      `/uploads/${userID}/${fileToCheckDir.join(".")}/${
+        fileToCheckDir.join(".") + ".enc"
+      }`
     );
-    if (!fs.existsSync(file)) {
+    if (!fs.existsSync(filePath)) {
       await StorageProfile.findOneAndDelete({
         parent_dir: userID,
         unique_name: fileName,

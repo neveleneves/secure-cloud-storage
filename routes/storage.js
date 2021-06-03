@@ -1,16 +1,20 @@
 const { Router } = require("express");
-const pathInit = require("path");
 const archiver = require("archiver");
+const config = require("config");
+const crypto = require("crypto");
+const pathInit = require("path");
 const fs = require("fs");
+const stream = require("stream");
 
 const { upload } = require("../middleware/uploadSigleFile");
 const checkAuthStatus = require("../middleware/checkAuthStatus");
 const checkStorageExist = require("../middleware/checkStorageExist");
 const checkFileExist = require("../middleware/checkFileExist");
 const encryptUploadFile = require("../middleware/encryptUploadFile");
+const checkDirExist = require("../middleware/checkDirExist");
+const decryptUploadFile = require("../middleware/decryptUploadFile");
 
 const StorageProfile = require("../models/StorageProfile");
-const checkDirExist = require("../middleware/checkDirExist");
 
 const router = Router();
 
@@ -108,22 +112,25 @@ router.get(
   }
 );
 
-//Route for download file from server by id
+//Route for download file from server by file name
 router.get(
   "/download/file/:file(*)",
-  [checkAuthStatus, checkStorageExist, checkFileExist],
+  [checkAuthStatus, checkStorageExist, checkFileExist, decryptUploadFile],
   async (req, res) => {
     try {
       const fileName = req.params.file;
-      const userID = req.user.userLoginSuccess;
+      if (!fileName) {
+        return res.status(400).json({ message: "Указано неверное имя файла" });
+      }
 
-      const filePath = pathInit.join(
-        __dirname,
-        "..",
-        `/uploads/${userID}/${fileName}/${fileName}`
-      );
+      const { buffer } = req;
 
-      res.download(filePath);
+      const readStream = new stream.PassThrough();
+      readStream.end(buffer);
+
+      res.attachment(fileName);
+
+      readStream.pipe(res);
     } catch (e) {
       res
         .status(500)
@@ -152,10 +159,14 @@ router.delete(
           .json({ message: "Не удалось удалить выбранный файл" });
       }
 
+      let fileDirName = fileName.split(".");
+      fileDirName.pop();
+      fileDirName = fileDirName.join(".");
+
       const filePath = pathInit.join(
         __dirname,
         "..",
-        `/uploads/${userID}/${fileName}`
+        `/uploads/${userID}/${fileDirName}`
       );
       if (fs.existsSync(filePath)) {
         fs.rmdir(filePath, { recursive: true }, (err) => {
@@ -181,6 +192,12 @@ router.post(
   async (req, res) => {
     try {
       const { path } = req.params;
+      if (!path) {
+        return res
+          .status(400)
+          .json({ message: "Указан неверный путь до директории" });
+      }
+
       const dirName = req.body.createNameDir;
       if (!dirName) {
         return res
@@ -241,19 +258,6 @@ router.get(
 
       const filesPath = pathInit.join(__dirname, "..", `/uploads/${userID}`);
       const archiveName = path.split("/").pop();
-      const newFilePath = filesPath + `/${archiveName}.zip`;
-
-      if (fs.existsSync(newFilePath)) {
-        fs.unlinkSync(newFilePath, (err) => {
-          if (err) {
-            return res
-              .status(400)
-              .json({ message: "Не удалось удалить выбранный файл" });
-          }
-        });
-      }
-
-      const output = fs.createWriteStream(newFilePath);
 
       const archive = archiver("zip", {
         zlib: { level: 9 },
@@ -263,31 +267,56 @@ router.get(
         if (err.code === "ENOENT") {
           console.warn(err.message);
         } else {
-          throw err;
+          return res.status(400).json({
+            message: `Не удалось произвести архивацию файлов: ${err.message}`,
+          });
         }
       });
 
       archive.on("error", (err) => {
-        throw err;
+        return res.status(400).json({
+          message: `Не удалось произвести архивацию файлов: ${err.message}`,
+        });
       });
 
-      archive.pipe(output);
+      res.attachment(`${archiveName + ".zip"}`);
+
+      archive.pipe(res);
 
       relatedFiles.forEach((fileFromDB) => {
+        let fileDirName = fileFromDB.unique_name.split(".");
+        fileDirName.pop();
+        fileDirName = fileDirName.join(".");
+
         let fileToArchive =
-          filesPath + `/${fileFromDB.unique_name}/${fileFromDB.unique_name}`;
-        archive.append(fs.createReadStream(fileToArchive), {
+          filesPath + `/${fileDirName}/${fileDirName + ".enc"}`;
+
+        const bufferEncryptFile = fs.readFileSync(fileToArchive);
+        const algorithm = config.get("cryptoAlgorithm");
+        const passwordEncrypt = config.get("cryptoFilePassword");
+
+        let salt = config.get("cryptoSaltPassword") + fileDirName;
+        salt = crypto.createHash("sha256").update(salt).digest("hex");
+
+        const key = crypto.scryptSync(passwordEncrypt, salt, 32);
+
+        const ivInit = Buffer.allocUnsafe(16, 0);
+        const iv = crypto.createHash("md5").update(fileDirName).digest();
+        iv.copy(ivInit);
+
+        const decipher = crypto.createDecipheriv(algorithm, key, iv);
+        const decrypted = Buffer.concat([
+          decipher.update(bufferEncryptFile),
+          decipher.final(),
+        ]);
+
+        archive.append(decrypted, {
           name: `${fileFromDB.unique_name}`,
         });
       });
 
-      output.on("close", () => {
-        const archivePath = pathInit.join(
-          __dirname,
-          "..",
-          `/uploads/${userID}/${archiveName}.zip`
-        );
-        res.download(archivePath);
+      archive.on("close", () => {
+        console.log("Archive wrote %d bytes", archive.pointer());
       });
 
       await archive.finalize();
@@ -338,7 +367,11 @@ router.delete(
           docFromDB.type === "media" ||
           docFromDB.type === "document"
         ) {
-          const fileToRemovePath = filesPath + `/${docFromDB.unique_name}`;
+          let fileDirName = docFromDB.unique_name.split(".");
+          fileDirName.pop();
+          fileDirName = fileDirName.join(".");
+
+          const fileToRemovePath = filesPath + `/${fileDirName}`;
 
           if (fs.existsSync(fileToRemovePath)) {
             fs.rmdir(fileToRemovePath, { recursive: true }, (err) => {

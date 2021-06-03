@@ -3,36 +3,33 @@ const fs = require("fs");
 const path = require("path");
 const config = require("config");
 
+const StorageProfile = require("../models/StorageProfile");
+
 //Middleware for encrypt uploaded file
-module.exports = async function encryptUploadFile(req, res, next) {
+module.exports = async function decryptUploadFile(req, res, next) {
   try {
+    const fileName = req.params.file;
     const userID = req.user.userLoginSuccess;
 
-    const { file } = req;
-    const { buffer } = file;
-    if (!buffer || !file) {
-      return res.status(404).json({ message: "Загруженный файл не найден" });
-    }
+    let encryptedFileDirName = fileName.split(".");
+    encryptedFileDirName.pop();
+    encryptedFileDirName = encryptedFileDirName.join(".");
 
-    const fileName = file.originalname.split(".");
-    fileName.pop();
-
-    const encryptedFileDirName = fileName.join(".") + "-" + Date.now();
-    const encryptedFileDirPath = path.join(
+    const encryptedFilePath = path.join(
       __dirname,
       "..",
-      `/uploads/${userID}/${encryptedFileDirName}`
+      `/uploads` +
+        `/${userID}` +
+        `/${encryptedFileDirName}` +
+        `/${encryptedFileDirName + ".enc"}`
     );
-    if (fs.existsSync(encryptedFileDirPath)) {
-      return res.status(400).json({ message: "Такой файл уже существует" });
+    if (!fs.existsSync(encryptedFilePath)) {
+      return res
+        .status(400)
+        .json({ message: "Указан несуществующий файл или путь" });
     }
-    fs.mkdirSync(encryptedFileDirPath);
 
-    const encryptedFileName = encryptedFileDirName + ".enc";
-    const encryptedFilePath = path.join(
-      encryptedFileDirPath + `/${encryptedFileName}`
-    );
-
+    const bufferEncryptFile = fs.readFileSync(encryptedFilePath);
     const algorithm = config.get("cryptoAlgorithm");
     const passwordEncrypt = config.get("cryptoFilePassword");
 
@@ -50,13 +47,13 @@ module.exports = async function encryptUploadFile(req, res, next) {
     // const iv = new Buffer.from(new ArrayBuffer(16));
     // iv.set(config.get("ivArray"))
 
-    const cipher = crypto.createCipheriv(algorithm, key, iv);
-    const encrypted = Buffer.concat([cipher.update(buffer), cipher.final()]);
+    const decipher = crypto.createDecipheriv(algorithm, key, iv);
+    const decrypted = Buffer.concat([
+      decipher.update(bufferEncryptFile),
+      decipher.final(),
+    ]);
 
-    fs.writeFileSync(encryptedFilePath, encrypted);
-
-    req.file.uniqueName =
-      encryptedFileDirName + path.extname(file.originalname);
+    req.buffer = decrypted;
 
     next();
   } catch (e) {
