@@ -96,7 +96,7 @@ export const LoginSecondStep = (props) => {
                 {!stateSecretCode ? 
                     <h3 className={s.subtitle}>
                     Для продолжения авторизируйте аккаунт с помощью Telegram.
-                    <br/>Telegram-бот вышлет вам серкретный ключ для продолжения авторизации.
+                    <br/>Telegram-бот вышлет вам секретный ключ для продолжения авторизации.
                     </h3>
                   :
                     <h3 className={s.subtitle}>

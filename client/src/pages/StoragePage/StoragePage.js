@@ -3,7 +3,6 @@ import React from "react";
 import { StoragePathList } from "../../components/StoragePathList/StoragePathList";
 import { StorageActionNav } from "../../components/StorageActionNav/StorageActionNav";
 import { StorageDirStructure } from "../../components/StorageDirStructure/StorageDirStructure";
-// import { StorageActiveMenu } from "../../components/StorageActiveMenu/StorageActiveMenu";
 
 import s from "./StoragePage.module.css";
 
@@ -11,7 +10,6 @@ import { useGetStorage } from "../../hooks/getStorageDirectory.hook";
 import { useCurrentPath } from "../../hooks/currentPath.hook";
 import { DirectoryPathContext } from "../../context/directoryPathContext";
 import { useSearchFile } from "../../hooks/searchFile.hook";
-// import { useSwitchStorageTab } from "../../hooks/switchStorageTab.hook";
 
 export default function StoragePage() {
   const { currentPath, changeCurrentPath, getFullPath, backToDirectory } =
@@ -26,8 +24,6 @@ export default function StoragePage() {
     loadingSearchFiles,
     searchResultFiles,
   } = useSearchFile();
-
-  // const { tabStorageState, switchActiveStorageTab } = useSwitchStorageTab();
 
   return (
     <DirectoryPathContext.Provider

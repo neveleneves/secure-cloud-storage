@@ -42,11 +42,6 @@ module.exports = async function decryptUploadFile(req, res, next) {
     const iv = crypto.createHash("md5").update(encryptedFileDirName).digest();
     iv.copy(ivInit);
 
-    // const iv = crypto.randomBytes(16);
-    // console.log(Buffer.from(ivHashFileName.toString().slice(0,16), 16));
-    // const iv = new Buffer.from(new ArrayBuffer(16));
-    // iv.set(config.get("ivArray"))
-
     const decipher = crypto.createDecipheriv(algorithm, key, iv);
     const decrypted = Buffer.concat([
       decipher.update(bufferEncryptFile),

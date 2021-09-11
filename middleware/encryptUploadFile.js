@@ -45,11 +45,6 @@ module.exports = async function encryptUploadFile(req, res, next) {
     const iv = crypto.createHash("md5").update(encryptedFileDirName).digest();
     iv.copy(ivInit);
 
-    // const iv = crypto.randomBytes(16);
-    // console.log(Buffer.from(ivHashFileName.toString().slice(0,16), 16));
-    // const iv = new Buffer.from(new ArrayBuffer(16));
-    // iv.set(config.get("ivArray"))
-
     const cipher = crypto.createCipheriv(algorithm, key, iv);
     const encrypted = Buffer.concat([cipher.update(buffer), cipher.final()]);
 

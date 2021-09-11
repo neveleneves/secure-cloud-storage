@@ -49,8 +49,11 @@ router.post(
             return res.status(400).json({message: 'Этот пользователь уже зарегистрирован'})
         } else {
             //Hashing a password
-            const hashPassword = crypto.createHmac('sha256', `${login}`).update(password).digest('hex');
-            crypto.com
+            const hashPassword = crypto.createHmac('sha256', `${login}`)
+            .update(password)
+            .digest('hex');
+
+            // crypto.com
 
             //Formation of data for saving in cookie session
             const userNew = {email, login, password: hashPassword}
@@ -135,8 +138,7 @@ router.get('/reg/secret_code/generate',
     try {
         //Check if the auth session is active
         if(!req.session.user) {
-            res.status(504).json({message: 'Время сессии истекло'})
-            return
+            return res.status(504).json({message: 'Время сессии истекло'})
         }
 
         //Getting a random secret code for WEB and hashing code 
